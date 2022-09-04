@@ -10,8 +10,6 @@ public class Token {
 	
 	
 	
-	
-	
 	public Token(int id, String lexeme,String nameToken) {
 		
 		this.id = id;
