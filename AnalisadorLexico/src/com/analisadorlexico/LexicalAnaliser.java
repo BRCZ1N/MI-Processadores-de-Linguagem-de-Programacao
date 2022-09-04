@@ -60,37 +60,54 @@ public class LexicalAnaliser {
 					pos++;
 		
 				}else if(currentChar == '!') {
+					if (nextChar() == '=') {
+						lexeme += currentChar;
+						state = 20;
+						pos++;
+					}else{
+						
+						// retornar o operador de negação
+					}
 					
-					lexeme += currentChar;
-					state = 19;
-					pos++;
 					
-				}else if(currentChar == '|')
+				}else if(currentChar == '|') {
 				
 					lexeme += currentChar;
 					state = 16;
 					pos++;
 					
 				}else if(currentChar == '=') {
-					
-					lexeme += currentChar;
-					state = 25;
-					pos++;
+					if(nextChar() == '=') {
+						lexeme += currentChar;
+						state = 25;
+						pos++;
+						
+					}else {
+						// retornar o operador relacional = 
+					}
 					
 				}else if(currentChar == '<') {
-					
-					lexeme += currentChar;
-					state = 23;
-					pos++;
+					if(nextChar() == '=') {
+						lexeme += currentChar;
+						state = 23;
+						pos++;
+					}else {  	
+						// retornar o operador <
+					}
 					
 					
 				}else if(currentChar == '>') {
+					if(nextChar() == '=') {
+						lexeme += currentChar;
+						state = 21;
+						pos++;
+					}else {
+						// return o operador >
+					}
 					
-					lexeme += currentChar;
-					state = 21;
-					pos++;
 					
 				}else if(currentChar == '+') {
+					
 					
 					lexeme += currentChar;
 					state = 7;
@@ -103,10 +120,17 @@ public class LexicalAnaliser {
 					pos++;
 
 				}else if(currentChar == '/') {
+					if(nextChar() == '/') {
+						lexeme += currentChar;
+						state = 11;
+						pos++;
+					}else if (nextChar()=='*') {
+						lexeme += currentChar;
+						state = 12;
+					}else {
+						// return operador /
+					}
 					
-					lexeme += currentChar;
-					state = 10;
-					pos++;
 					
 				}else if(isDigit(currentChar)) {
 					
@@ -126,13 +150,75 @@ public class LexicalAnaliser {
 					
 				}
 				
+			}else if (state == 18) {
+				if(currentChar == '&') {
+					lexeme +=  currentChar;
+					state = 0;
+					pos++;
+					// return aq
+				}else {
+					// erro lexico
+				}
+
+			}else if (state == 16) {
+				if(currentChar == '|') {
+					lexeme += currentChar;
+					state = 0;
+					pos++;
+					// return
+				}else {
+					//erro
+				}
+			
+			}else if(state == 9) {
+				//return operador *
+			}else if(state == 20) {
+				if(currentChar == '=') {
+					lexeme += currentChar;
+					state = 0;
+					pos++;
+				}else {
+					//erro
+				}
+			}else if(state == 25) {
+				if(currentChar == '=') {
+					lexeme += currentChar;
+					state = 0;
+					pos++;
+					
+				}else {
+					//erro
+				}
+			}else if(state == 23) {
+				if(currentChar == '=') {
+					lexeme += currentChar;
+					state = 0;
+					pos++;
+				}else {
+					//erro
+				}
+			}else if(state == 21) {
+				if (currentChar == '=') {
+					lexeme += currentChar;
+					state = 0;
+					pos++;
+				}else {
+					//erro
+				}
+			}else if(state == 11) {
+				if (currentChar == '/') {
+					lexeme += currentChar;
+					state = 0;
+					pos++;
+				}
+			}else if(state == 12) {
+				if (currentChar == '*') {
+					lexeme += currentChar;
+				}
 			}
-
-		
-
-	return null;
-
 	}
+		return null;
+}
 
 	private boolean isDigit(char c) {
 
