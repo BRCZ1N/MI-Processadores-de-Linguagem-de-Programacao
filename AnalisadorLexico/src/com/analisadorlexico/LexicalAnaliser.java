@@ -9,6 +9,7 @@ import java.util.LinkedList;
 public class LexicalAnaliser {
 
 	private LinkedList<Character> file;
+	private int pos = 0;
 
 	// public static int TokenReservedWord = 3;
 	/*
@@ -39,46 +40,56 @@ public class LexicalAnaliser {
 
 	public Token scanFile() {
 
-		int pos = 0;
 		int state = 0;
+		String lexeme = "";
 
 		while (!isEOF(pos)) {
 
 			if (state == 0) {
 
+				lexeme = "";
+				
 				if (isLetter(file.get(pos))) {
 
+					lexeme += file.get(pos);
 					state = 1;
 					pos++;
 
+				}if(isLogicalOperator(file.get(pos))) {
+					
+					lexeme += file.get(pos);
+					
+					if((nextChar() == '&' || nextChar() == '|') && nextChar() != '!') {
+						
+						lexeme += nextChar();
+						
+					}
+					
+					state = 0;
+					return new Token(Token.SiglaToken.TK_OPERADOR_LOGICO.name(),lexeme);
+		
 				}
 
 			} else if (state == 1) {
 
-				if (isLetter(file.get(pos))) {
+				if (isLetter(file.get(pos)) || isDigit(file.get(pos)) || file.get(pos) == '_') {
 
+					lexeme += file.get(pos);
 					state = 1;
 					pos++;
 
-				}else if(isDigit(file.get(pos))){
-					
-					state = 1;
-					pos++;
-					
-				}else if(file.get(pos) == '_') {
-					
-					state = 1;
-					
-					
-				}else {
-					
-					pos++;
+				} else {
+
 					state = 0;
+					pos++;
+					return new Token(Token.SiglaToken.TK_IDENTIFICADOR.name(), lexeme);
+
 				}
 
 			}
 
 		}
+
 		return null;
 
 	}
@@ -131,9 +142,9 @@ public class LexicalAnaliser {
 
 	}
 
-	public boolean isLogicalOperator(char c, char nextC) {
+	public boolean isLogicalOperator(char c) {
 
-		if (c == '!' || (c == '&' && nextC == '&') || (c == '|' && nextC == '|')) {
+		if (c == '!' || (c == '&' && nextChar() == '&') || (c == '|' && nextChar() == '|')) {
 
 			return true;
 
@@ -162,6 +173,12 @@ public class LexicalAnaliser {
 		}
 
 		return false;
+
+	}
+
+	public char nextChar() {
+
+		return file.get(pos++);
 
 	}
 

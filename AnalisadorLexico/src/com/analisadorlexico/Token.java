@@ -4,8 +4,8 @@ public class Token {
 
 	private String lexeme;
 	private String typeToken;
-//	private long   line;
-//	private long   columm;
+	//private long line;
+	//private long columm;
 
 	public enum SiglaToken {
 
@@ -23,6 +23,8 @@ public class Token {
 
 		this.lexeme = lexeme;
 		this.typeToken = nameToken;
+		//this.line = line;
+		//this.columm = column;
 
 	}
 
