@@ -42,84 +42,98 @@ public class LexicalAnaliser {
 
 				lexeme = "";
 
-				// Identificador
+				// Q0 -> Q1
 				if (isLetter(currentChar)) {
 
 					lexeme += currentChar;
 					state = 1;
 					pos++;
 
+					// Q0 -> Q2
 				} else if (currentChar == '-') {
 
 					lexeme += currentChar;
 					state = 2;
 					pos++;
 
+					// Q0 -> Q18
 				} else if (currentChar == '&') {
 
 					lexeme += currentChar;
 					state = 18;
 					pos++;
 
+					// Q0 -> Q15
 				} else if (currentChar == '!') {
 
 					lexeme += currentChar;
 					state = 15;
 					pos++;
 
+					// Q0 -> Q16
 				} else if (currentChar == '|') {
 
 					lexeme += currentChar;
 					state = 16;
 					pos++;
 
+					// Q0 -> Q25
 				} else if (currentChar == '=') {
 
 					lexeme += currentChar;
 					state = 25;
 					pos++;
 
+					// Q0 -> Q23
 				} else if (currentChar == '<') {
 
 					lexeme += currentChar;
 					state = 23;
 					pos++;
 
+					// Q0 -> Q21
 				} else if (currentChar == '>') {
 
 					lexeme += currentChar;
 					state = 21;
 					pos++;
+
+					// Q0 -> Q7
 				} else if (currentChar == '+') {
 
 					lexeme += currentChar;
 					state = 7;
 					pos++;
 
+					// Q0 -> Q11
 				} else if (currentChar == '*') {
 
 					lexeme += currentChar;
 					state = 9;
 					pos++;
 
+					// Q0 -> Q10
 				} else if (currentChar == '/') {
 
 					lexeme += currentChar;
 					state = 10;
 					pos++;
 
+					// Q0 -> Q3
 				} else if (isDigit(currentChar)) {
 
 					lexeme += currentChar;
 					state = 3;
 					pos++;
 
+					// Q0 -> Q28
 				} else if (currentChar == '"') {
 
 					lexeme += currentChar;
 					state = 28;
 					pos++;
 
+					// Q0 -> Q0
 				} else {
 
 					// NÃO SEI O QUE É AQ
@@ -128,17 +142,17 @@ public class LexicalAnaliser {
 
 			} else if (state == 1) {
 
+				// Q1 -> Q1
 				if (isLetter(currentChar) || isDigit(currentChar) || currentChar == '_') {
 
 					lexeme += currentChar;
 					state = 1;
 					pos++;
 
+					// Q1 -> Q0
 				} else if (currentChar == '\t') {
 
-					lexeme += currentChar;
 					state = 0;
-					pos++;
 					Token token = new Token(InitialsToken.TK_IDENTIFIER.name(), lexeme);
 				} else {
 
@@ -148,45 +162,50 @@ public class LexicalAnaliser {
 
 			} else if (state == 2) {
 
+				// Q2 -> Q6
 				if (currentChar == '-') {
 
 					lexeme += currentChar;
 					state = 6;
 					pos++;
 
+					// Q2 -> Q3
 				} else if (isDigit(currentChar)) {
 
 					lexeme += currentChar;
 					state = 3;
 					pos++;
 
+					// Q2 -> Q3
 				} else if (currentChar == '\t') {
-					lexeme += currentChar;
+
 					state = 0;
-					pos++;
 					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+
 				}
 
 			}
 
 			else if (state == 3) {
 
+				// Q3 -> Q3
 				if (isDigit(currentChar)) {
 
 					lexeme += currentChar;
 					state = 3;
 					pos++;
 
+					// Q3 -> Q4
 				} else if (currentChar == '.') {
 
 					lexeme += currentChar;
 					state = 4;
 					pos++;
 
+					// Q3 -> Q0
 				} else {
-					lexeme += currentChar;
+
 					state = 0;
-					pos++;
 					Token token = new Token(InitialsToken.TK_NUMBER.name(), lexeme);
 
 					// ERRO LEXICO
@@ -195,63 +214,74 @@ public class LexicalAnaliser {
 
 			} else if (state == 4) {
 
+				// Q4 -> Q5
 				if (isDigit(currentChar)) {
 
 					lexeme += currentChar;
 					state = 5;
 					pos++;
-
-				} else if (currentChar == '\t') {
-
-					lexeme += currentChar;
-					state = 0;
-					pos++;
-					Token token = new Token(InitialsToken.TK_NUMBER.name(), lexeme);
 
 				}
 
 			} else if (state == 5) {
 
+				// Q5 -> Q5
 				if (isDigit(currentChar)) {
 
 					lexeme += currentChar;
 					state = 5;
 					pos++;
 
+					// Q5 -> Q0
 				} else {
 
-					lexeme += currentChar;
 					state = 0;
-					pos++;
+					Token token = new Token(InitialsToken.TK_NUMBER.name(), lexeme);
+
 				}
 
 			} else if (state == 6) {
 
-				lexeme += currentChar;
-				state = 0;
-				pos++;
-				Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+				// Q6 -> Q0
+				if (currentChar == '-') {
+
+					state = 0;
+					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+
+				}
 
 			} else if (state == 7) {
+
+				// Q7 -> Q8
 				if (currentChar == '+') {
+
 					lexeme += currentChar;
 					state = 8;
 					pos++;
 
 				} else {
+
 					// return + NÃO SABEMOS FAZER AINDA, FALTA SABER A RELAÇÃO COM OS NUMEROS
 
 				}
 				// FALTA FAZER
 
 			} else if (state == 8) {
-				lexeme += currentChar;
-				state = 0;
-				pos++;
-				Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
-				// return ++
+
+				// Q8 -> Q0
+				if (currentChar == '+') {
+
+					lexeme += currentChar;
+					state = 0;
+					pos++;
+					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+					// return ++
+
+				}
 
 			} else if (state == 9) {
+
+				//Q9 -> Q0
 				lexeme += currentChar;
 				state = 0;
 				pos++;
@@ -260,6 +290,7 @@ public class LexicalAnaliser {
 
 			} else if (state == 10) {
 
+				//Q10 -> Q11
 				if (currentChar == '/') {
 
 					lexeme += currentChar;
@@ -267,6 +298,7 @@ public class LexicalAnaliser {
 					// RETURN OPERADOR DE DIVISÃO
 					pos++;
 
+				//Q10 -> Q12
 				} else if (currentChar == '*') {
 
 					lexeme += currentChar;
@@ -275,35 +307,43 @@ public class LexicalAnaliser {
 
 				}
 
+			//Q11 -> Q0
 			} else if (state == 11) {
-				
+
 				lexeme += currentChar;
 				state = 0;
 				pos++;
 				Token token = new Token(InitialsToken.TK_DELIMITER.name(), lexeme);
 
+		
 			} else if (state == 12) {
 
+				//Q12 -> Q13
 				if (currentChar == '*') {
 
 					lexeme += currentChar;
 					state = 13;
 					pos++;
 
+				//Q12 -> Q12
 				} else {
 
 					lexeme += currentChar;
 					state = 12;
 					pos++;
+					
 				}
+				
 			} else if (state == 13) {
 
+				//Q13 -> Q14
 				if (currentChar == '/') {
 
 					lexeme += currentChar;
 					state = 14;
 					pos++;
 
+				//Q13 -> Q12
 				} else {
 
 					lexeme += currentChar;
@@ -311,28 +351,43 @@ public class LexicalAnaliser {
 					pos++;
 
 				}
-
+				
+			//Q14 -> Q0
 			} else if (state == 14) {
+				
 				lexeme += currentChar;
 				state = 0;
-				pos++;
-				Token token = new Token(InitialsToken.TK_DELIMITER.name(), lexeme);
+				//FALTA AQ
+				//FALTA AQ
+				//FALTA AQ
+				//FALTA AQ
+				//FALTA AQ
+				//Token token = new Token(InitialsToken.TK.name(), lexeme);
 
+			
 			} else if (state == 15) {
 
+				//Q15 -> Q20	
 				if (currentChar == '=') {
+					
 					lexeme += currentChar;
 					state = 20;
 					pos++;
-
+					
+				//Q15 -> Q0
 				} else {
 
-					// erro lexico
+					lexeme += currentChar;
+					state = 0;
+					Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.name(), lexeme);
 
 				}
 
 			} else if (state == 16) {
+				
+				//Q15 -> Q0
 				if (currentChar == '|') {
+					
 					lexeme += currentChar;
 					state = 17;
 					pos++;
@@ -341,16 +396,18 @@ public class LexicalAnaliser {
 					// erro
 				}
 
+			//Q17 -> Q0
 			} else if (state == 17) {
-				lexeme += currentChar;
+				
 				state = 0;
-				pos++;
 				Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.name(), lexeme);
 				// RETURN
 
 			} else if (state == 18) {
 
+				//Q18 -> Q9
 				if (currentChar == '&') {
+					
 					lexeme += currentChar;
 					state = 19;
 					pos++;
@@ -361,86 +418,102 @@ public class LexicalAnaliser {
 
 				}
 
+			//Q19 -> Q0
 			} else if (state == 19) {
-				lexeme += currentChar;
+				
 				state = 0;
-				pos++;
 				Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.name(), lexeme);
 				// RETURN ALGO AQ
 
+			//Q20 -> Q0
 			} else if (state == 20) {
-				lexeme += currentChar;
+				
 				state = 0;
-				pos++;
 				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
 				// RETURN ALGO
 
 			} else if (state == 21) {
 
+				//Q21 -> Q22
 				if (currentChar == '=') {
 
 					lexeme += currentChar;
 					state = 22;
 					pos++;
-
+					
+				//Q22 -> Q0
 				} else {
 
-					// ERRO LEXICO
+					state = 0;
+					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
 
 				}
 
+			//Q22 -> Q0
 			} else if (state == 22) {
-				lexeme += currentChar;
+				
 				state = 0;
-				pos++;
 				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
 				// RETURN ALGO AQ
 
 			} else if (state == 23) {
 
+				//Q23 -> Q24
 				if (currentChar == '=') {
 
 					lexeme += currentChar;
 					state = 24;
 					pos++;
 
+				//Q23 -> Q0
 				} else {
 
-					// erro
+					state = 0;
+					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
 
 				}
 
+			//Q24 -> Q0
 			} else if (state == 24) {
-				lexeme += currentChar;
+				
 				state = 0;
-				pos++;
 				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
 				// RETURN ALGO AQ
 
+		
 			} else if (state == 25) {
-
+				
+				//Q25 -> Q26
 				if (currentChar == '=') {
+					
 					lexeme += currentChar;
 					state = 26;
 					pos++;
-					// return
+					
+				//Q25 -> Q0	
 				} else {
-					// erro
+					
+					state = 0;
+					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+					
 				}
 
+			//Q26 -> Q0
 			} else if (state == 26) {
-				lexeme += currentChar;
+				
 				state = 0;
-				pos++;
 				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
 				// RETURN ALGO AQ
 
+			//Q27 -> Q0
 			} else if (state == 27) {
 
-				// RETURN ALGO AQ
+				state = 0;
+				Token token = new Token(InitialsToken.TK_DELIMITER.name(), lexeme);
 
 			} else if (state == 28) {
 
+				//Q28 -> Q28
 				if (isLetter(currentChar) || isDigit(currentChar)
 						|| (currentChar >= 32 && currentChar <= 126 && currentChar != 34)) {
 
@@ -448,6 +521,7 @@ public class LexicalAnaliser {
 					state = 28;
 					pos++;
 
+				//Q28 -> Q29
 				} else if (currentChar == '"') {
 
 					lexeme += currentChar;
@@ -457,12 +531,12 @@ public class LexicalAnaliser {
 				} else {
 
 					// ERRO LEXICO
+					
 				}
-			}else if (state == 29) {
-				
-				lexeme += currentChar;
+			//Q29 ->Q0
+			} else if (state == 29) {
+
 				state = 0;
-				pos++;
 				Token token = new Token(InitialsToken.TK_STRING.name(), lexeme);
 			}
 
