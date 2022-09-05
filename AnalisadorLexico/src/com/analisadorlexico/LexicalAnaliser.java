@@ -11,6 +11,7 @@ import com.analisadorlexico.Token.InitialsToken;
 public class LexicalAnaliser {
 
 	private LinkedList<Character> file;
+	private LinkedList<Token> tokensList;
 	private int pos = 0;
 
 	public LexicalAnaliser(String fileName) {
@@ -62,7 +63,7 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 18;
 					pos++;
-
+					
 					// Q0 -> Q15
 				} else if (currentChar == '!') {
 
@@ -156,6 +157,7 @@ public class LexicalAnaliser {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_IDENTIFIER.name(), lexeme);
+					tokensList.add(token);
 
 				}
 
@@ -181,6 +183,7 @@ public class LexicalAnaliser {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+					tokensList.add(token);
 
 				}
 
@@ -207,6 +210,7 @@ public class LexicalAnaliser {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_NUMBER.name(), lexeme);
+					tokensList.add(token);
 
 				}
 
@@ -239,6 +243,7 @@ public class LexicalAnaliser {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_NUMBER.name(), lexeme);
+					tokensList.add(token);
 
 				}
 
@@ -246,6 +251,7 @@ public class LexicalAnaliser {
 
 				state = 0;
 				Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+				tokensList.add(token);
 
 			} else if (state == 7) {
 
@@ -260,6 +266,7 @@ public class LexicalAnaliser {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+					tokensList.add(token);
 
 				}
 				// FALTA FAZER
@@ -269,10 +276,9 @@ public class LexicalAnaliser {
 				// Q8 -> Q0
 				if (currentChar == '+') {
 
-					lexeme += currentChar;
 					state = 0;
-					pos++;
 					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+					tokensList.add(token);
 					// return ++
 
 				}
@@ -282,8 +288,8 @@ public class LexicalAnaliser {
 				// Q9 -> Q0
 				lexeme += currentChar;
 				state = 0;
-				pos++;
 				Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+				tokensList.add(token);
 				// RETURN ALGO AQ
 
 			} else if (state == 10) {
@@ -310,8 +316,8 @@ public class LexicalAnaliser {
 
 				lexeme += currentChar;
 				state = 0;
-				pos++;
 				Token token = new Token(InitialsToken.TK_DELIMITER.name(), lexeme);
+				tokensList.add(token);
 
 			} else if (state == 12) {
 
@@ -376,6 +382,7 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 0;
 					Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.name(), lexeme);
+					tokensList.add(token);
 
 				}
 
@@ -397,6 +404,7 @@ public class LexicalAnaliser {
 
 				state = 0;
 				Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.name(), lexeme);
+				tokensList.add(token);
 				// RETURN
 
 			} else if (state == 18) {
@@ -419,6 +427,7 @@ public class LexicalAnaliser {
 
 				state = 0;
 				Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.name(), lexeme);
+				tokensList.add(token);
 				// RETURN ALGO AQ
 
 				// Q20 -> Q0
@@ -426,6 +435,7 @@ public class LexicalAnaliser {
 
 				state = 0;
 				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+				tokensList.add(token);
 				// RETURN ALGO
 
 			} else if (state == 21) {
@@ -442,6 +452,7 @@ public class LexicalAnaliser {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+					tokensList.add(token);
 
 				}
 
@@ -450,6 +461,7 @@ public class LexicalAnaliser {
 
 				state = 0;
 				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+				tokensList.add(token);
 				// RETURN ALGO AQ
 
 			} else if (state == 23) {
@@ -466,6 +478,7 @@ public class LexicalAnaliser {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+					tokensList.add(token);
 
 				}
 
@@ -474,6 +487,7 @@ public class LexicalAnaliser {
 
 				state = 0;
 				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+				tokensList.add(token);
 				// RETURN ALGO AQ
 
 			} else if (state == 25) {
@@ -490,6 +504,7 @@ public class LexicalAnaliser {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+					tokensList.add(token);
 
 				}
 
@@ -498,6 +513,7 @@ public class LexicalAnaliser {
 
 				state = 0;
 				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+				tokensList.add(token);
 				// RETURN ALGO AQ
 
 				// Q27 -> Q0
@@ -505,6 +521,7 @@ public class LexicalAnaliser {
 
 				state = 0;
 				Token token = new Token(InitialsToken.TK_DELIMITER.name(), lexeme);
+				tokensList.add(token);
 
 			} else if (state == 28) {
 
@@ -533,6 +550,7 @@ public class LexicalAnaliser {
 
 				state = 0;
 				Token token = new Token(InitialsToken.TK_STRING.name(), lexeme);
+				tokensList.add(token);
 			}
 
 		}
