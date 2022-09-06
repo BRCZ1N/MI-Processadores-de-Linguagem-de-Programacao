@@ -1,15 +1,18 @@
 package com.analisadorlexico;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 public class Main {
 
 	public static void main(String[] args) {
-		
-		
+
+		Token token = null;
 		LexicalAnaliser lexicalAnaliserTest = new LexicalAnaliser("entrada1.txt");
-		
+
+		do {
+
+			token = lexicalAnaliserTest.scanFile();
+			System.out.println(token.getTypeToken()+" "+token.getLexeme());
+
+		} while (token != null);
 
 	}
 
