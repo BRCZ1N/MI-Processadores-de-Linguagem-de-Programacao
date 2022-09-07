@@ -4,7 +4,7 @@ public class Token {
 
 	private String lexeme;
 	private String typeToken;
-	private long line;
+	// private long line;
 	// private long columm;
 
 	public enum InitialsToken {
@@ -58,14 +58,14 @@ public class Token {
 		this.typeToken = nameToken;
 	}
 
-	public long getLine() {
-		return line;
-	}
-
-	public void setLine(long line) {
-		this.line = line;
-	}
-
+//	public long getLine() {
+//		return line;
+//	}
+//
+//	public void setLine(long line) {
+//		this.line = line;
+//	}
+//
 //	public long getColumm() {
 //		return columm;
 //	}
