@@ -4,23 +4,22 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.LinkedList;
-
-import com.analisadorlexico.Token.InitialsToken;
 
 public class LexicalAnaliser {
 
-	private LinkedList<Character> file;
+	private LinkedList<Character> file = new LinkedList<Character>();
 	private char lastChar = ' ';
 	private int pos = 0;
-	
+	private int countLine = 1;
+
 	public LexicalAnaliser(String fileName) {
 
 		String contentFile;
 
 		try {
 
+			ReservedWords rws = new ReservedWords();
 			contentFile = new String(Files.readAllBytes(Paths.get(fileName)), StandardCharsets.UTF_8);
 			toLinkedList(contentFile.toCharArray());
 
@@ -31,16 +30,15 @@ public class LexicalAnaliser {
 		}
 
 	}
-	
 
 	public Token scanFile() {
-		
-		
+
 		int state = 0;
 		String lexeme = null;
-		char currentChar = file.get(pos);
 
 		while (!isEOF(pos)) {
+
+			char currentChar = file.get(pos);
 
 			if (state == 0) {
 
@@ -146,6 +144,12 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q0 -> Q0
+
+				} else if (isNewLine(currentChar)) {
+
+					state = 0;
+					pos++;
+
 				} else {
 
 					state = 0;
@@ -161,22 +165,22 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 1;
 					pos++;
-							
-					// Q1 -> Q0	
+
+					// Q1 -> Q0
 				} else {
-					
-					if(ReservedWords.getListReservedWords().contains(lexeme)) {
-						
+
+					if (ReservedWords.getListReservedWords().contains(lexeme)) {
+
 						state = 0;
-						Token token = new Token(InitialsToken.TK_RESERVED_WORDS.name(),lexeme);
+						Token token = new Token(InitialsToken.TK_RESERVED_WORDS.getTypeTokenCode(), lexeme, countLine);
 						return token;
-						
-					}else {
-						
+
+					} else {
+
 						state = 0;
-						Token token = new Token(InitialsToken.TK_IDENTIFIER.name(), lexeme);
+						Token token = new Token(InitialsToken.TK_IDENTIFIER.getTypeTokenCode(), lexeme, countLine);
 						return token;
-							
+
 					}
 
 				}
@@ -201,7 +205,8 @@ public class LexicalAnaliser {
 				} else if (currentChar == '\t') {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,
+							countLine);
 					return token;
 
 				}
@@ -226,7 +231,7 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_NUMBER.name(), lexeme);
+					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -246,7 +251,7 @@ public class LexicalAnaliser {
 
 					backPosition();
 					state = 0;
-					Token token = new Token(InitialsToken.TK_NUMBER.name(), lexeme);
+					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -264,7 +269,7 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_NUMBER.name(), lexeme);
+					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -272,7 +277,7 @@ public class LexicalAnaliser {
 			} else if (state == 6) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+				Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 7) {
@@ -287,7 +292,8 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,
+							countLine);
 					return token;
 
 				}
@@ -299,7 +305,8 @@ public class LexicalAnaliser {
 				if (currentChar == '+') {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,
+							countLine);
 					return token;
 
 				}
@@ -309,7 +316,7 @@ public class LexicalAnaliser {
 				// Q9 -> Q0
 				lexeme += currentChar;
 				state = 0;
-				Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+				Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 10) {
@@ -328,13 +335,14 @@ public class LexicalAnaliser {
 					state = 12;
 					pos++;
 
-				}else {
-					
+				} else {
+
 					lexeme += currentChar;
 					state = 0;
-					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.name(), lexeme);
+					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,
+							countLine);
 					return token;
-					
+
 				}
 
 				// Q11 -> Q0
@@ -342,7 +350,7 @@ public class LexicalAnaliser {
 
 				lexeme += currentChar;
 				state = 0;
-				Token token = new Token(InitialsToken.TK_COMMENT.name(), lexeme);
+				Token token = new Token(InitialsToken.TK_COMMENT.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 12) {
@@ -353,6 +361,10 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 13;
 					pos++;
+
+				} else if (isEOF(pos)) {
+
+					System.out.println("ERRO DE COMENTÁRIO DE BLOCO MAL FORMADO");
 
 					// Q12 -> Q12
 				} else {
@@ -373,6 +385,10 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q13 -> Q12
+				} else if (isEOF(pos)) {
+
+					System.out.println("ERRO DE COMENTÁRIO DE BLOCO MAL FORMADO ESTADO 13");
+
 				} else {
 
 					lexeme += currentChar;
@@ -386,7 +402,7 @@ public class LexicalAnaliser {
 
 				lexeme += currentChar;
 				state = 0;
-				Token token = new Token(InitialsToken.TK_COMMENT.name(), lexeme);
+				Token token = new Token(InitialsToken.TK_COMMENT.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 15) {
@@ -403,7 +419,7 @@ public class LexicalAnaliser {
 
 					lexeme += currentChar;
 					state = 0;
-					Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.name(), lexeme);
+					Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -427,7 +443,7 @@ public class LexicalAnaliser {
 			} else if (state == 17) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.name(), lexeme);
+				Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 18) {
@@ -449,14 +465,14 @@ public class LexicalAnaliser {
 			} else if (state == 19) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.name(), lexeme);
+				Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 				// Q20 -> Q0
 			} else if (state == 20) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 21) {
@@ -472,7 +488,7 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -481,7 +497,7 @@ public class LexicalAnaliser {
 			} else if (state == 22) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 23) {
@@ -497,7 +513,7 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -506,7 +522,7 @@ public class LexicalAnaliser {
 			} else if (state == 24) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 25) {
@@ -522,7 +538,7 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -531,21 +547,20 @@ public class LexicalAnaliser {
 			} else if (state == 26) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.name(), lexeme);
+				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 				// Q27 -> Q0
 			} else if (state == 27) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_DELIMITER.name(), lexeme);
+				Token token = new Token(InitialsToken.TK_DELIMITER.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 28) {
 
 				// Q28 -> Q28
-				if (isLetter(currentChar) || isDigit(currentChar)
-						|| (currentChar >= 32 && currentChar <= 126 && currentChar != 34)) {
+				if (isLetter(currentChar) || isDigit(currentChar) || isSymbol(currentChar)) {
 
 					lexeme += currentChar;
 					state = 28;
@@ -560,14 +575,16 @@ public class LexicalAnaliser {
 
 				} else {
 
-					// ERRO LEXICO
+					System.out.println("ERRO DE CADEIA DE CARACTERES MAL FORMADA");
+					state = 0;
+					pos++;
 
 				}
 				// Q29 ->Q0
 			} else if (state == 29) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_STRING.name(), lexeme);
+				Token token = new Token(InitialsToken.TK_STRING.getTypeTokenCode(), lexeme, countLine);
 				return token;
 			}
 
@@ -577,9 +594,34 @@ public class LexicalAnaliser {
 
 	}
 
+	private boolean isSymbol(char c) {
+
+		if (c >= 32 && c <= 126 && c != 34) {
+
+			return true;
+
+		}
+
+		return false;
+
+	}
+
+	private boolean isNewLine(char c) {
+
+		if (c == '\n' || c == '\r') {
+
+			countLine++;
+			return true;
+
+		}
+
+		return false;
+
+	}
+
 	private boolean isDigit(char c) {
 
-		if (c >= '0' || c <= '9') {
+		if (c >= '0' && c <= '9') {
 
 			return true;
 
@@ -591,7 +633,7 @@ public class LexicalAnaliser {
 
 	private boolean isLetter(char c) {
 
-		if ((c >= 'a' || c <= 'z') || (c >= 'A' || c <= 'Z')) {
+		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
 
 			return true;
 
@@ -649,7 +691,7 @@ public class LexicalAnaliser {
 
 	public boolean isEOF(int pos) {
 
-		if (file.size() == pos) {
+		if (file.size() - 1 == pos) {
 
 			return true;
 

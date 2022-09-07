@@ -4,27 +4,14 @@ public class Token {
 
 	private String lexeme;
 	private String typeToken;
-	// private long line;
+	private long line;
 	// private long columm;
 
-	public enum InitialsToken {
-
-		TK_RESERVED_WORDS("PRE"), TK_IDENTIFIER("IDE"), TK_NUMBER("NRO"), TK_DELIMITER("DEL"),
-		TK_RELATIONAL_OPERATOR("REL"), TK_LOGIC_OPERATOR("LOG"), TK_ARITHIMETIC_OPERATOR("ART"),
-		TK_MALFORMED_CHAIN("CMF"), TK_POORLY_FORMED_COMMENT("CoMF"), TK_INVALID_CHARACTER("CIN"), TK_STRING("STG"),
-		TK_COMMENT("CMT");
-
-		private InitialsToken(String string) {
-
-		}
-
-	}
-
-	public Token(String lexeme, String nameToken) {
+	public Token(String typeToken, String lexeme, long line) {
 
 		this.lexeme = lexeme;
-		this.typeToken = nameToken;
-		// this.line = line;
+		this.typeToken = typeToken;
+		this.line = line;
 		// this.columm = column;
 
 	}
@@ -41,18 +28,18 @@ public class Token {
 		return typeToken;
 	}
 
-	public void setTypeToken(String nameToken) {
-		this.typeToken = nameToken;
+	public void setTypeToken(String typeToken) {
+		this.typeToken = typeToken;
 	}
 
-//	public long getLine() {
-//		return line;
-//	}
-//
-//	public void setLine(long line) {
-//		this.line = line;
-//	}
-//
+	public long getLine() {
+		return line;
+	}
+
+	public void setLine(long line) {
+		this.line = line;
+	}
+
 //	public long getColumm() {
 //		return columm;
 //	}
@@ -63,7 +50,7 @@ public class Token {
 
 	@Override
 	public String toString() {
-		return this.typeToken + "" + "" + this.lexeme;
+		return this.typeToken + " " + this.lexeme;
 	}
 
 }
