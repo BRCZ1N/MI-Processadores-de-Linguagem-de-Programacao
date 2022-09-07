@@ -20,19 +20,6 @@ public class Token {
 
 	}
 
-	public enum ReservedWords {
-		TK_RESERVED_VAR("var"), TK_RESERVED_CONST("const"), TK_RESERVED_STRUCT("struct"),
-		TK_RESERVED_EXTENDS("extends"), TK_RESERVED_PROCEDURE("procedure"), TK_RESERVED_FUCTION("function"),
-		TK_RESERVED_START("start"), TK_RESERVED_RETURN("return"), TK_RESERVED_IF("if"), TK_RESERVED_ELSE("else"),
-		TK_RESERVED_THEN("then"), TK_RESERVED_WHILE("while"), TK_RESERVED_READ("read"), TK_RESERVED_PRINT("print"),
-		TK_RESERVED_INT("int"), TK_RESERVED_REAL("real"), TK_RESERVED_BOOLEAN("boolean"), TK_RESERVED_STRING("string"),
-		TK_RESERVED_TRUE("true"), TK_RESERVED_FALSE("false");
-
-		private ReservedWords(String string) {
-
-		}
-	}
-
 	public Token(String lexeme, String nameToken) {
 
 		this.lexeme = lexeme;

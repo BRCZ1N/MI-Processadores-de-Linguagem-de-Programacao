@@ -161,13 +161,23 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 1;
 					pos++;
-
-					// Q1 -> Q0
+							
+					// Q1 -> Q0	
 				} else {
-
-					state = 0;
-					Token token = new Token(InitialsToken.TK_IDENTIFIER.name(), lexeme);
-					return token;
+					
+					if(ReservedWords.getListReservedWords().contains(lexeme)) {
+						
+						state = 0;
+						Token token = new Token(InitialsToken.TK_RESERVED_WORDS.name(),lexeme);
+						return token;
+						
+					}else {
+						
+						state = 0;
+						Token token = new Token(InitialsToken.TK_IDENTIFIER.name(), lexeme);
+						return token;
+							
+					}
 
 				}
 
