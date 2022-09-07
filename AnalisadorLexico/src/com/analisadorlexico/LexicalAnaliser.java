@@ -38,12 +38,13 @@ public class LexicalAnaliser {
 		
 		int state = 0;
 		String lexeme = null;
+		int line = 0;
 		char currentChar = file.get(pos);
 
 		while (!isEOF(pos)) {
-
+			
 			if (state == 0) {
-
+				
 				lexeme = "";
 
 				// Q0 -> Q1
@@ -161,10 +162,9 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 1;
 					pos++;
-
+				
 					// Q1 -> Q0
-				} else {
-
+				}else {
 					state = 0;
 					Token token = new Token(InitialsToken.TK_IDENTIFIER.name(), lexeme);
 					return token;
@@ -535,7 +535,7 @@ public class LexicalAnaliser {
 
 				// Q28 -> Q28
 				if (isLetter(currentChar) || isDigit(currentChar)
-						|| (currentChar >= 32 && currentChar <= 126 && currentChar != 34)) {
+						|| isSymbol(currentChar)) {
 
 					lexeme += currentChar;
 					state = 28;
@@ -548,10 +548,12 @@ public class LexicalAnaliser {
 					state = 29;
 					pos++;
 
-				} else {
+				} else if(currentChar == '\n'){
+					// erro de mal formação de token por quebra de linha 
 
-					// ERRO LEXICO
-
+				}else {
+					//erro de simbolo não permitido 
+					
 				}
 				// Q29 ->Q0
 			} else if (state == 29) {
@@ -566,7 +568,18 @@ public class LexicalAnaliser {
 		return null;
 
 	}
-
+	private boolean isJumpLine(char c) {
+		if (c == '\n'|| c == '\r') {
+			return true;
+		}
+		return false;
+	}
+	private boolean isSymbol(char c) {
+		if (c >= 32 && c <= 126 && c!= 34) {
+			return true;
+		}
+		return false;
+	}
 	private boolean isDigit(char c) {
 
 		if (c >= '0' || c <= '9') {
