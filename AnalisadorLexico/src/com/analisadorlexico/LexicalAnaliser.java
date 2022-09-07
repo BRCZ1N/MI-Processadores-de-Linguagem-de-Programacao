@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.analisadorlexico.Token.InitialsToken;
@@ -13,7 +14,7 @@ public class LexicalAnaliser {
 	private LinkedList<Character> file;
 	private char lastChar = ' ';
 	private int pos = 0;
-
+	
 	public LexicalAnaliser(String fileName) {
 
 		String contentFile;
@@ -30,9 +31,11 @@ public class LexicalAnaliser {
 		}
 
 	}
+	
 
 	public Token scanFile() {
-
+		
+		
 		int state = 0;
 		String lexeme = null;
 		char currentChar = file.get(pos);
