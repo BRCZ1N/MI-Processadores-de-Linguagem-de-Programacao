@@ -12,13 +12,13 @@ public class LexicalAnaliser {
 	private char lastChar = ' ';
 	private int pos = 0;
 	private int countLine = 1;
-	
+
 	public int getPos() {
-		
+
 		return pos;
-		
+
 	}
-	
+
 	public LexicalAnaliser(String fileName) {
 
 		String contentFile;
@@ -151,15 +151,17 @@ public class LexicalAnaliser {
 
 					// Q0 -> Q0
 
-				} else if (isNewLine(currentChar)) {
+				} else if (isNewLine(currentChar) || isSpace(currentChar)) {
 
 					state = 0;
 					pos++;
 
 				} else {
 
+					lexeme += currentChar;
 					state = 0;
 					pos++;
+					return new ErrorToken(InitialsToken.TK_INVALID_CHARACTER.getTypeTokenCode(), lexeme, countLine);
 
 				}
 
@@ -368,12 +370,12 @@ public class LexicalAnaliser {
 					state = 13;
 					pos++;
 
-				} else if (isEOF(pos+1)) {
+				} else if (isEOF(pos + 1)) {
 
-					System.out.println("ERRO DE COMENTÁRIO DE BLOCO MAL FORMADO");
+					lexeme += currentChar;
 					pos++;
-					return new Token(InitialsToken.TK_POORLY_FORMED_COMMENT.getTypeTokenCode(),"ta",4);
-					
+					return new ErrorToken(InitialsToken.TK_POORLY_FORMED_COMMENT.getTypeTokenCode(), lexeme, countLine);
+
 					// Q12 -> Q12
 				} else {
 
@@ -393,9 +395,11 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q13 -> Q12
-				} else if (isEOF(pos)) {
+				} else if (isEOF(pos + 1)) {
 
-					System.out.println("ERRO DE COMENTÁRIO DE BLOCO MAL FORMADO ESTADO 13");
+					lexeme += currentChar;
+					pos++;
+					return new ErrorToken(InitialsToken.TK_POORLY_FORMED_COMMENT.getTypeTokenCode(), lexeme, countLine);
 
 				} else {
 
@@ -443,7 +447,10 @@ public class LexicalAnaliser {
 					// return
 				} else {
 
-					// erro
+					lexeme += currentChar;
+					state = 0;
+					return new ErrorToken(InitialsToken.TK_INVALID_CHARACTER.getTypeTokenCode(), lexeme, countLine);
+				
 
 				}
 
@@ -464,8 +471,11 @@ public class LexicalAnaliser {
 					pos++;
 
 				} else {
-
-					// erro lexico
+					
+					lexeme += currentChar;
+					state = 0;
+					pos++;
+					return new ErrorToken(InitialsToken.TK_INVALID_CHARACTER.getTypeTokenCode(), lexeme, countLine);
 
 				}
 
@@ -583,9 +593,10 @@ public class LexicalAnaliser {
 
 				} else {
 
-					System.out.println("ERRO DE CADEIA DE CARACTERES MAL FORMADA");
+					lexeme += currentChar;
 					state = 0;
 					pos++;
+					return new ErrorToken(InitialsToken.TK_MALFORMED_CHAIN.getTypeTokenCode(), lexeme, countLine);
 
 				}
 				// Q29 ->Q0
@@ -594,10 +605,11 @@ public class LexicalAnaliser {
 				state = 0;
 				Token token = new Token(InitialsToken.TK_STRING.getTypeTokenCode(), lexeme, countLine);
 				return token;
+
 			}
 
 		}
-		
+
 		return null;
 
 	}
@@ -615,10 +627,27 @@ public class LexicalAnaliser {
 	}
 
 	private boolean isNewLine(char c) {
+		
+		if( c == '\n' || c == '\r') {
+			
+			if (c == '\n') {
 
-		if (c == '\n' || c == '\r') {
+				countLine++;
 
-			countLine++;
+			}
+			
+			return true;
+			
+		}
+		
+		return false;
+
+	}
+
+	private boolean isSpace(char c) {
+
+		if (c == '\t' || c == ' ') {
+
 			return true;
 
 		}
