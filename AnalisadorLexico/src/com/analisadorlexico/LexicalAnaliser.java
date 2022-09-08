@@ -12,7 +12,13 @@ public class LexicalAnaliser {
 	private char lastChar = ' ';
 	private int pos = 0;
 	private int countLine = 1;
-
+	
+	public int getPos() {
+		
+		return pos;
+		
+	}
+	
 	public LexicalAnaliser(String fileName) {
 
 		String contentFile;
@@ -362,10 +368,12 @@ public class LexicalAnaliser {
 					state = 13;
 					pos++;
 
-				} else if (isEOF(pos)) {
+				} else if (isEOF(pos+1)) {
 
 					System.out.println("ERRO DE COMENTÁRIO DE BLOCO MAL FORMADO");
-
+					pos++;
+					return new Token(InitialsToken.TK_POORLY_FORMED_COMMENT.getTypeTokenCode(),"ta",4);
+					
 					// Q12 -> Q12
 				} else {
 
@@ -589,7 +597,7 @@ public class LexicalAnaliser {
 			}
 
 		}
-
+		
 		return null;
 
 	}
@@ -691,7 +699,7 @@ public class LexicalAnaliser {
 
 	public boolean isEOF(int pos) {
 
-		if (file.size() - 1 == pos) {
+		if (file.size() == pos) {
 
 			return true;
 
