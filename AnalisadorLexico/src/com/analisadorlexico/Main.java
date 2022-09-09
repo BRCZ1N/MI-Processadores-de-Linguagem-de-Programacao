@@ -15,13 +15,17 @@ public class Main {
 		while (!lexicalAnaliserTest.isEOF(lexicalAnaliserTest.getPos())) {
 
 			token = lexicalAnaliserTest.scanFile();
-			listTokens.add(token);
+			if(token != null) {
+				
+				listTokens.add(token);
+				
+			}
 
 		}
 		
 	
 		validTokens();
-		System.out.println("\n");
+//		System.out.println("\n");
 		invalidTokens();
 
 	}

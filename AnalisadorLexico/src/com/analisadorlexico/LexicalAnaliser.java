@@ -356,11 +356,17 @@ public class LexicalAnaliser {
 				// Q11 -> Q0
 			} else if (state == 11) {
 
-				lexeme += currentChar;
-				state = 0;
-				Token token = new Token(InitialsToken.TK_COMMENT.getTypeTokenCode(), lexeme, countLine);
-				return token;
-
+				if(currentChar == '\n' || currentChar == '\r') {
+					
+					return null;
+					
+				}else {
+					
+					state = 11;
+					pos++;
+					
+				}
+				
 			} else if (state == 12) {
 
 				// Q12 -> Q13
@@ -412,10 +418,8 @@ public class LexicalAnaliser {
 				// Q14 -> Q0
 			} else if (state == 14) {
 
-				lexeme += currentChar;
 				state = 0;
-				Token token = new Token(InitialsToken.TK_COMMENT.getTypeTokenCode(), lexeme, countLine);
-				return token;
+				return null;
 
 			} else if (state == 15) {
 
@@ -593,7 +597,6 @@ public class LexicalAnaliser {
 
 				} else {
 
-					lexeme += currentChar;
 					state = 0;
 					pos++;
 					return new ErrorToken(InitialsToken.TK_MALFORMED_CHAIN.getTypeTokenCode(), lexeme, countLine);
@@ -630,7 +633,7 @@ public class LexicalAnaliser {
 		
 		if( c == '\n' || c == '\r') {
 			
-			if (c == '\n') {
+			if (c == '\r') {
 
 				countLine++;
 
