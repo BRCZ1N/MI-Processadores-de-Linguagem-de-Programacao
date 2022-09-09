@@ -12,7 +12,6 @@ public class LexicalAnaliser {
 	private char lastChar = ' ';
 	private int pos = 0;
 	private int countLine = 1;
-	private int previousValueLine;
 
 	public int getPos() {
 
@@ -342,7 +341,6 @@ public class LexicalAnaliser {
 
 					lexeme += currentChar;
 					state = 12;
-					previousValueLine = countLine;
 					pos++;
 
 				} else {
@@ -358,17 +356,17 @@ public class LexicalAnaliser {
 				// Q11 -> Q0
 			} else if (state == 11) {
 
-				if (currentChar == '\n' || currentChar == '\r') {
-
+				if(currentChar == '\n' || currentChar == '\r') {
+					
 					return null;
-
-				} else {
-
+					
+				}else {
+					
 					state = 11;
 					pos++;
-
+					
 				}
-
+				
 			} else if (state == 12) {
 
 				// Q12 -> Q13
@@ -386,12 +384,7 @@ public class LexicalAnaliser {
 					// Q12 -> Q12
 				} else {
 
-					if (!isJumpLine()) {
-
-						lexeme += currentChar;
-
-					}
-
+					lexeme += currentChar;
 					state = 12;
 					pos++;
 
@@ -415,12 +408,7 @@ public class LexicalAnaliser {
 
 				} else {
 
-					if (!isJumpLine()) {
-
-						lexeme += currentChar;
-
-					}
-					
+					lexeme += currentChar;
 					state = 12;
 					pos++;
 
@@ -465,6 +453,7 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 0;
 					return new ErrorToken(InitialsToken.TK_INVALID_CHARACTER.getTypeTokenCode(), lexeme, countLine);
+				
 
 				}
 
@@ -485,7 +474,7 @@ public class LexicalAnaliser {
 					pos++;
 
 				} else {
-
+					
 					lexeme += currentChar;
 					state = 0;
 					pos++;
@@ -640,19 +629,19 @@ public class LexicalAnaliser {
 	}
 
 	private boolean isNewLine(char c) {
-
-		if (c == '\n' || c == '\r') {
-
+		
+		if( c == '\n' || c == '\r') {
+			
 			if (c == '\r') {
 
 				countLine++;
 
 			}
-
+			
 			return true;
-
+			
 		}
-
+		
 		return false;
 
 	}
@@ -766,18 +755,6 @@ public class LexicalAnaliser {
 	private void backPosition() {
 
 		pos--;
-
-	}
-
-	private boolean isJumpLine() {
-
-		if (previousValueLine < countLine) {
-
-			return true;
-
-		}
-
-		return false;
 
 	}
 
