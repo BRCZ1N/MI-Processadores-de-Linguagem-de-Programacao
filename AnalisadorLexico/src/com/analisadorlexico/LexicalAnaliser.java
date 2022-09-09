@@ -378,7 +378,6 @@ public class LexicalAnaliser {
 
 				} else if (isEOF(pos + 1)) {
 
-					lexeme += currentChar;
 					pos++;
 					return new ErrorToken(InitialsToken.TK_POORLY_FORMED_COMMENT.getTypeTokenCode(), lexeme, countLine);
 
