@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class ReservedWords {
 
-	private static ArrayList<String> listReservedWords = new ArrayList<String>();
+	private ArrayList<String> listReservedWords = new ArrayList<String>();
 
-	public static ArrayList<String> getListReservedWords() {
+	public ArrayList<String> getListReservedWords() {
 
-		return listReservedWords;
+		return this.listReservedWords;
 
 	}
 

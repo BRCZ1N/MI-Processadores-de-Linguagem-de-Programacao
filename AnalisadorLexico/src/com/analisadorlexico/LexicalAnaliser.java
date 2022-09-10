@@ -1,40 +1,32 @@
 package com.analisadorlexico;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class LexicalAnaliser {
 
-	private LinkedList<Character> file = new LinkedList<Character>();
+	private static ArrayList<Character> file = new ArrayList<Character>();
 	private char lastChar = ' ';
 	private int pos = 0;
 	private int countLine = 1;
-
+	private ReservedWords rws = new ReservedWords();
+	private ArrayList<Token> listTokens;
+	
 	public int getPos() {
 
 		return pos;
 
 	}
-
-	public LexicalAnaliser(String fileName) {
-
-		String contentFile;
-
-		try {
-
-			ReservedWords rws = new ReservedWords();
-			contentFile = new String(Files.readAllBytes(Paths.get(fileName)), StandardCharsets.UTF_8);
-			toLinkedList(contentFile.toCharArray());
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
-		}
-
+	
+	public ArrayList<Token> getListTokens(){
+		
+		return this.listTokens;
+		
 	}
 
 	public Token scanFile() {
@@ -177,7 +169,7 @@ public class LexicalAnaliser {
 					// Q1 -> Q0
 				} else {
 
-					if (ReservedWords.getListReservedWords().contains(lexeme)) {
+					if (rws.getListReservedWords().contains(lexeme)) {
 
 						state = 0;
 						Token token = new Token(InitialsToken.TK_RESERVED_WORDS.getTypeTokenCode(), lexeme, countLine);
@@ -356,17 +348,17 @@ public class LexicalAnaliser {
 				// Q11 -> Q0
 			} else if (state == 11) {
 
-				if(currentChar == '\n' || currentChar == '\r') {
-					
+				if (currentChar == '\n' || currentChar == '\r') {
+
 					return null;
-					
-				}else {
-					
+
+				} else {
+
 					state = 11;
 					pos++;
-					
+
 				}
-				
+
 			} else if (state == 12) {
 
 				// Q12 -> Q13
@@ -453,7 +445,6 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 0;
 					return new ErrorToken(InitialsToken.TK_INVALID_CHARACTER.getTypeTokenCode(), lexeme, countLine);
-				
 
 				}
 
@@ -474,7 +465,7 @@ public class LexicalAnaliser {
 					pos++;
 
 				} else {
-					
+
 					lexeme += currentChar;
 					state = 0;
 					pos++;
@@ -629,19 +620,19 @@ public class LexicalAnaliser {
 	}
 
 	private boolean isNewLine(char c) {
-		
-		if( c == '\n' || c == '\r') {
-			
+
+		if (c == '\n' || c == '\r') {
+
 			if (c == '\r') {
 
 				countLine++;
 
 			}
-			
+
 			return true;
-			
+
 		}
-		
+
 		return false;
 
 	}
@@ -682,7 +673,7 @@ public class LexicalAnaliser {
 
 	}
 
-	public boolean isAritmethicOperator(char c) {
+	private boolean isAritmethicOperator(char c) {
 
 		if (c == '+' || c == '-' || c == '*' || c == '/') {
 
@@ -694,7 +685,7 @@ public class LexicalAnaliser {
 
 	}
 
-	public boolean isRelationalOperator(char c) {
+	private boolean isRelationalOperator(char c) {
 
 		if (c == '=' || c == '>' || c == '<') {
 
@@ -706,7 +697,7 @@ public class LexicalAnaliser {
 
 	}
 
-	public boolean isLogicalOperator(char c) {
+	private boolean isLogicalOperator(char c) {
 
 		if (c == '!' || (c == '&' && nextChar() == '&') || (c == '|' && nextChar() == '|')) {
 
@@ -718,7 +709,7 @@ public class LexicalAnaliser {
 
 	}
 
-	private void toLinkedList(char[] v) {
+	private void toArrayList(char[] v) {
 
 		for (Character elementV : v) {
 
@@ -728,7 +719,7 @@ public class LexicalAnaliser {
 
 	}
 
-	public boolean isEOF(int pos) {
+	private boolean isEOF(int pos) {
 
 		if (file.size() == pos) {
 
@@ -740,13 +731,13 @@ public class LexicalAnaliser {
 
 	}
 
-	public char nextChar() {
+	private char nextChar() {
 
 		return file.get(pos++);
 
 	}
 
-	public char previousChar() {
+	private char previousChar() {
 
 		return file.get(pos--);
 
@@ -758,4 +749,61 @@ public class LexicalAnaliser {
 
 	}
 
+	private void constructListTokensArc() {
+
+		listTokens = new ArrayList<Token>();
+		Token token = null;
+		
+		while (!isEOF(getPos())) {
+
+			token = scanFile();
+			
+			if (token != null) {
+
+				listTokens.add(token);
+
+			}
+
+		}
+
+	}
+
+	private void archiveToList(File file) {
+
+		String contentFile;
+		try {
+
+			contentFile = new String(Files.readAllBytes(Paths.get(file.getPath())), StandardCharsets.UTF_8);
+			toArrayList(contentFile.toCharArray());
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+		}
+
+	}
+
+	private File searchArc(String arc) {
+
+		FileFilter filter = new FileFilter() {
+			public boolean accept(File file) {
+				return file.getName().equals(arc);
+			}
+		};
+
+		String path = getClass().getResource("/Files").getPath();
+		File file = new File(path);
+		File[] files = file.listFiles(filter);
+
+		return files[0];
+
+	}
+	
+	public void execAnaliser(String nameArc) {
+		
+		archiveToList(searchArc(nameArc));
+		constructListTokensArc();
+		
+	}
 }

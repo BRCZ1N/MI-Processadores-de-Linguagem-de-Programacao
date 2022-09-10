@@ -1,38 +1,22 @@
 package com.analisadorlexico;
 
-import java.util.ArrayList;
-
 public class Main {
-
-	private static ArrayList<Token> listTokens = new ArrayList<Token>();
+	
+	static LexicalAnaliser lexicalAnaliser = new LexicalAnaliser();
 
 	public static void main(String[] args) {
 
-		Token token = null;
-		LexicalAnaliser lexicalAnaliserTest = new LexicalAnaliser(
-				"C:\\Users\\Bruno\\eclipse-workspace\\MI-LinguagensFormais-Compiladores\\AnalisadorLexico\\src\\Files\\entrada1.txt");
-
-		while (!lexicalAnaliserTest.isEOF(lexicalAnaliserTest.getPos())) {
-
-			token = lexicalAnaliserTest.scanFile();
-			if(token != null) {
-				
-				listTokens.add(token);
-				
-			}
-
-		}
+		lexicalAnaliser.execAnaliser("entrada1.txt");
+		writeAndPrintValidTokens();
+		System.out.println("\n");
+		writeAndPrintInvalidTokens();
 		
-	
-		validTokens();
-//		System.out.println("\n");
-		invalidTokens();
 
 	}
 
-	public static void validTokens() {
-
-		for (Token tk : listTokens) {
+	public static void writeAndPrintValidTokens() {
+		
+		for (Token tk : lexicalAnaliser.getListTokens()) {
 
 			if (!(tk instanceof ErrorToken)) {
 
@@ -44,9 +28,9 @@ public class Main {
 
 	}
 
-	public static void invalidTokens() {
+	public static void writeAndPrintInvalidTokens() {
 
-		for (Token tk : listTokens) {
+		for (Token tk : lexicalAnaliser.getListTokens()) {
 
 			if (tk instanceof ErrorToken) {
 
@@ -57,5 +41,5 @@ public class Main {
 		}
 
 	}
-
+	
 }
