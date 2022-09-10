@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class LexicalAnaliser {
@@ -12,7 +13,7 @@ public class LexicalAnaliser {
 	private char lastChar = ' ';
 	private int pos = 0;
 	private int countLine = 1;
-
+	ArrayList <String> lastAnalizer = new ArrayList<String>();
 	public int getPos() {
 
 		return pos;
@@ -41,6 +42,7 @@ public class LexicalAnaliser {
 
 		int state = 0;
 		String lexeme = null;
+
 
 		while (!isEOF(pos)) {
 
@@ -204,13 +206,22 @@ public class LexicalAnaliser {
 
 					// Q2 -> Q3
 				} else if (isDigit(currentChar)) {
+					if(lastAnalizer.size() > 0){
+						lexeme += lastChar;
 
-					lexeme += currentChar;
-					state = 3;
-					pos++;
+						Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,countLine);
+						state = 0;
+						lastAnalizer.clear();
+					}else {
+						lexeme += currentChar;
+						state = 3;
+						pos++;
+					}
+					
+					
 
 					// Q2 -> Q3
-				} else if (currentChar == '\t') {
+				} else{
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,
@@ -236,7 +247,17 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q3 -> Q0
-				} else {
+				}else if(currentChar == '-') {
+					
+					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
+					lastAnalizer.add(lexeme);
+					lastChar = currentChar;
+					state = 0;
+					
+					
+					
+				}
+				else {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
@@ -274,7 +295,15 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q5 -> Q0
-				} else {
+				}else if(currentChar == '-'){
+					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
+					lastAnalizer.add(lexeme);
+					lastChar = currentChar;
+					state = 0;
+					
+					
+					
+				}else {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
