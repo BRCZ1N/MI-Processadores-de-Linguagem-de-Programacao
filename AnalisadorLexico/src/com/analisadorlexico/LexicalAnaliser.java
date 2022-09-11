@@ -15,19 +15,18 @@ public class LexicalAnaliser {
 	private int pos = 0;
 	private int countLine = 1;
 	private ReservedWords rws = new ReservedWords();
-	ArrayList<String> lastAnalizer = new ArrayList<String>();
 	private ArrayList<Token> listTokens;
-
+	
 	public int getPos() {
 
 		return pos;
 
 	}
-
-	public ArrayList<Token> getListTokens() {
-
+	
+	public ArrayList<Token> getListTokens(){
+		
 		return this.listTokens;
-
+		
 	}
 
 	public Token scanFile() {
@@ -197,23 +196,13 @@ public class LexicalAnaliser {
 
 					// Q2 -> Q3
 				} else if (isDigit(currentChar)) {
-					if (lastAnalizer.size() > 0) {
-						lexeme += lastChar;
 
-						Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,
-								countLine);
-
-						state = 0;
-						lastAnalizer.clear();
-						return token;
-					} else {
-						lexeme += currentChar;
-						state = 3;
-						pos++;
-					}
+					lexeme += currentChar;
+					state = 3;
+					pos++;
 
 					// Q2 -> Q3
-				} else {
+				} else if (currentChar == '\t') {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,
@@ -239,14 +228,6 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q3 -> Q0
-				} else if (currentChar == '-') {
-
-					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
-					lastAnalizer.add(lexeme);
-					lastChar = currentChar;
-					state = 0;
-					return token;
-
 				} else {
 
 					state = 0;
@@ -285,11 +266,6 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q5 -> Q0
-				} else if (currentChar == '-') {
-					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
-					lastAnalizer.add(lexeme);
-					lastChar = currentChar;
-					state = 0;
 				} else {
 
 					state = 0;
@@ -777,11 +753,11 @@ public class LexicalAnaliser {
 
 		listTokens = new ArrayList<Token>();
 		Token token = null;
-
+		
 		while (!isEOF(getPos())) {
 
 			token = scanFile();
-
+			
 			if (token != null) {
 
 				listTokens.add(token);
@@ -823,11 +799,11 @@ public class LexicalAnaliser {
 		return files[0];
 
 	}
-
+	
 	public void execAnaliser(String nameArc) {
-
+		
 		archiveToList(searchArc(nameArc));
 		constructListTokensArc();
-
+		
 	}
 }
