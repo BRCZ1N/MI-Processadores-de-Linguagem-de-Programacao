@@ -40,7 +40,7 @@ public class Token {
 
 	@Override
 	public String toString() {
-		return this.line+" "+this.typeToken+" "+this.lexeme+" ";
+		return this.line + " " + this.typeToken + " " + this.lexeme + " ";
 	}
 
 }

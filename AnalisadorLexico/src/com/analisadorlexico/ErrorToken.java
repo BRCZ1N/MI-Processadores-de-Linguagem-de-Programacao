@@ -7,11 +7,10 @@ public class ErrorToken extends Token {
 		super(typeToken, lexeme, line);
 
 	}
-	
+
 	@Override
 	public String toString() {
-		return getLine()+" "+getTypeToken()+" "+getLexeme();
+		return getLine() + " " + getTypeToken() + " " + getLexeme();
 	}
-	
-	
+
 }
