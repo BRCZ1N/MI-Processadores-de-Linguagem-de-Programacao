@@ -3,15 +3,21 @@ package com.analisadorlexico;
 public class Token {
 
 	private String lexeme;
-	private String typeToken;
+	private String typeToken ;
 	private long line;
-
+	
 	public Token(String typeToken, String lexeme, long line) {
 
 		this.lexeme = lexeme;
 		this.typeToken = typeToken;
 		this.line = line;
 
+	}
+
+	public Token() {
+		
+		this.typeToken = "";
+		
 	}
 
 	public String getLexeme() {

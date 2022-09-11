@@ -5,7 +5,6 @@ import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -26,6 +25,12 @@ public class LexicalAnaliser {
 
 	}
 
+	public ArrayList<Character> getFile() {
+
+		return file;
+
+	}
+
 	public ArrayList<Token> getListTokens() {
 
 		return this.listTokens;
@@ -36,10 +41,24 @@ public class LexicalAnaliser {
 
 		int state = 0;
 		String lexeme = null;
+		boolean eofCondition = true;
+		Token token = new Token();
 
-		while (!isEOF(pos)) {
+		if (isEOF(pos)) {
 
-			char currentChar = file.get(pos);
+			return null;
+
+		}
+
+		while (eofCondition) {
+
+			char currentChar = ' ';
+
+			if (!isEOF(pos)) {
+
+				currentChar = file.get(pos);
+
+			}
 
 			if (state == 0) {
 
@@ -137,8 +156,7 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q0 -> Q27
-				} else if (currentChar == ';' || currentChar == ',' || currentChar == '(' || currentChar == ')'
-						|| currentChar == '[' || currentChar == ']' || currentChar == '{' || currentChar == '}') {
+				} else if (isDelimiter(currentChar)) {
 
 					lexeme += currentChar;
 					state = 27;
@@ -163,26 +181,35 @@ public class LexicalAnaliser {
 			} else if (state == 1) {
 
 				// Q1 -> Q1
-				if (isLetter(currentChar) || isDigit(currentChar) || currentChar == '_') {
+				if ((isLetter(currentChar) || isDigit(currentChar) || currentChar == '_')
+						&& !token.getTypeToken().equals(InitialsToken.TK_MALFORMED_IDENTIFIER.getTypeTokenCode())) {
 
 					lexeme += currentChar;
 					state = 1;
 					pos++;
+
+					token = new Token(InitialsToken.TK_IDENTIFIER.getTypeTokenCode(), lexeme, countLine);
 
 					// Q1 -> Q0
 				} else {
 
 					if (rws.getListReservedWords().contains(lexeme)) {
 
+						state = 1;
+						token = new Token(InitialsToken.TK_RESERVED_WORDS.getTypeTokenCode(), lexeme, countLine);
+						pos++;
+
+					} else if (isEndToken(currentChar)) {
+
 						state = 0;
-						Token token = new Token(InitialsToken.TK_RESERVED_WORDS.getTypeTokenCode(), lexeme, countLine);
 						return token;
 
 					} else {
 
-						state = 0;
-						Token token = new Token(InitialsToken.TK_IDENTIFIER.getTypeTokenCode(), lexeme, countLine);
-						return token;
+						lexeme += currentChar;
+						state = 1;
+						token = new Token(InitialsToken.TK_MALFORMED_IDENTIFIER.getTypeTokenCode(), lexeme, countLine);
+						pos++;
 
 					}
 
@@ -205,11 +232,10 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q2 -> Q3
-				} else if (currentChar == '\t') {
+				} else {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,
-							countLine);
+					token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -234,7 +260,7 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
+					token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -254,7 +280,7 @@ public class LexicalAnaliser {
 
 					backPosition();
 					state = 0;
-					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
+					token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -272,7 +298,7 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
+					token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -280,7 +306,7 @@ public class LexicalAnaliser {
 			} else if (state == 6) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+				token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 7) {
@@ -295,8 +321,7 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,
-							countLine);
+					token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -308,8 +333,7 @@ public class LexicalAnaliser {
 				if (currentChar == '+') {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,
-							countLine);
+					token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -319,7 +343,7 @@ public class LexicalAnaliser {
 				// Q9 -> Q0
 				lexeme += currentChar;
 				state = 0;
-				Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+				token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 10) {
@@ -342,8 +366,7 @@ public class LexicalAnaliser {
 
 					lexeme += currentChar;
 					state = 0;
-					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,
-							countLine);
+					token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -374,7 +397,9 @@ public class LexicalAnaliser {
 				} else if (isEOF(pos + 1)) {
 
 					pos++;
-					return new ErrorToken(InitialsToken.TK_POORLY_FORMED_COMMENT.getTypeTokenCode(), lexeme, countLine);
+					token = new ErrorToken(InitialsToken.TK_POORLY_FORMED_COMMENT.getTypeTokenCode(), lexeme,
+							countLine);
+					return token;
 
 					// Q12 -> Q12
 				} else {
@@ -399,7 +424,9 @@ public class LexicalAnaliser {
 
 					lexeme += currentChar;
 					pos++;
-					return new ErrorToken(InitialsToken.TK_POORLY_FORMED_COMMENT.getTypeTokenCode(), lexeme, countLine);
+					token = new ErrorToken(InitialsToken.TK_POORLY_FORMED_COMMENT.getTypeTokenCode(), lexeme,
+							countLine);
+					return token;
 
 				} else {
 
@@ -429,7 +456,7 @@ public class LexicalAnaliser {
 
 					lexeme += currentChar;
 					state = 0;
-					Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+					token = new Token(InitialsToken.TK_LOGIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -442,12 +469,13 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 17;
 					pos++;
-					// return
+
 				} else {
 
 					lexeme += currentChar;
 					state = 0;
-					return new ErrorToken(InitialsToken.TK_INVALID_CHARACTER.getTypeTokenCode(), lexeme, countLine);
+					token = new ErrorToken(InitialsToken.TK_INVALID_CHARACTER.getTypeTokenCode(), lexeme, countLine);
+					return token;
 
 				}
 
@@ -455,7 +483,7 @@ public class LexicalAnaliser {
 			} else if (state == 17) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+				token = new Token(InitialsToken.TK_LOGIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 18) {
@@ -472,7 +500,8 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 0;
 					pos++;
-					return new ErrorToken(InitialsToken.TK_INVALID_CHARACTER.getTypeTokenCode(), lexeme, countLine);
+					token = new ErrorToken(InitialsToken.TK_INVALID_CHARACTER.getTypeTokenCode(), lexeme, countLine);
+					return token;
 
 				}
 
@@ -480,14 +509,14 @@ public class LexicalAnaliser {
 			} else if (state == 19) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_LOGIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+				token = new Token(InitialsToken.TK_LOGIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 				// Q20 -> Q0
 			} else if (state == 20) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+				token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 21) {
@@ -503,7 +532,7 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+					token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -512,7 +541,7 @@ public class LexicalAnaliser {
 			} else if (state == 22) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+				token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 23) {
@@ -528,7 +557,7 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+					token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -537,7 +566,7 @@ public class LexicalAnaliser {
 			} else if (state == 24) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+				token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 25) {
@@ -553,7 +582,7 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 0;
-					Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+					token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -562,14 +591,14 @@ public class LexicalAnaliser {
 			} else if (state == 26) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+				token = new Token(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 				// Q27 -> Q0
 			} else if (state == 27) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_DELIMITER.getTypeTokenCode(), lexeme, countLine);
+				token = new Token(InitialsToken.TK_DELIMITER.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			} else if (state == 28) {
@@ -599,7 +628,7 @@ public class LexicalAnaliser {
 			} else if (state == 29) {
 
 				state = 0;
-				Token token = new Token(InitialsToken.TK_STRING.getTypeTokenCode(), lexeme, countLine);
+				token = new Token(InitialsToken.TK_STRING.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			}
@@ -640,33 +669,9 @@ public class LexicalAnaliser {
 
 	}
 
-	private boolean isSpace(char c) {
+	private boolean isDelimiter(char c) {
 
-		if (c == '\t' || c == ' ') {
-
-			return true;
-
-		}
-
-		return false;
-
-	}
-
-	private boolean isDigit(char c) {
-
-		if (c >= '0' && c <= '9') {
-
-			return true;
-
-		}
-
-		return false;
-
-	}
-
-	private boolean isLetter(char c) {
-
-		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+		if (c == ';' || c == ',' || c == '(' || c == ')' || c == '[' || c == ']' || c == '{' || c == '}' || c == '.') {
 
 			return true;
 
@@ -712,11 +717,64 @@ public class LexicalAnaliser {
 
 	}
 
+	private boolean isEndToken(char c) {
+
+		if (isDelimiter(c) || isAritmethicOperator(c) || isRelationalOperator(c) || isLogicalOperator(c)
+				|| isSpace(c)) {
+
+			return true;
+
+		}
+
+		return false;
+
+	}
+
+	private boolean isSpace(char c) {
+
+		if (c == '\t' || c == ' ') {
+
+			return true;
+
+		}
+
+		return false;
+
+	}
+
+	private boolean isDigit(char c) {
+
+		if (c >= '0' && c <= '9') {
+
+			return true;
+
+		}
+
+		return false;
+
+	}
+
+	private boolean isLetter(char c) {
+
+		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+
+			return true;
+
+		}
+
+		return false;
+
+	}
+
 	private void toArrayList(char[] v) {
 
 		for (Character elementV : v) {
 
-			file.add(elementV);
+			if (elementV >= 0 && elementV <= 255) {
+
+				file.add(elementV);
+
+			}
 
 		}
 
@@ -736,13 +794,13 @@ public class LexicalAnaliser {
 
 	private char nextChar() {
 
-		return file.get(pos++);
+		return file.get(pos + 1);
 
 	}
 
 	private char previousChar() {
 
-		return file.get(pos--);
+		return file.get(pos - 1);
 
 	}
 
@@ -756,15 +814,15 @@ public class LexicalAnaliser {
 
 		listTokens = new ArrayList<Token>();
 		Token token = null;
-		
+
 		while (!isEOF(getPos())) {
 
 			token = scanFile();
-			
-			if(token != null) {
-				
+
+			if (token != null) {
+
 				listTokens.add(token);
-				
+
 			}
 
 		}
@@ -797,21 +855,21 @@ public class LexicalAnaliser {
 
 		File file = new File("src/files");
 		File[] files = file.listFiles(filter);
-				
+
 		return files;
 
 	}
 
 	public void writeTokensInArchive(String nameArc) {
 
-		File file = new File("src/files/"+"["+nameArc+"]-saida.txt");
+		File file = new File("src/files/" + "[" + nameArc + "]-saida.txt");
 		FileWriter arc = null;
 
 		try {
 
 			file.createNewFile();
 			arc = new FileWriter(file);
-			
+
 		} catch (IOException e) {
 
 			e.printStackTrace();
@@ -820,19 +878,19 @@ public class LexicalAnaliser {
 
 		PrintWriter recordArc = new PrintWriter(arc);
 
-		for(Token tk:getListTokens()) {
-			
+		for (Token tk : getListTokens()) {
+
 			if (!(tk instanceof ErrorToken)) {
 
 				recordArc.println(tk.toString());
-				
+
 			}
-			
+
 		}
 
 		recordArc.print("\n");
-		
-		for (Token tk :getListTokens()) {
+
+		for (Token tk : getListTokens()) {
 
 			if (tk instanceof ErrorToken) {
 
@@ -841,18 +899,18 @@ public class LexicalAnaliser {
 			}
 
 		}
-		
+
 		recordArc.close();
 	}
 
 	public void execAnaliser() {
 
-		for(File file: searchArchives()) {
-			
+		for (File file : searchArchives()) {
+
 			archiveToList(file);
 			constructListTokensArc();
 			writeTokensInArchive(file.getName());
-		
+
 		}
 
 	}
