@@ -2,7 +2,10 @@ package com.analisadorlexico;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,17 +19,17 @@ public class LexicalAnaliser {
 	private int countLine = 1;
 	private ReservedWords rws = new ReservedWords();
 	private ArrayList<Token> listTokens;
-	
+
 	public int getPos() {
 
 		return pos;
 
 	}
-	
-	public ArrayList<Token> getListTokens(){
-		
+
+	public ArrayList<Token> getListTokens() {
+
 		return this.listTokens;
-		
+
 	}
 
 	public Token scanFile() {
@@ -758,10 +761,10 @@ public class LexicalAnaliser {
 
 			token = scanFile();
 			
-			if (token != null) {
-
+			if(token != null) {
+				
 				listTokens.add(token);
-
+				
 			}
 
 		}
@@ -784,26 +787,73 @@ public class LexicalAnaliser {
 
 	}
 
-	private File searchArc(String arc) {
+	private File[] searchArchives() {
 
 		FileFilter filter = new FileFilter() {
 			public boolean accept(File file) {
-				return file.getName().equals(arc);
+				return file.getName().startsWith("entrada");
 			}
 		};
 
-		String path = getClass().getResource("/Files").getPath();
-		File file = new File(path);
+		File file = new File("src/files");
 		File[] files = file.listFiles(filter);
-
-		return files[0];
+				
+		return files;
 
 	}
-	
-	public void execAnaliser(String nameArc) {
+
+	public void writeTokensInArchive(String nameArc) {
+
+		File file = new File("src/files/"+"["+nameArc+"]-saida.txt");
+		FileWriter arc = null;
+
+		try {
+
+			file.createNewFile();
+			arc = new FileWriter(file);
+			
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+		}
+
+		PrintWriter recordArc = new PrintWriter(arc);
+
+		for(Token tk:getListTokens()) {
+			
+			if (!(tk instanceof ErrorToken)) {
+
+				recordArc.println(tk.toString());
+				
+			}
+			
+		}
+
+		recordArc.print("\n");
 		
-		archiveToList(searchArc(nameArc));
-		constructListTokensArc();
+		for (Token tk :getListTokens()) {
+
+			if (tk instanceof ErrorToken) {
+
+				recordArc.println(tk.toString());
+
+			}
+
+		}
 		
+		recordArc.close();
+	}
+
+	public void execAnaliser() {
+
+		for(File file: searchArchives()) {
+			
+			archiveToList(file);
+			constructListTokensArc();
+			writeTokensInArchive(file.getName());
+		
+		}
+
 	}
 }
