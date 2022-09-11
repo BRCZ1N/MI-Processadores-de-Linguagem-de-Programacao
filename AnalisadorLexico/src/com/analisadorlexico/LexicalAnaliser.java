@@ -19,7 +19,7 @@ public class LexicalAnaliser {
 	private int countLine = 1;
 	private ReservedWords rws = new ReservedWords();
 	private ArrayList<Token> listTokens;
-
+	ArrayList<String> lastAnalizer = new ArrayList<String>();
 	public int getPos() {
 
 		return pos;
@@ -200,18 +200,29 @@ public class LexicalAnaliser {
 					// Q2 -> Q3
 				} else if (isDigit(currentChar)) {
 
-					lexeme += currentChar;
-					state = 3;
-					pos++;
+					if (lastAnalizer.size() > 0) {
+						lexeme += lastChar;
 
+						Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,
+								countLine);
+
+						state = 0;
+						lastAnalizer.clear();
+						return token;
+					}else {
+						lexeme += currentChar;
+						state = 3;
+						pos++;
+					}
 					// Q2 -> Q3
-				} else if (currentChar == '\t') {
+				}else {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme,
 							countLine);
+				
 					return token;
-
+					
 				}
 
 			} else if (state == 3) {
@@ -231,7 +242,15 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q3 -> Q0
-				} else {
+				} else if (currentChar == '-') {
+
+					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
+					lastAnalizer.add(lexeme);
+					lastChar = currentChar;
+					state = 0;
+					return token;
+				
+				}else {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
@@ -269,7 +288,14 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q5 -> Q0
-				} else {
+				}else if (currentChar == '-') {
+					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
+					lastAnalizer.add(lexeme);
+					lastChar = currentChar;
+					state = 0; 
+					return token;
+				
+				}else {
 
 					state = 0;
 					Token token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
