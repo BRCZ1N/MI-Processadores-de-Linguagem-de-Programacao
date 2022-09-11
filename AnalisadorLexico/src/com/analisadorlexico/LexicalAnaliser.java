@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class LexicalAnaliser {
 
@@ -18,6 +19,7 @@ public class LexicalAnaliser {
 	private int countLine = 1;
 	private ReservedWords rws = new ReservedWords();
 	private ArrayList<Token> listTokens;
+	private ArrayList<Token> recentTokens = new ArrayList<Token>();
 
 	public int getPos() {
 
@@ -74,9 +76,22 @@ public class LexicalAnaliser {
 					// Q0 -> Q2
 				} else if (currentChar == '-') {
 
-					lexeme += currentChar;
-					state = 2;
-					pos++;
+					if (!recentTokens.isEmpty() && (isDigit(nextChar()) || isLetter(nextChar()))) {
+
+						state = 0;
+						lexeme += currentChar;
+						token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+						recentTokens = new ArrayList<Token>();
+						pos++;
+						return token;
+
+					} else {
+
+						lexeme += currentChar;
+						state = 2;
+						pos++;
+
+					}
 
 					// Q0 -> Q18
 				} else if (currentChar == '&') {
@@ -127,6 +142,11 @@ public class LexicalAnaliser {
 					state = 7;
 					pos++;
 
+					if(!recentTokens.isEmpty()) {
+						
+						recentTokens = new ArrayList<Token>();
+						
+					}
 					// Q0 -> Q11
 				} else if (currentChar == '*') {
 
@@ -188,6 +208,7 @@ public class LexicalAnaliser {
 					state = 1;
 					pos++;
 
+					recentTokens.add(token);
 					token = new Token(InitialsToken.TK_IDENTIFIER.getTypeTokenCode(), lexeme, countLine);
 
 					// Q1 -> Q0
@@ -261,6 +282,7 @@ public class LexicalAnaliser {
 
 					state = 0;
 					token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
+					recentTokens.add(token);
 					return token;
 
 				}
@@ -281,6 +303,7 @@ public class LexicalAnaliser {
 					backPosition();
 					state = 0;
 					token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
+					recentTokens.add(token);
 					return token;
 
 				}
@@ -326,17 +349,12 @@ public class LexicalAnaliser {
 
 				}
 				// FALTA FAZER
-
+				// Q8 -> Q0
 			} else if (state == 8) {
 
-				// Q8 -> Q0
-				if (currentChar == '+') {
-
-					state = 0;
-					token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
-					return token;
-
-				}
+				state = 0;
+				token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+				return token;
 
 			} else if (state == 9) {
 
