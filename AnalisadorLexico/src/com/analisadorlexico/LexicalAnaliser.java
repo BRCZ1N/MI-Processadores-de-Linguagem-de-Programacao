@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class LexicalAnaliser {
-
-	private static ArrayList<Character> file = new ArrayList<Character>();
-	private char lastChar = ' ';
-	private int pos = 0;
+	
+	private static ArrayList<Character> file = new ArrayList<Character>();// lista que ira salvar os caracteres presentes no arquivo de entrada
+	private char lastChar = ' '; // variavel que irá salvar tokens necessarios 
+	private int pos = 0; // posição na lista de caracteres
 	private int countLine = 1;
-	private ReservedWords rws = new ReservedWords();
-	private ArrayList<Token> listTokens;
-	private ArrayList<Token> recentTokens = new ArrayList<Token>();
+	private ReservedWords rws = new ReservedWords(); //variavel que ira servir na busca de palavras reservads
+	private ArrayList<Token> listTokens; // lista de tokens
+	private ArrayList<Token> recentTokens = new ArrayList<Token>(); // lista de tokens formados recentemente para determinadas operações ligas a operadores aritmeticos 
 
 	public int getPos() {
 
@@ -38,7 +38,7 @@ public class LexicalAnaliser {
 		return this.listTokens;
 
 	}
-
+// metodo que irá scannear a lista de caracteres
 	public Token scanFile() {
 
 		int state = 0;
@@ -66,14 +66,14 @@ public class LexicalAnaliser {
 
 				lexeme = "";
 
-				// Q0 -> Q1
+				// Q0 -> Q1 - Analisador de identificador
 				if (isLetter(currentChar)) {
 
 					lexeme += currentChar;
 					state = 1;
 					pos++;
 
-					// Q0 -> Q2
+					// Q0 -> Q2 - Analisador de operador aritmetico "-"
 				} else if (currentChar == '-') {
 
 					if (!recentTokens.isEmpty() && (isDigit(nextChar()) || isLetter(nextChar()))) {
@@ -93,49 +93,49 @@ public class LexicalAnaliser {
 
 					}
 
-					// Q0 -> Q18
+					// Q0 -> Q18 - Analisador de operador logico "&"
 				} else if (currentChar == '&') {
 
 					lexeme += currentChar;
 					state = 18;
 					pos++;
 
-					// Q0 -> Q15
+					// Q0 -> Q15 - Analisador de operador relacional ou logico "!"
 				} else if (currentChar == '!') {
 
 					lexeme += currentChar;
 					state = 15;
 					pos++;
 
-					// Q0 -> Q16
+					// Q0 -> Q16  - Analisador de operador logico "|"
 				} else if (currentChar == '|') {
 
 					lexeme += currentChar;
 					state = 16;
 					pos++;
 
-					// Q0 -> Q25
+					// Q0 -> Q25 - - Analisador de operador relacional "="
 				} else if (currentChar == '=') {
 
 					lexeme += currentChar;
 					state = 25;
 					pos++;
 
-					// Q0 -> Q23
+					// Q0 -> Q23 - Analisador de operador relacional "<"
 				} else if (currentChar == '<') {
 
 					lexeme += currentChar;
 					state = 23;
 					pos++;
 
-					// Q0 -> Q21
+					// Q0 -> Q21 - Analisador de operador relacional ">"
 				} else if (currentChar == '>') {
 
 					lexeme += currentChar;
 					state = 21;
 					pos++;
 
-					// Q0 -> Q7
+					// Q0 -> Q7  - Analisador de operador aritmetico "+"
 				} else if (currentChar == '+') {
 
 					lexeme += currentChar;
@@ -147,28 +147,28 @@ public class LexicalAnaliser {
 						recentTokens = new ArrayList<Token>();
 						
 					}
-					// Q0 -> Q11
+					// Q0 -> Q11  - Analisador de operador aritmetico "*"
 				} else if (currentChar == '*') {
 
 					lexeme += currentChar;
 					state = 9;
 					pos++;
 
-					// Q0 -> Q10
+					// Q0 -> Q10  - Analisador de operador aritmetico OU delimitador de comentario "/"
 				} else if (currentChar == '/') {
 
 					lexeme += currentChar;
 					state = 10;
 					pos++;
 
-					// Q0 -> Q3
+					// Q0 -> Q3 - Analisador de numero 
 				} else if (isDigit(currentChar)) {
 
 					lexeme += currentChar;
 					state = 3;
 					pos++;
 
-					// Q0 -> Q28
+					// Q0 -> Q28 - 
 				} else if (currentChar == '"') {
 
 					lexeme += currentChar;
@@ -194,7 +194,7 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 0;
 					pos++;
-					return new ErrorToken(InitialsToken.TK_INVALID_CHARACTER.getTypeTokenCode(), lexeme, countLine);
+					return new ErrorToken(InitialsToken.TK_MALFORMED_TOKEN.getTypeTokenCode(), lexeme, countLine);
 
 				}
 
@@ -492,7 +492,7 @@ public class LexicalAnaliser {
 
 					lexeme += currentChar;
 					state = 0;
-					token = new ErrorToken(InitialsToken.TK_INVALID_CHARACTER.getTypeTokenCode(), lexeme, countLine);
+					token = new ErrorToken(InitialsToken.TK_MALFORMED_TOKEN.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
@@ -518,7 +518,7 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 0;
 					pos++;
-					token = new ErrorToken(InitialsToken.TK_INVALID_CHARACTER.getTypeTokenCode(), lexeme, countLine);
+					token = new ErrorToken(InitialsToken.TK_MALFORMED_TOKEN.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
 				}
