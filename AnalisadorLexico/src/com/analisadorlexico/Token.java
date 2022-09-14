@@ -1,5 +1,5 @@
 package com.analisadorlexico;
-
+//classe dos tokens 
 public class Token {
 
 	private String lexeme;
