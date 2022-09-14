@@ -12,14 +12,17 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class LexicalAnaliser {
-	
-	private static ArrayList<Character> file = new ArrayList<Character>();// lista que ira salvar os caracteres presentes no arquivo de entrada
-	private char lastChar = ' '; // variavel que irá salvar tokens necessarios 
+
+	private static ArrayList<Character> file = new ArrayList<Character>();// lista que ira salvar os caracteres
+																			// presentes no arquivo de entrada
+	private char lastChar = ' '; // variavel que irá salvar tokens necessarios
 	private int pos = 0; // posição na lista de caracteres
 	private int countLine = 1;
-	private ReservedWords rws = new ReservedWords(); //variavel que ira servir na busca de palavras reservads
+	private ReservedWords rws = new ReservedWords(); // variavel que ira servir na busca de palavras reservads
 	private ArrayList<Token> listTokens; // lista de tokens
-	private ArrayList<Token> recentTokens = new ArrayList<Token>(); // lista de tokens formados recentemente para determinadas operações ligas a operadores aritmeticos 
+	private ArrayList<Token> recentTokens = new ArrayList<Token>(); // lista de tokens formados recentemente para
+																	// determinadas operações ligas a operadores
+																	// aritmeticos
 
 	public int getPos() {
 
@@ -38,6 +41,7 @@ public class LexicalAnaliser {
 		return this.listTokens;
 
 	}
+
 // metodo que irá scannear a lista de caracteres
 	public Token scanFile() {
 
@@ -107,7 +111,7 @@ public class LexicalAnaliser {
 					state = 15;
 					pos++;
 
-					// Q0 -> Q16  - Analisador de operador logico "|"
+					// Q0 -> Q16 - Analisador de operador logico "|"
 				} else if (currentChar == '|') {
 
 					lexeme += currentChar;
@@ -135,47 +139,48 @@ public class LexicalAnaliser {
 					state = 21;
 					pos++;
 
-					// Q0 -> Q7  - Analisador de operador aritmetico "+"
+					// Q0 -> Q7 - Analisador de operador aritmetico "+"
 				} else if (currentChar == '+') {
 
 					lexeme += currentChar;
 					state = 7;
 					pos++;
 
-					if(!recentTokens.isEmpty()) {
-						
+					if (!recentTokens.isEmpty()) {
+
 						recentTokens = new ArrayList<Token>();
-						
+
 					}
-					// Q0 -> Q11  - Analisador de operador aritmetico "*"
+					// Q0 -> Q9- Analisador de operador aritmetico "*"
 				} else if (currentChar == '*') {
 
 					lexeme += currentChar;
 					state = 9;
 					pos++;
 
-					// Q0 -> Q10  - Analisador de operador aritmetico OU delimitador de comentario "/"
+					// Q0 -> Q10 - Analisador de operador aritmetico OU delimitador de comentario
+					// "/"
 				} else if (currentChar == '/') {
 
 					lexeme += currentChar;
 					state = 10;
 					pos++;
 
-					// Q0 -> Q3 - Analisador de numero 
+					// Q0 -> Q3 - Analisador de numero
 				} else if (isDigit(currentChar)) {
 
 					lexeme += currentChar;
 					state = 3;
 					pos++;
 
-					// Q0 -> Q28 - 
+					// Q0 -> Q28 - Analisador de cadeia de caractere
 				} else if (currentChar == '"') {
 
 					lexeme += currentChar;
 					state = 28;
 					pos++;
 
-					// Q0 -> Q27
+					// Q0 -> Q27 - Analisdor de delimitador
 				} else if (isDelimiter(currentChar)) {
 
 					lexeme += currentChar;
@@ -183,7 +188,7 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q0 -> Q0
-
+					// Desconsiderar espaço e /n
 				} else if (isNewLine(currentChar) || isSpace(currentChar)) {
 
 					state = 0;
@@ -197,7 +202,7 @@ public class LexicalAnaliser {
 					return new ErrorToken(InitialsToken.TK_MALFORMED_TOKEN.getTypeTokenCode(), lexeme, countLine);
 
 				}
-
+				// estado que ira desenvolver o token de identificador ou de palavras reservadas
 			} else if (state == 1) {
 
 				// Q1 -> Q1
@@ -235,7 +240,7 @@ public class LexicalAnaliser {
 					}
 
 				}
-
+				//estado que ira densenvolver a analise do operador aritmetico "-"  ou "--" ou um numero negativo
 			} else if (state == 2) {
 
 				// Q2 -> Q6
@@ -260,7 +265,7 @@ public class LexicalAnaliser {
 					return token;
 
 				}
-
+				// estado que ira desenvolver a analise do numero
 			} else if (state == 3) {
 
 				// Q3 -> Q3
@@ -286,7 +291,7 @@ public class LexicalAnaliser {
 					return token;
 
 				}
-
+				// estado que ira desenvolver a analise do  numero decimal 
 			} else if (state == 4) {
 
 				// Q4 -> Q5
@@ -307,7 +312,7 @@ public class LexicalAnaliser {
 					return token;
 
 				}
-
+				// estado que ira desenvolver mais casas apos o ponto
 			} else if (state == 5) {
 
 				// Q5 -> Q5
@@ -325,13 +330,13 @@ public class LexicalAnaliser {
 					return token;
 
 				}
-
+				// estado que ira salvar um token de operador aritmetico
 			} else if (state == 6) {
 
 				state = 0;
 				token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
-
+				
 			} else if (state == 7) {
 
 				// Q7 -> Q8
@@ -355,7 +360,7 @@ public class LexicalAnaliser {
 				state = 0;
 				token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
-
+					// estado que seta o token de operador aritmetico "*"
 			} else if (state == 9) {
 
 				// Q9 -> Q0
@@ -363,7 +368,7 @@ public class LexicalAnaliser {
 				state = 0;
 				token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
-
+				// estado que desenvolve a analise de delimitadores de comentarios de linha e de bloco 
 			} else if (state == 10) {
 
 				// Q10 -> Q11
@@ -389,7 +394,7 @@ public class LexicalAnaliser {
 
 				}
 
-				// Q11 -> Q0
+				// Q11 -> Q0 - estado que servira para desconsiderar os simbolos \n e \r
 			} else if (state == 11) {
 
 				if (currentChar == '\n' || currentChar == '\r') {
@@ -402,7 +407,7 @@ public class LexicalAnaliser {
 					pos++;
 
 				}
-
+				// estado de um comentario em bloco tendo o outro limite sendo formado 
 			} else if (state == 12) {
 
 				// Q12 -> Q13
@@ -427,7 +432,7 @@ public class LexicalAnaliser {
 					pos++;
 
 				}
-
+				// estado final de um comentario em bloco 
 			} else if (state == 13) {
 
 				// Q13 -> Q14
@@ -454,7 +459,7 @@ public class LexicalAnaliser {
 
 				}
 
-				// Q14 -> Q0
+				// Q14 -> Q0 - 
 			} else if (state == 14) {
 
 				state = 0;
@@ -462,7 +467,7 @@ public class LexicalAnaliser {
 
 			} else if (state == 15) {
 
-				// Q15 -> Q20
+				// Q15 -> Q20 - estado que ira  finalizar a formação do token "=="
 				if (currentChar == '=') {
 
 					lexeme += currentChar;
@@ -618,7 +623,7 @@ public class LexicalAnaliser {
 				state = 0;
 				token = new Token(InitialsToken.TK_DELIMITER.getTypeTokenCode(), lexeme, countLine);
 				return token;
-
+				// estado de criação de uma string 
 			} else if (state == 28) {
 
 				// Q28 -> Q28
@@ -642,7 +647,7 @@ public class LexicalAnaliser {
 					return new ErrorToken(InitialsToken.TK_MALFORMED_CHAIN.getTypeTokenCode(), lexeme, countLine);
 
 				}
-				// Q29 ->Q0
+				// Q29 ->Q0 - Estado final da criação de uma string
 			} else if (state == 29) {
 
 				state = 0;
@@ -813,12 +818,6 @@ public class LexicalAnaliser {
 	private char nextChar() {
 
 		return file.get(pos + 1);
-
-	}
-
-	private char previousChar() {
-
-		return file.get(pos - 1);
 
 	}
 
