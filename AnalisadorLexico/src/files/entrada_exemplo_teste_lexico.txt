@@ -4,10 +4,6 @@ real f = 3.0;
 @
 texto msg = "teste
 
-5---6
-
--6 + 5
-
 if ( f >= -10) && (f < ) 
 	print("mensagem);
 	print("menÇagem");
