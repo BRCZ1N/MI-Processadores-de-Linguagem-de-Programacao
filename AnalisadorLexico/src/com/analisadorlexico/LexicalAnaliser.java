@@ -1,10 +1,7 @@
 package com.analisadorlexico;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -18,7 +15,7 @@ public class LexicalAnaliser {
 	private int pos = 0; // posição na lista de caracteres
 	private int countLine = 1;
 	private ReservedWords rws = new ReservedWords(); // variavel que ira servir na busca de palavras reservads
-	private ArrayList<Token> listTokens; // lista de tokens
+	private static ArrayList<Token> listTokens; // lista de tokens
 
 	public int getPos() {
 
@@ -32,9 +29,9 @@ public class LexicalAnaliser {
 
 	}
 
-	public ArrayList<Token> getListTokens() {
+	public static ArrayList<Token> getListTokens() {
 
-		return this.listTokens;
+		return listTokens;
 
 	}
 
@@ -412,9 +409,10 @@ public class LexicalAnaliser {
 
 				} else if (isEOF(pos + 1)) {
 
-					pos++;
+					lexeme += currentChar;
 					token = new ErrorToken(InitialsToken.TK_POORLY_FORMED_COMMENT.getTypeTokenCode(), lexeme,
 							countLine);
+					pos++;
 					return token;
 
 					// Q12 -> Q12
@@ -439,9 +437,9 @@ public class LexicalAnaliser {
 				} else if (isEOF(pos + 1)) {
 
 					lexeme += currentChar;
-					pos++;
 					token = new ErrorToken(InitialsToken.TK_POORLY_FORMED_COMMENT.getTypeTokenCode(), lexeme,
 							countLine);
+					pos++;
 					return token;
 
 				} else {
@@ -683,7 +681,12 @@ public class LexicalAnaliser {
 
 		if (c == '\n' || c == '\r') {
 
-			countLine++;
+			if (c == '\n') {
+
+				countLine++;
+
+			}
+
 			return true;
 
 		}
@@ -862,73 +865,26 @@ public class LexicalAnaliser {
 
 	}
 
-	private File[] searchArchives() {
+	public static boolean containsErroToken() {
 
-		FileFilter filter = new FileFilter() {
-			public boolean accept(File file) {
-				return file.getName().startsWith("entrada");
+		for (Token token : LexicalAnaliser.getListTokens()) {
+
+			if (token instanceof ErrorToken) {
+
+				return true;
+
 			}
-		};
 
-		File file = new File("src/files");
-		File[] files = file.listFiles(filter);
+		}
 
-		return files;
+		return false;
 
 	}
 
-	public void writeTokensInArchive(String nameArc) {
+	public void execAnaliser(File file) {
 
-		File file = new File("src/files/" + "[" + nameArc + "]-saida.txt");
-		FileWriter arc = null;
-
-		try {
-
-			file.createNewFile();
-			arc = new FileWriter(file);
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
-		}
-
-		PrintWriter recordArc = new PrintWriter(arc);
-
-		for (Token tk : getListTokens()) {
-
-			if (!(tk instanceof ErrorToken)) {
-
-				recordArc.println(tk.toString());
-
-			}
-
-		}
-
-		recordArc.print("\n");
-
-		for (Token tk : getListTokens()) {
-
-			if (tk instanceof ErrorToken) {
-
-				recordArc.println(tk.toString());
-
-			}
-
-		}
-
-		recordArc.close();
-	}
-
-	public void execAnaliser() {
-
-		for (File file : searchArchives()) {
-
-			archiveToList(file);
-			constructListTokensArc();
-			writeTokensInArchive(file.getName());
-
-		}
+		archiveToList(file);
+		constructListTokensArc();
 
 	}
 }
