@@ -7,6 +7,12 @@ public class ErrorToken extends Token {
 		super(typeToken, lexeme, line);
 
 	}
+	
+	public ErrorToken(String typeToken, long line) {
+		
+		super(typeToken,line);
+		
+	}
 
 	@Override
 	public String toString() {

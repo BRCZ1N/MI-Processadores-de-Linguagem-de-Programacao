@@ -13,6 +13,14 @@ public class Token {
 		this.line = line;
 
 	}
+	
+	public Token(String typeToken, long line) {
+		
+		this.typeToken = typeToken;
+		this.line = line;
+		
+		
+	}
 
 	public Token() {
 		
