@@ -1,0 +1,29 @@
+1 IDE exemplo 
+1 IDE teste 
+1 DEL ; 
+3 IDE realf 
+3 REL = 
+0  null 
+3 DEL ; 
+5 IDE texto 
+5 IDE msg 
+5 REL = 
+6 IDE iff 
+6 REL >= 
+6 NRO -10 
+6 DEL ) 
+6 LOG && 
+6 DEL ( 
+0  null 
+6 REL < 
+6 DEL ) 
+7 IDE printmensagem 
+7 DEL ) 
+7 DEL ; 
+8 IMF printmenÇagem" 
+8 DEL ) 
+8 DEL ; 
+
+4 TMF @
+11 CoMF /* exa869 mi processadores de
+                linguagem de programaca

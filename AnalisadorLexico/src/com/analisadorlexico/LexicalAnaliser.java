@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class LexicalAnaliser {
 
@@ -20,9 +19,6 @@ public class LexicalAnaliser {
 	private int countLine = 1;
 	private ReservedWords rws = new ReservedWords(); // variavel que ira servir na busca de palavras reservads
 	private ArrayList<Token> listTokens; // lista de tokens
-	private ArrayList<Token> recentTokens = new ArrayList<Token>(); // lista de tokens formados recentemente para
-																	// determinadas operações ligas a operadores
-																	// aritmeticos
 
 	public int getPos() {
 
@@ -80,22 +76,9 @@ public class LexicalAnaliser {
 					// Q0 -> Q2 - Analisador de operador aritmetico "-"
 				} else if (currentChar == '-') {
 
-					if (!recentTokens.isEmpty() && (isDigit(nextChar()) || isLetter(nextChar()))) {
-
-						state = 0;
-						lexeme += currentChar;
-						token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
-						recentTokens = new ArrayList<Token>();
-						pos++;
-						return token;
-
-					} else {
-
-						lexeme += currentChar;
-						state = 2;
-						pos++;
-
-					}
+					lexeme += currentChar;
+					state = 2;
+					pos++;
 
 					// Q0 -> Q18 - Analisador de operador logico "&"
 				} else if (currentChar == '&') {
@@ -146,11 +129,6 @@ public class LexicalAnaliser {
 					state = 7;
 					pos++;
 
-					if (!recentTokens.isEmpty()) {
-
-						recentTokens = new ArrayList<Token>();
-
-					}
 					// Q0 -> Q9- Analisador de operador aritmetico "*"
 				} else if (currentChar == '*') {
 
@@ -212,35 +190,30 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 1;
 					pos++;
-
-					recentTokens.add(token);
 					token = new Token(InitialsToken.TK_IDENTIFIER.getTypeTokenCode(), lexeme, countLine);
 
 					// Q1 -> Q0
+				} else if (rws.getListReservedWords().contains(lexeme)) {
+
+					state = 1;
+					token = new Token(InitialsToken.TK_RESERVED_WORDS.getTypeTokenCode(), lexeme, countLine);
+					pos++;
+
+				} else if (isEndToken(currentChar)) {
+
+					state = 0;
+					return token;
+
 				} else {
 
-					if (rws.getListReservedWords().contains(lexeme)) {
-
-						state = 1;
-						token = new Token(InitialsToken.TK_RESERVED_WORDS.getTypeTokenCode(), lexeme, countLine);
-						pos++;
-
-					} else if (isEndToken(currentChar)) {
-
-						state = 0;
-						return token;
-
-					} else {
-
-						lexeme += currentChar;
-						state = 1;
-						token = new Token(InitialsToken.TK_MALFORMED_IDENTIFIER.getTypeTokenCode(), lexeme, countLine);
-						pos++;
-
-					}
+					lexeme += currentChar;
+					state = 1;
+					token = new Token(InitialsToken.TK_MALFORMED_IDENTIFIER.getTypeTokenCode(), lexeme, countLine);
+					pos++;
 
 				}
-				//estado que ira densenvolver a analise do operador aritmetico "-"  ou "--" ou um numero negativo
+				// estado que ira densenvolver a analise do operador aritmetico "-" ou "--" ou
+				// um numero negativo
 			} else if (state == 2) {
 
 				// Q2 -> Q6
@@ -269,11 +242,12 @@ public class LexicalAnaliser {
 			} else if (state == 3) {
 
 				// Q3 -> Q3
-				if (isDigit(currentChar)) {
+				if (isDigit(currentChar) && !token.getTypeToken().equals(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode())) {
 
 					lexeme += currentChar;
 					state = 3;
 					pos++;
+					token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
 
 					// Q3 -> Q4
 				} else if (currentChar == '.') {
@@ -283,15 +257,18 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q3 -> Q0
-				} else {
+				} else if (isEndToken(currentChar)) {
 
 					state = 0;
-					token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
-					recentTokens.add(token);
 					return token;
 
+				} else {
+
+					state = 3;
+					token = new Token(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode(), lexeme, countLine);
+
 				}
-				// estado que ira desenvolver a analise do  numero decimal 
+				// estado que ira desenvolver a analise do numero decimal
 			} else if (state == 4) {
 
 				// Q4 -> Q5
@@ -308,7 +285,6 @@ public class LexicalAnaliser {
 					backPosition();
 					state = 0;
 					token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
-					recentTokens.add(token);
 					return token;
 
 				}
@@ -316,19 +292,24 @@ public class LexicalAnaliser {
 			} else if (state == 5) {
 
 				// Q5 -> Q5
-				if (isDigit(currentChar)) {
+				if (isDigit(currentChar) && !token.getTypeToken().equals(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode())) {
 
 					lexeme += currentChar;
 					state = 5;
+					token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
 					pos++;
 
 					// Q5 -> Q0
-				} else {
+				} else if(isEndToken(currentChar)){
 
 					state = 0;
-					token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
+				}else {
+					
+					state = 5;
+					token = new Token(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode(), lexeme, countLine);
+					
 				}
 				// estado que ira salvar um token de operador aritmetico
 			} else if (state == 6) {
@@ -336,7 +317,7 @@ public class LexicalAnaliser {
 				state = 0;
 				token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
-				
+
 			} else if (state == 7) {
 
 				// Q7 -> Q8
@@ -360,7 +341,7 @@ public class LexicalAnaliser {
 				state = 0;
 				token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
-					// estado que seta o token de operador aritmetico "*"
+				// estado que seta o token de operador aritmetico "*"
 			} else if (state == 9) {
 
 				// Q9 -> Q0
@@ -368,7 +349,8 @@ public class LexicalAnaliser {
 				state = 0;
 				token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
-				// estado que desenvolve a analise de delimitadores de comentarios de linha e de bloco 
+				// estado que desenvolve a analise de delimitadores de comentarios de linha e de
+				// bloco
 			} else if (state == 10) {
 
 				// Q10 -> Q11
@@ -407,7 +389,7 @@ public class LexicalAnaliser {
 					pos++;
 
 				}
-				// estado de um comentario em bloco tendo o outro limite sendo formado 
+				// estado de um comentario em bloco tendo o outro limite sendo formado
 			} else if (state == 12) {
 
 				// Q12 -> Q13
@@ -432,7 +414,7 @@ public class LexicalAnaliser {
 					pos++;
 
 				}
-				// estado final de um comentario em bloco 
+				// estado final de um comentario em bloco
 			} else if (state == 13) {
 
 				// Q13 -> Q14
@@ -459,7 +441,7 @@ public class LexicalAnaliser {
 
 				}
 
-				// Q14 -> Q0 - 
+				// Q14 -> Q0 -
 			} else if (state == 14) {
 
 				state = 0;
@@ -467,7 +449,7 @@ public class LexicalAnaliser {
 
 			} else if (state == 15) {
 
-				// Q15 -> Q20 - estado que ira  finalizar a formação do token "=="
+				// Q15 -> Q20 - estado que ira finalizar a formação do token "=="
 				if (currentChar == '=') {
 
 					lexeme += currentChar;
@@ -623,16 +605,17 @@ public class LexicalAnaliser {
 				state = 0;
 				token = new Token(InitialsToken.TK_DELIMITER.getTypeTokenCode(), lexeme, countLine);
 				return token;
-				// estado de criação de uma string 
+				// estado de criação de uma string
 			} else if (state == 28) {
 
 				// Q28 -> Q28
-				if (isLetter(currentChar) || isDigit(currentChar) || isSymbol(currentChar)) {
+				if (isLetter(currentChar) || isDigit(currentChar) || isSymbol(currentChar) && !token.getTypeToken().equals(InitialsToken.TK_MALFORMED_CHAIN.getTypeTokenCode())) {
 
 					lexeme += currentChar;
 					state = 28;
 					pos++;
-
+					token = new Token(InitialsToken.TK_STRING.getTypeTokenCode(), lexeme, countLine);
+					
 					// Q28 -> Q29
 				} else if (currentChar == '"') {
 
@@ -642,16 +625,16 @@ public class LexicalAnaliser {
 
 				} else {
 
+					lexeme += currentChar;
 					state = 0;
 					pos++;
-					return new ErrorToken(InitialsToken.TK_MALFORMED_CHAIN.getTypeTokenCode(), lexeme, countLine);
+					token = new ErrorToken(InitialsToken.TK_MALFORMED_CHAIN.getTypeTokenCode(), lexeme, countLine);
 
 				}
 				// Q29 ->Q0 - Estado final da criação de uma string
 			} else if (state == 29) {
 
 				state = 0;
-				token = new Token(InitialsToken.TK_STRING.getTypeTokenCode(), lexeme, countLine);
 				return token;
 
 			}
