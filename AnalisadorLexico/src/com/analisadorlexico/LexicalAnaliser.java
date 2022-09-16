@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class LexicalAnaliser {
 
-	private static ArrayList<Character> file = new ArrayList<Character>();// lista que ira salvar os caracteres 
+	private static ArrayList<Character> file = new ArrayList<Character>();// lista que ira salvar os caracteres
 																			// presentes no arquivo de entrada
 	private char lastChar = ' '; // variavel que irá salvar char necessarios
 	private int pos = 0; // posição na lista de caracteres
@@ -23,14 +23,13 @@ public class LexicalAnaliser {
 		return this.pos;
 
 	}
-	
+
 	public static void clearAllList() {
-		
+
 		listTokens.clear();
 		file.clear();
-		
+
 	}
-	
 
 	public static ArrayList<Character> getFile() {
 
@@ -51,6 +50,7 @@ public class LexicalAnaliser {
 		String lexeme = null;
 		boolean eofCondition = true;
 		Token token = new Token();
+		lexeme = "";
 
 		if (isEOF(pos)) {
 
@@ -69,8 +69,6 @@ public class LexicalAnaliser {
 			}
 
 			if (state == 0) {
-
-				lexeme = "";
 
 				// Q0 -> Q1 - Analisador de identificador
 				if (isLetter(currentChar)) {
@@ -186,19 +184,26 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q0 -> Q0
-					// Desconsiderar espaço e /n
-				} else if (isNewLine(currentChar) || isSpace(currentChar)) {
+				} else if (isEndToken(currentChar)) {
 
+					
 					recentTokens = new ArrayList<Token>();
 					state = 0;
 					pos++;
+					
+					if(token.getTypeToken() == InitialsToken.TK_MALFORMED_TOKEN.getTypeTokenCode()) {
+						
+						return token;
+						
+					}
 
 				} else {
-
+					
 					lexeme += currentChar;
 					state = 0;
+					token = new ErrorToken(InitialsToken.TK_MALFORMED_TOKEN.getTypeTokenCode(), lexeme, countLine);
 					pos++;
-					return new ErrorToken(InitialsToken.TK_MALFORMED_TOKEN.getTypeTokenCode(), lexeme, countLine);
+
 
 				}
 				// estado que ira desenvolver o token de identificador ou de palavras reservadas
@@ -216,7 +221,7 @@ public class LexicalAnaliser {
 
 					state = 0;
 
-					if (rws.getListReservedWords().contains(token.getLexeme())) {
+					if (rws.isReservedWord(lexeme)) {
 
 						return new Token(InitialsToken.TK_RESERVED_WORDS.getTypeTokenCode(), lexeme, countLine);
 
@@ -872,7 +877,7 @@ public class LexicalAnaliser {
 			}
 
 		}
-		
+
 		countLine = 1;
 		pos = 0;
 
@@ -900,4 +905,5 @@ public class LexicalAnaliser {
 		constructListTokensArc();
 
 	}
+
 }

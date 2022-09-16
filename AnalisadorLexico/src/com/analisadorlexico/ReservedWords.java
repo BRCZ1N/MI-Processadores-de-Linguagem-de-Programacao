@@ -42,5 +42,21 @@ public class ReservedWords {
 		listReservedWords.add("false");
 
 	}
+	
+	public boolean isReservedWord(String lexeme) {
+
+		for (String reservedWord : getListReservedWords()) {
+
+			if (lexeme.equals(reservedWord)) {
+
+				return true;
+
+			}
+
+		}
+
+		return false;
+
+	}
 
 }
