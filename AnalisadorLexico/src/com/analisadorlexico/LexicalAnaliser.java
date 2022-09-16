@@ -26,8 +26,8 @@ public class LexicalAnaliser {
 
 	public static void clearAllList() {
 
-		listTokens.clear();
-		file.clear();
+		listTokens = new ArrayList<Token>();
+		file = new ArrayList<Character>();
 
 	}
 
@@ -72,7 +72,7 @@ public class LexicalAnaliser {
 
 				// Q0 -> Q1 - Analisador de identificador
 				if (isLetter(currentChar)) {
-
+					
 					lexeme += currentChar;
 					state = 1;
 					pos++;
@@ -193,17 +193,16 @@ public class LexicalAnaliser {
 					
 					if(token.getTypeToken() == InitialsToken.TK_MALFORMED_TOKEN.getTypeTokenCode()) {
 						
+						token.setLexeme(lexeme);
 						return token;
 						
 					}
+					
 
 				} else {
 					
-					lexeme += currentChar;
-					state = 0;
-					token = new ErrorToken(InitialsToken.TK_MALFORMED_TOKEN.getTypeTokenCode(), lexeme, countLine);
-					pos++;
-
+					token = new Token(InitialsToken.TK_MALFORMED_TOKEN.getTypeTokenCode(), countLine);
+					state = 30;
 
 				}
 				// estado que ira desenvolver o token de identificador ou de palavras reservadas
@@ -228,16 +227,18 @@ public class LexicalAnaliser {
 					} else if (!token.getTypeToken().equals(InitialsToken.TK_MALFORMED_IDENTIFIER.getTypeTokenCode())) {
 
 						token = new Token(InitialsToken.TK_IDENTIFIER.getTypeTokenCode(), lexeme, countLine);
-
+						recentTokens.add(token);
+						
 					}
 
+					token.setLexeme(lexeme);
 					return token;
 
 				} else {
 
 					lexeme += currentChar;
 					state = 1;
-					token = new Token(InitialsToken.TK_MALFORMED_IDENTIFIER.getTypeTokenCode(), countLine);
+					token = new ErrorToken(InitialsToken.TK_MALFORMED_IDENTIFIER.getTypeTokenCode(), countLine);
 					pos++;
 
 				}
@@ -300,7 +301,7 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 3;
-					token = new Token(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode(), lexeme, countLine);
+					token = new ErrorToken(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode(), lexeme, countLine);
 
 				}
 				// estado que ira desenvolver a analise do numero decimal
@@ -349,7 +350,7 @@ public class LexicalAnaliser {
 				} else {
 
 					state = 5;
-					token = new Token(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode(), lexeme, countLine);
+					token = new ErrorToken(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode(), lexeme, countLine);
 
 				}
 				// estado que ira salvar um token de operador aritmetico
@@ -386,7 +387,6 @@ public class LexicalAnaliser {
 			} else if (state == 9) {
 
 				// Q9 -> Q0
-				lexeme += currentChar;
 				state = 0;
 				token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 				return token;
@@ -410,7 +410,6 @@ public class LexicalAnaliser {
 
 				} else {
 
-					lexeme += currentChar;
 					state = 0;
 					token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
@@ -426,6 +425,7 @@ public class LexicalAnaliser {
 
 				} else {
 
+					lexeme += currentChar;
 					state = 11;
 					pos++;
 
@@ -500,7 +500,6 @@ public class LexicalAnaliser {
 					// Q15 -> Q0
 				} else {
 
-					lexeme += currentChar;
 					state = 0;
 					token = new Token(InitialsToken.TK_LOGIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
 					return token;
@@ -689,6 +688,20 @@ public class LexicalAnaliser {
 				state = 0;
 				return token;
 
+			}else {
+
+				if(isEndToken(currentChar)) {
+					
+					state = 0;
+					
+				}else{
+					
+					state = 30;
+					lexeme += currentChar;
+					pos++;
+					
+				}
+				
 			}
 
 		}

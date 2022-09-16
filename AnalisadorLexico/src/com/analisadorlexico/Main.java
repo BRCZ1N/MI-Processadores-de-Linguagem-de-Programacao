@@ -28,7 +28,7 @@ public class Main {
 
 		FileFilter filter = new FileFilter() {
 			public boolean accept(File file) {
-				return file.getName().startsWith("entrada");
+				return file.getName().startsWith("teste");
 			}
 		};
 
