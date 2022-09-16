@@ -1,10 +1,7 @@
 package com.analisadorlexico;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,29 +9,38 @@ import java.util.ArrayList;
 
 public class LexicalAnaliser {
 
-	private static ArrayList<Character> file = new ArrayList<Character>();// lista que ira salvar os caracteres
+	private static ArrayList<Character> file = new ArrayList<Character>();// lista que ira salvar os caracteres 
 																			// presentes no arquivo de entrada
 	private char lastChar = ' '; // variavel que irá salvar char necessarios
 	private int pos = 0; // posição na lista de caracteres
 	private int countLine = 1;
 	private ReservedWords rws = new ReservedWords(); // variavel que ira servir na busca de palavras reservads
-	private ArrayList<Token> listTokens; // lista de tokens
+	private static ArrayList<Token> listTokens; // lista de tokens
+	private ArrayList<Token> recentTokens = new ArrayList<Token>();
 
 	public int getPos() {
 
-		return pos;
+		return this.pos;
 
 	}
+	
+	public static void clearAllList() {
+		
+		listTokens.clear();
+		file.clear();
+		
+	}
+	
 
-	public ArrayList<Character> getFile() {
+	public static ArrayList<Character> getFile() {
 
 		return file;
 
 	}
 
-	public ArrayList<Token> getListTokens() {
+	public static ArrayList<Token> getListTokens() {
 
-		return this.listTokens;
+		return listTokens;
 
 	}
 
@@ -76,9 +82,23 @@ public class LexicalAnaliser {
 					// Q0 -> Q2 - Analisador de operador aritmetico "-"
 				} else if (currentChar == '-') {
 
-					lexeme += currentChar;
-					state = 2;
-					pos++;
+					if (!recentTokens.isEmpty() && isDigit(nextChar())) {
+
+						state = 0;
+						lexeme += currentChar;
+
+						token = new Token(InitialsToken.TK_ARITHIMETIC_OPERATOR.getTypeTokenCode(), lexeme, countLine);
+						recentTokens = new ArrayList<Token>();
+						pos++;
+						return token;
+
+					} else {
+
+						lexeme += currentChar;
+						state = 2;
+						pos++;
+
+					}
 
 					// Q0 -> Q18 - Analisador de operador logico "&"
 				} else if (currentChar == '&') {
@@ -169,6 +189,7 @@ public class LexicalAnaliser {
 					// Desconsiderar espaço e /n
 				} else if (isNewLine(currentChar) || isSpace(currentChar)) {
 
+					recentTokens = new ArrayList<Token>();
 					state = 0;
 					pos++;
 
@@ -204,6 +225,7 @@ public class LexicalAnaliser {
 						token = new Token(InitialsToken.TK_IDENTIFIER.getTypeTokenCode(), lexeme, countLine);
 
 					}
+
 					return token;
 
 				} else {
@@ -263,6 +285,7 @@ public class LexicalAnaliser {
 					if (!token.getTypeToken().equals(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode())) {
 
 						token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
+						recentTokens.add(token);
 
 					}
 
@@ -291,6 +314,7 @@ public class LexicalAnaliser {
 
 					backPosition();
 					state = 0;
+					recentTokens.add(token);
 					token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
 					return token;
 
@@ -312,6 +336,7 @@ public class LexicalAnaliser {
 					if (!token.getTypeToken().equals(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode())) {
 
 						token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
+						recentTokens.add(token);
 
 					}
 					return token;
@@ -683,7 +708,11 @@ public class LexicalAnaliser {
 
 		if (c == '\n' || c == '\r') {
 
-			countLine++;
+			if (c == '\n') {
+
+				countLine++;
+			}
+
 			return true;
 
 		}
@@ -742,8 +771,8 @@ public class LexicalAnaliser {
 
 	private boolean isEndToken(char c) {
 
-		if (isDelimiter(c) || isAritmethicOperator(c) || isRelationalOperator(c) || isLogicalOperator(c)
-				|| isSpace(c)) {
+		if (isDelimiter(c) || isAritmethicOperator(c) || isRelationalOperator(c) || isLogicalOperator(c) || isSpace(c)
+				|| isNewLine(c)) {
 
 			return true;
 
@@ -843,6 +872,9 @@ public class LexicalAnaliser {
 			}
 
 		}
+		
+		countLine = 1;
+		pos = 0;
 
 	}
 
@@ -862,73 +894,10 @@ public class LexicalAnaliser {
 
 	}
 
-	private File[] searchArchives() {
+	public void execAnaliser(File file) {
 
-		FileFilter filter = new FileFilter() {
-			public boolean accept(File file) {
-				return file.getName().startsWith("entrada");
-			}
-		};
-
-		File file = new File("src/files");
-		File[] files = file.listFiles(filter);
-
-		return files;
-
-	}
-
-	public void writeTokensInArchive(String nameArc) {
-
-		File file = new File("src/files/" + "[" + nameArc + "]-saida.txt");
-		FileWriter arc = null;
-
-		try {
-
-			file.createNewFile();
-			arc = new FileWriter(file);
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
-		}
-
-		PrintWriter recordArc = new PrintWriter(arc);
-
-		for (Token tk : getListTokens()) {
-
-			if (!(tk instanceof ErrorToken)) {
-
-				recordArc.println(tk.toString());
-
-			}
-
-		}
-
-		recordArc.print("\n");
-
-		for (Token tk : getListTokens()) {
-
-			if (tk instanceof ErrorToken) {
-
-				recordArc.println(tk.toString());
-
-			}
-
-		}
-
-		recordArc.close();
-	}
-
-	public void execAnaliser() {
-
-		for (File file : searchArchives()) {
-
-			archiveToList(file);
-			constructListTokensArc();
-			writeTokensInArchive(file.getName());
-
-		}
+		archiveToList(file);
+		constructListTokensArc();
 
 	}
 }
