@@ -10,8 +10,7 @@ import java.util.ArrayList;
 public class LexicalAnaliser {
 
 	private static ArrayList<Character> file = new ArrayList<Character>();// lista que ira salvar os caracteres
-																			// presentes no arquivo de entrada
-	private char lastChar = ' '; // variavel que irá salvar char necessarios
+																			// presentes no arquivo de entrada // variavel que irá salvar char necessarios
 	private int pos = 0; // posição na lista de caracteres
 	private int countLine = 1;
 	private ReservedWords rws = new ReservedWords(); // variavel que ira servir na busca de palavras reservads
@@ -275,11 +274,17 @@ public class LexicalAnaliser {
 					pos++;
 
 					// Q3 -> Q4
-				} else if (currentChar == '.'
-						&& !token.getTypeToken().equals(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode())) {
+				} else if (currentChar == '.') {
 
+					if(token.getTypeToken().equals(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode())) {
+						
+						token.setLexeme(lexeme);
+						return token;
+						
+					}
+					
 					state = 4;
-					lastChar = currentChar;
+					lexeme += currentChar;
 					pos++;
 
 					// Q3 -> Q0
@@ -310,7 +315,6 @@ public class LexicalAnaliser {
 				// Q4 -> Q5
 				if (isDigit(currentChar)) {
 
-					lexeme += lastChar;
 					lexeme += currentChar;
 					state = 5;
 					pos++;
@@ -318,12 +322,11 @@ public class LexicalAnaliser {
 					// Q4 -> Q5
 				} else {
 
-					backPosition();
-					state = 0;
-					recentTokens.add(token);
-					token = new Token(InitialsToken.TK_NUMBER.getTypeTokenCode(), lexeme, countLine);
-					return token;
-
+					lexeme += currentChar;
+					state = 5;
+					pos++;
+					token = new ErrorToken(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode(),countLine);
+					
 				}
 				// estado que ira desenvolver mais casas apos o ponto
 			} else if (state == 5) {
@@ -876,12 +879,6 @@ public class LexicalAnaliser {
 
 	}
 
-	private void backPosition() {
-
-		pos--;
-
-	}
-
 	private void constructListTokensArc() {
 
 		listTokens = new ArrayList<Token>();
@@ -918,6 +915,22 @@ public class LexicalAnaliser {
 
 		}
 
+	}
+	
+	public static boolean containsLexicalError() {
+		
+		for(Token token:getListTokens()) {
+			
+			if(token instanceof ErrorToken) {
+				
+				return true;
+				
+			}
+			
+		}
+		
+		return false;	
+		
 	}
 
 	public void execAnaliser(File file) {

@@ -28,7 +28,7 @@ public class Main {
 
 		FileFilter filter = new FileFilter() {
 			public boolean accept(File file) {
-				return file.getName().startsWith("teste");
+				return !file.getName().endsWith("-saida.txt");
 			}
 		};
 
@@ -77,6 +77,12 @@ public class Main {
 
 			}
 
+		}
+		
+		if(!LexicalAnaliser.containsLexicalError()) {
+			
+			recordArc.println("Esse arquivo não contém erro");
+			
 		}
 		
 		recordArc.close();
