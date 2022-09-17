@@ -59,7 +59,7 @@ public class Main {
 
 		for (Token tk : LexicalAnaliser.getListTokens()) {
 
-			if (!(tk instanceof ErrorToken)) {
+			if (!(tk instanceof ErrorToken) && tk.getTypeToken() != InitialsToken.TK_COMMENT.getTypeTokenCode()) {
 
 				recordArc.println(tk.toString());
 

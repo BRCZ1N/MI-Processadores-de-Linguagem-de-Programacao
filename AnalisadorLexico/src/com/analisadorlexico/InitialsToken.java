@@ -14,7 +14,8 @@ public enum InitialsToken {
 	TK_POORLY_FORMED_COMMENT("CoMF"), 
 	TK_MALFORMED_NUMBER("NMF"),
 	TK_MALFORMED_IDENTIFIER("IMF"),
-	TK_MALFORMED_TOKEN("TMF");
+	TK_MALFORMED_TOKEN("TMF"),
+	TK_COMMENT("CMT");
 
 	private String typeTokenCode;
 

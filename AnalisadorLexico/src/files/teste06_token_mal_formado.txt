@@ -1,1 +1,7 @@
-﻿_x
+﻿// teste 05 - token mal formado
+
+
+@
+a > b ?        
+print $ 
+_x

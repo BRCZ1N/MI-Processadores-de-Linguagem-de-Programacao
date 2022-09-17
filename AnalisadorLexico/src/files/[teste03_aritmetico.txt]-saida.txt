@@ -1,0 +1,26 @@
+4 IDE a 
+4 ART ++ 
+4 ART + 
+4 IDE b 
+7 IDE a 
+7 ART ++ 
+7 ART - 
+7 IDE b 
+10 IDE a 
+10 ART - 
+10 ART - 
+10 IDE b 
+13 IDE a 
+13 ART ++ 
+13 ART - 
+13 NRO 3 
+16 IDE a 
+16 ART ++ 
+16 ART - 
+16 NRO -3 
+19 IDE a 
+19 ART ++ 
+19 ART - 
+19 ART - 
+19 IDE b 
+

@@ -1,0 +1,14 @@
+3 PRE real 
+3 NRO 33 
+3 DEL . 
+3 DEL ; 
+6 PRE string 
+9 DEL . 
+9 NRO 45 
+
+3 TMF #33
+6 IMF menÇagem
+9 NMF 123#
+12 CMF "erro na cadeia. falta fecha aspas
+15 CoMF /* nao fechou //
+comentario //

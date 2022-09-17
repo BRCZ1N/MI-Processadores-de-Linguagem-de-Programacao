@@ -1,0 +1,16 @@
+﻿// teste09 varios erros
+        
+real 33.#33;
+
+
+string menÇagem
+
+
+123#.45
+
+
+"erro na cadeia. falta fecha aspas
+
+
+/* nao fechou //
+comentario //

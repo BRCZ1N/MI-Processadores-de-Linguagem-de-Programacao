@@ -1,0 +1,8 @@
+4 CAC " ok " 
+10 IDE outra 
+16 CAC " diga  " 
+
+7 CMF "cadeia
+10 IMF string"
+13 CMF " string com simbolo invalido ¶ "
+16 IMF oi""
