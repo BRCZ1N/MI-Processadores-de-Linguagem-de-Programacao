@@ -1,0 +1,179 @@
+"Start Symbol" = <Program> 
+
+! -------------------------------------------------
+! Character Sets
+! -------------------------------------------------
+
+{ID Head}      = {Letter} + [_]
+{ID Tail}      = {Alphanumeric} + [_]
+{String Chars} = {Printable} + {HT} - ["]
+
+! -------------------------------------------------
+! Terminais
+! -------------------------------------------------
+
+Identifier    = {ID Head}{ID Tail}*
+StringLiteral = '"' {String Chars}* '"'
+Integer = {Digit}+
+Float = {Digit}+'.'{Digit}+
+
+! -------------------------------------------------
+! Regras
+! -------------------------------------------------
+
+<Value> ::= Identifier | <Number> | StringLiteral
+<Signal> ::= <> | '-' 
+<Number> ::= <Signal> Integer | Float 
+<Data_Type_Array> ::= <Number> | Identifier 
+<Expressions_And_DataTypes> ::= <Expression_Aritmetic> | StringLiteral
+      
+<Program> ::= <const> 'start' '(' ')' '{' <Code> '}'     
+
+<Code>  ::= <Var> <Code> 
+         | <Struct> <Code>
+         | <Struct_Invocation> <Code>
+         | <Atribution_Operation> <Code>
+         | <Read> <Code>
+         | <Print> <Code>
+         | <While> <Code>
+         | <function> <Code> 
+         | <procedure> <Code> 
+         | <Total_Expression> <Code> 
+         | <if-Expression> <Code>
+         | <function_call> <Code>
+         | <>  
+
+! -------------------------------------------------
+! Regras para arrays e vetores
+! -------------------------------------------------
+
+<Array_Type> ::= Identifier '['<Data_Type_Array>']'<Array_Definition> 
+<Array_Definition> ::= <>|'['<Data_Type_Array>']'           
+
+! -------------------------------------------------------------------
+! Declaração do bloco de variáveis 
+! -------------------------------------------------------------------
+
+<Var> ::= var'{'<Var_Block>'}'
+<Var_Block> ::= <> | <Var_Declaration> <Var_Block>
+<Var_Declaration> ::= <Type> <Var_Declaration_Aux>
+<Var_Declaration_Aux> ::= Identifier <Var_Assign_Or_NotAssign> <Var_Aux>';' | <Array_Type> <Var_Aux>';'
+<Var_Aux> ::= <> | ',' Identifier <Var_Assign_Or_NotAssign> <Var_Aux> | ',' <Array_Type> <Var_Aux> 
+<Var_Assign_Or_NotAssign> ::= <> | '=' <Expressions_And_DataTypes>   
+      
+! -------------------------------------------------------------------
+! Declaração do bloco de struct
+! -------------------------------------------------------------------    
+                            
+<Struct> ::= struct Identifier <Struct_Declaration>
+<Struct_Declaration> ::= '{'<Var_Block>'}' | <Struct_Extends> '{'<Var_Block>'}'            
+<Struct_Invocation> ::= Identifier'.'<Struct_Invocation_Decider>';' 
+<Struct_Invocation_Decider> ::= Identifier | <Array_Type> 
+<Struct_Extends> ::= extends Identifier
+  
+! -------------------------------------------------------------------
+! Declaração do bloco de constantes
+! -------------------------------------------------------------------      
+               
+<Const> ::= const'{'<Const_Block>'}'
+<Const_Block> ::= <> | <Const_Declaration> <Const_Block>
+<Const_Declaration> ::= <Type> Identifier '=' <Expressions_And_DataTypes> <Const_Aux>';'
+<Const_Aux> ::= <>| ','Identifier '=' <Expressions_And_DataTypes> <Const_Aux> 
+             
+! -------------------------------------------------------------------
+! Regras de Atribuição
+! ------------------------------------------------------------------- 
+         
+<Atribution_Operation> ::= <Acess> '=' <Expressions_And_DataTypes>';'
+<Acess> ::= <Struct_Invocation> | <Array_Type> | Identifier 
+
+! -------------------------------------------------------------------
+! Regras de funções e procedimentos
+! -------------------------------------------------------------------  
+
+<return_statement> ::= return <Value> ';' 
+<parameter> ::= <Type> <Value> <aux_parameter>
+<aux_parameter> ::= <> | ',' <parameter>
+<function> ::= function <Type> Identifier '(' <function_parameter>')' '{'<Code> <return_statement> '}'     
+<procedure> ::= procedure Identifier '('<function_parameter>')' '{'<Code>'}'
+<function_parameter> ::= <parameter> | <>
+<function_call> ::= Identifier '(' <function_parameter> ')'';'     
+<function_parameter> ::= <Value> <aux_function>                 
+<aux_function> ::= <> | ',' <function_parameter>
+  
+! -------------------------------------------------------------------
+! Tipos
+! -------------------------------------------------------------------  
+  
+<Type> ::= 'int'
+          | 'real'
+          | 'string'
+          | 'boolean'
+     
+! -------------------------------------------------------------------
+! Listas de argumentos possíveis 
+! -------------------------------------------------------------------  
+
+<ListaArg> ::= <Struct_Invocation> | <Array_Type> | <Value>
+
+<ListaArg_Read> ::= Identifier | <Array_Type> | <Struct_Invocation>
+
+! -------------------------------------------------
+! Estrutura de repetição
+! -------------------------------------------------
+
+<While> ::= 'while' '(' <Expression_Logic> ')' '{' <Code> '}'
+
+! -------------------------------------------------
+! Estrutura condicional
+! -------------------------------------------------
+
+<if-Expression> ::= if '(' <Expression_Logic> ')' then '{' <Code> '}' <if-else>
+                
+<if-else> ::= <else> | <>
+                 
+<else>  ::= else '{' <Code> '}'  |  <if-expression> 
+
+! -------------------------------------------------
+! Comandos de leitura/escrita
+! -------------------------------------------------
+<Print>  ::= 'print' '(' <ListaArg> ')' ';'
+
+<Read>  ::= 'read' '(' <ListaArg_Read> ')' ';'
+
+! -------------------------------------------------
+! Expressões aritméticas, lógicas e relacionais
+! -------------------------------------------------
+               
+<Expression_Logic> ::= <Expression_Relational> <Expression_Logic_Aux>
+<Expression_Logic_Aux> ::= <Op_Logic> <Expression_Relational> <Expression_Logic_Aux> | <>
+                    
+<Expression_Relational> ::= <Fator_Relational> <Expression_Relational_Aux>
+<Expression_Relational_Aux> ::= <Op_Relational> <Fator_Relational> <Expression_Relational_Aux> | <>
+                                 
+<Fator_Relational> ::= '('<Expression_Logic>')' | Identifier | <Number>
+
+<Total_Expression> ::= <Expression_Aritmetic>';' 
+
+<Expression_Aritmetic> ::= <Termo> <Expression_aux>
+<Expression_aux> ::= <Soma> <Termo> <Expression_aux> | <>
+                  
+<Termo> ::= <Incre> <Termo_aux>
+<Termo_aux> ::= <Mult> <Incre> <Termo_aux> | <>
+
+<Incre> ::= <Fator> <Incre_aux> | <In> <Incre>
+<Incre_aux> ::= <In> <Incre_aux> | <>
+             
+<Fator> ::= '(' <Expression_Aritmetic> ')' | Identifier | <Number>
+<soma> ::= '+'|'-'
+<mult> ::= '*'|'/'
+<in> ::= '++'|'--'
+      
+<Op_Logic> ::= '&&' | '||' | '!'
+            
+<Op_Relational> ::= '>'  
+                 |  '<'  
+                 |  '<=' 
+                 |  '>=' 
+                 |  '=='  
+                 |  '!=' 
