@@ -11,17 +11,24 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		
 		LexicalAnaliser lexicalAnaliser = new LexicalAnaliser();
-		
+		SyntaxAnaliser syntaxAnaliser = new SyntaxAnaliser(LexicalAnaliser.getListTokens());
+
 		for(File file:searchArchives()) {
 			
 			lexicalAnaliser.execAnaliser(file);
+			syntaxAnaliser.execAnaliser();
+			
 			writeTokensInArchive(file.getName());
 			LexicalAnaliser.clearAllList();
 			
 		}
 		
 		
+		
 	}
+	
+	
+	
 	
 	
 	private static File[] searchArchives() {

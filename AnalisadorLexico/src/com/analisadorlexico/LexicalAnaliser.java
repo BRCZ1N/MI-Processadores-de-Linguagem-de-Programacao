@@ -10,7 +10,8 @@ import java.util.ArrayList;
 public class LexicalAnaliser {
 
 	private static ArrayList<Character> file = new ArrayList<Character>();// lista que ira salvar os caracteres
-																			// presentes no arquivo de entrada // variavel que irá salvar char necessarios
+																			// presentes no arquivo de entrada //
+																		// variavel que irá salvar char necessarios
 	private int pos = 0; // posição na lista de caracteres
 	private int countLine = 1;
 	private ReservedWords rws = new ReservedWords(); // variavel que ira servir na busca de palavras reservads
@@ -53,20 +54,19 @@ public class LexicalAnaliser {
 		char currentChar = ' ';
 
 		while (eofCondition) {
-			
+
 			if (isEOF(pos)) {
 
 				currentChar = ' ';
-				
-			}else {
-				
+
+			} else {
+
 				currentChar = file.get(pos);
-		
+
 			}
 
 			if (state == 0) {
 
-				
 				// Q0 -> Q1 - Analisador de identificador
 				if (isLetter(currentChar)) {
 
@@ -93,7 +93,6 @@ public class LexicalAnaliser {
 						pos++;
 
 					}
-					
 
 					// Q0 -> Q18 - Analisador de operador logico "&"
 				} else if (currentChar == '&') {
@@ -276,13 +275,13 @@ public class LexicalAnaliser {
 					// Q3 -> Q4
 				} else if (currentChar == '.') {
 
-					if(token.getTypeToken().equals(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode())) {
-						
+					if (token.getTypeToken().equals(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode())) {
+
 						token.setLexeme(lexeme);
 						return token;
-						
+
 					}
-					
+
 					state = 4;
 					lexeme += currentChar;
 					pos++;
@@ -325,8 +324,8 @@ public class LexicalAnaliser {
 					lexeme += currentChar;
 					state = 5;
 					pos++;
-					token = new ErrorToken(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode(),countLine);
-					
+					token = new ErrorToken(InitialsToken.TK_MALFORMED_NUMBER.getTypeTokenCode(), countLine);
+
 				}
 				// estado que ira desenvolver mais casas apos o ponto
 			} else if (state == 5) {
@@ -425,7 +424,7 @@ public class LexicalAnaliser {
 				// Q11 -> Q0 - estado que servira para desconsiderar os simbolos \n e \r
 			} else if (state == 11) {
 
-				if (currentChar == '\n' || currentChar == '\r') {
+				if (isNewLine(currentChar)) {
 
 					state = 0;
 					return new Token(InitialsToken.TK_COMMENT.getTypeTokenCode(), lexeme, countLine);
@@ -458,7 +457,12 @@ public class LexicalAnaliser {
 					// Q12 -> Q12
 				} else {
 
-					lexeme += currentChar;
+					if (!isNewLine(currentChar)) {
+
+						lexeme += currentChar;
+
+					}
+
 					state = 12;
 					pos++;
 
@@ -735,12 +739,9 @@ public class LexicalAnaliser {
 
 	private boolean isNewLine(char c) {
 
-		if (c == '\n' || c == '\r') {
+		if (c == '\n') {
 
-			if (c == '\n') {
-
-				countLine++;
-			}
+			countLine++;
 
 			return true;
 
@@ -801,7 +802,7 @@ public class LexicalAnaliser {
 	private boolean isEndToken(char c) {
 
 		if (isDelimiter(c) || isAritmethicOperator(c) || isRelationalOperator(c) || isLogicalOperator(c) || isSpace(c)
-				|| isNewLine(c)) {
+				|| isNewLine(c) || c == 34) {
 
 			return true;
 
@@ -916,21 +917,21 @@ public class LexicalAnaliser {
 		}
 
 	}
-	
+
 	public static boolean containsLexicalError() {
-		
-		for(Token token:getListTokens()) {
-			
-			if(token instanceof ErrorToken) {
-				
+
+		for (Token token : getListTokens()) {
+
+			if (token instanceof ErrorToken) {
+
 				return true;
-				
+
 			}
-			
+
 		}
-		
-		return false;	
-		
+
+		return false;
+
 	}
 
 	public void execAnaliser(File file) {

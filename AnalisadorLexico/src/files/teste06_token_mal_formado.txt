@@ -1,7 +1,6 @@
-﻿// teste 05 - token mal formado
-
+// teste 05 - token mal formado
 
 @
-a > b ?        
+a > b ?	
 print $ 
 _x

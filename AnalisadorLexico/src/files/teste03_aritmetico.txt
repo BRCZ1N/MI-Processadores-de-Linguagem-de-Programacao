@@ -1,19 +1,13 @@
-﻿// teste 03 - operadores aritmeticos
-
+// teste 03 - operadores aritmeticos
 
 a+++b
 
-
 a++-b
-
 
 a- -b
 
-
 a++-3
 
-
 a++- -3
-
 
 a++- -b
