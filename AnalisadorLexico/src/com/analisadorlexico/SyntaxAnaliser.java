@@ -28,7 +28,6 @@ public class SyntaxAnaliser {
 
 	public void cmdIfExpression() {
 
-		tokenAtual = nextToken();
 
 		if (tokenAtual.getLexeme() == "if") {
 
@@ -55,6 +54,7 @@ public class SyntaxAnaliser {
 								ifElse();		
 								
 							}
+				
 							
 						}else {
 							
@@ -88,11 +88,63 @@ public class SyntaxAnaliser {
 	public void code() {
 
 	}
-	
-	public void ifElse() {
-		
-		
+	public void listaArg() {
 		
 	}
+	public void cmdPrint() {
+		if (tokenAtual.getLexeme() == "print") {
+			tokenAtual = nextToken();
+			if(tokenAtual.getLexeme() == "(") {
+				tokenAtual = nextToken();
+				listaArg();
+				
+				if(tokenAtual.getLexeme() ==")") {
+					tokenAtual = nextToken();
+					if(tokenAtual.getLexeme() == ";") {
+						
+					}else {
+						
+					}
+					
+				}else {
+					
+				}
+			}else {
+				
+			}
+			
+		}
+	}
+	
+	public void ifElse() {
+		tokenAtual = nextToken();
+		
+		if(tokenAtual.getLexeme() == "if") {
+			cmdIfExpression();
+		}
+		
+		if (tokenAtual.getLexeme() == "else") {
 
+			tokenAtual = nextToken();
+
+			if (tokenAtual.getLexeme() == "{") {
+
+				code();
+				tokenAtual = nextToken();
+				if (tokenAtual.getLexeme() == "}") {
+
+					tokenAtual = nextToken();
+					
+				}else {
+					// erro }
+				}
+			}else {
+				//erro de {
+			}
+		}else {
+			// erro else
+			
+		}
+	}
+				
 }
