@@ -15,7 +15,7 @@ public class LexicalAnaliser {
 	private int pos = 0; // posição na lista de caracteres
 	private int countLine = 1;
 	private ReservedWords rws = new ReservedWords(); // variavel que ira servir na busca de palavras reservads
-	private static ArrayList<Token> listTokens; // lista de tokens
+	private static ArrayList<Token> listTokens = new ArrayList<Token>(); // lista de tokens
 	private ArrayList<Token> recentTokens = new ArrayList<Token>();
 
 	public int getPos() {

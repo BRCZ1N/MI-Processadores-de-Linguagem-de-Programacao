@@ -25,6 +25,7 @@ public class Token {
 	public Token() {
 		
 		this.typeToken = "";
+		this.lexeme = "";
 		
 	}
 
