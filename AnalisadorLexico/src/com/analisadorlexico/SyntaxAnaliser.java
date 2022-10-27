@@ -14,9 +14,22 @@ public class SyntaxAnaliser {
 				
 	}
 	
+	public boolean isEof() {
+		
+		if(countToken > listTokens.size()-1) {
+			
+			return true;
+			
+		}
+		
+		return false;
+		
+		
+	}
+	
 	public Token nextToken() {
 
-		if(countToken <= listTokens.size()-1) {
+		if(!isEof()) {
 	
 			return listTokens.get(countToken++);
 			
@@ -25,7 +38,19 @@ public class SyntaxAnaliser {
 		return new Token();
 
 	}
-
+	
+	public Token synchronToken() {
+		
+		while(!(tokenAtual.getTypeToken().equals(InitialsToken.TK_DELIMITER.getTypeTokenCode()) || tokenAtual.getTypeToken().equals(InitialsToken.TK_RESERVED_WORDS.getTypeTokenCode())) && !isEof()) {
+		
+			tokenAtual = nextToken();
+			
+		}
+		
+		return tokenAtual;
+		
+	}
+	
 	public void execAnaliser() {
 		
 		tokenAtual = nextToken();
@@ -47,59 +72,58 @@ public class SyntaxAnaliser {
 
 				tokenAtual = nextToken();
 				expLogic();
-
-				if (tokenAtual.getLexeme().equals(")")) {
-
-					tokenAtual = nextToken();
-
-					if (tokenAtual.getLexeme().equals("then")) {
-
-						tokenAtual = nextToken();
-
-						if (tokenAtual.getLexeme().equals("{")) {
-
-							tokenAtual = nextToken();
-							code();
-
-							if (tokenAtual.getLexeme().equals("}")) {
-
-								tokenAtual = nextToken();
-								ifElse();
-
-							}else {
-								
-								System.out.println("Passei AQ: "+countToken);
-								// Erro sintático - }
-								
-							}
-
-						} else {
-
-							System.out.println("Passei AQ: "+countToken);
-							// Erro sintático - {		
-							
-						}
-
-					} else {
-
-						System.out.println("Passei AQ: "+countToken);
-						// Erro sintático - then
-						
-					}
-
-				} else {
-					
-					System.out.println("Passei AQ: "+countToken);
-					// Erro sintático - )
-
-				}
-
-			} else {
-
-				System.out.println("Passei AQ: "+countToken);
-				// Erro sintático - (
+				
+			}else {
+				
+				synchronToken();
 				
 			}
+
+			if (tokenAtual.getLexeme().equals(")")) {
+
+				tokenAtual = nextToken();
+
+			}else {
+					
+				synchronToken();
+					
+			}
+				
+			if (tokenAtual.getLexeme().equals("then")) {
+
+				tokenAtual = nextToken();
+
+			}else{
+					
+				synchronToken();
+					
+			}
+				
+			if (tokenAtual.getLexeme().equals("{")) {
+					
+				tokenAtual = nextToken();
+				code();
+				
+			}else {
+				
+				synchronToken();
+				
+			}
+			
+			if (tokenAtual.getLexeme().equals("}")) {
+
+				tokenAtual = nextToken();
+				ifElse();
+
+			}else {
+								
+				synchronToken();
+					
+			}
+				
+				
+
+			
 
 		}
 		
@@ -152,24 +176,22 @@ public class SyntaxAnaliser {
 				
 				tokenAtual = nextToken();
 				code();
+					
+			}else{
 				
-				if(tokenAtual.getLexeme().equals("}")) {
-					
-					tokenAtual = nextToken();
-					
-				}else {
-					
-					System.out.println("Passei AQ: "+countToken);
-					//Erro sintático - }
-					
-				}
-				
-			}else {
-				
-				System.out.println("Passei AQ: "+countToken);
-				//Erros sintático - {
+				synchronToken();
 				
 			}
+			if(tokenAtual.getLexeme().equals("}")) {
+						
+				tokenAtual = nextToken();
+						
+			}else {
+						
+				synchronToken();
+						
+			}
+	
 
 		} else if(tokenAtual.getLexeme().equals("if")) {
 			
