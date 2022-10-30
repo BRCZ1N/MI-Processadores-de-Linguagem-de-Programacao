@@ -9,55 +9,55 @@ public class SyntaxAnaliser {
 	private Token tokenAtual;
 
 	public void refreshTokenList() {
-		
+
 		this.listTokens = LexicalAnaliser.getListTokens();
-				
+
 	}
-	
+
 	public boolean isEof() {
-		
-		if(countToken > listTokens.size()-1) {
-			
+
+		if (countToken > listTokens.size() - 1) {
+
 			return true;
-			
+
 		}
-		
+
 		return false;
-		
-		
+
 	}
-	
+
 	public Token nextToken() {
 
-		if(!isEof()) {
-	
+		if (!isEof()) {
+
 			return listTokens.get(countToken++);
-			
+
 		}
-		
+
 		return new Token();
 
 	}
-	
+
 	public Token synchronToken() {
-		
-		while(!(tokenAtual.getTypeToken().equals(InitialsToken.TK_DELIMITER.getTypeTokenCode()) || tokenAtual.getTypeToken().equals(InitialsToken.TK_RESERVED_WORDS.getTypeTokenCode())) && !isEof()) {
-		
+
+		while (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_DELIMITER.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_RESERVED_WORDS.getTypeTokenCode())) && !isEof()) {
+
 			tokenAtual = nextToken();
-			
+
 		}
-		
+
 		return tokenAtual;
-		
+
 	}
-	
+
 	public void execAnaliser() {
-		
+
 		tokenAtual = nextToken();
-		while(tokenAtual.getLexeme() != "") {
-			
+		while (tokenAtual.getLexeme() != "") {
+
 			cmdIfExpression();
-			
+
 		}
 
 	}
@@ -72,61 +72,56 @@ public class SyntaxAnaliser {
 
 				tokenAtual = nextToken();
 				expLogic();
-				
-			}else {
-				
+
+			} else {
+
 				synchronToken();
-				
+
 			}
 
 			if (tokenAtual.getLexeme().equals(")")) {
 
 				tokenAtual = nextToken();
 
-			}else {
-					
+			} else {
+
 				synchronToken();
-					
+
 			}
-				
+
 			if (tokenAtual.getLexeme().equals("then")) {
 
 				tokenAtual = nextToken();
 
-			}else{
-					
+			} else {
+
 				synchronToken();
-					
+
 			}
-				
+
 			if (tokenAtual.getLexeme().equals("{")) {
-					
+
 				tokenAtual = nextToken();
 				code();
-				
-			}else {
-				
+
+			} else {
+
 				synchronToken();
-				
+
 			}
-			
+
 			if (tokenAtual.getLexeme().equals("}")) {
 
 				tokenAtual = nextToken();
 				ifElse();
 
-			}else {
-								
-				synchronToken();
-					
-			}
-				
-				
+			} else {
 
-			
+				synchronToken();
+
+			}
 
 		}
-		
 
 	}
 
@@ -142,62 +137,63 @@ public class SyntaxAnaliser {
 
 	}
 
-//	public void cmdPrint() {
-//		if (tokenAtual.getLexeme() == "print") {
-//			tokenAtual = nextToken();
-//			if (tokenAtual.getLexeme() == "(") {
-//				tokenAtual = nextToken();
-//				listaArg();
-//
-//				if (tokenAtual.getLexeme() == ")") {
-//					tokenAtual = nextToken();
-//					if (tokenAtual.getLexeme() == ";") {
-//
-//					} else {
-//
-//					}
-//
-//				} else {
-//
-//				}
-//			} else {
-//
-//			}
-//
-//		}
-//	}
+	public void cmdPrint() {
+		if (tokenAtual.getLexeme().equals("print")) {
+			tokenAtual = nextToken();
+			if (tokenAtual.getLexeme().equals("(")) {
+				tokenAtual = nextToken();
+				listaArg();
+			} else {
+				synchronToken();
+			}
+
+			if (tokenAtual.getLexeme().equals(")")) {
+				tokenAtual = nextToken();
+
+			} else {
+				synchronToken();
+			}
+
+			if (tokenAtual.getLexeme().equals(";")) {
+
+			} else {
+				synchronToken();
+
+			}
+		}
+	}
+
 	public void ifElse() {
 
 		if (tokenAtual.getLexeme().equals("else")) {
-			
+
 			tokenAtual = nextToken();
-			
-			if(tokenAtual.getLexeme().equals("{")) {
-				
+
+			if (tokenAtual.getLexeme().equals("{")) {
+
 				tokenAtual = nextToken();
 				code();
-					
-			}else{
-				
-				synchronToken();
-				
-			}
-			if(tokenAtual.getLexeme().equals("}")) {
-						
-				tokenAtual = nextToken();
-						
-			}else {
-						
-				synchronToken();
-						
-			}
-	
 
-		} else if(tokenAtual.getLexeme().equals("if")) {
-			
+			} else {
+
+				synchronToken();
+
+			}
+			if (tokenAtual.getLexeme().equals("}")) {
+
+				tokenAtual = nextToken();
+
+			} else {
+
+				synchronToken();
+
+			}
+
+		} else if (tokenAtual.getLexeme().equals("if")) {
+
 			tokenAtual = nextToken();
 			cmdIfExpression();
-			
+
 		}
 
 	}
