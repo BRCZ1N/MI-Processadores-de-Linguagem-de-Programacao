@@ -470,7 +470,12 @@ public class SyntaxAnaliser {
 
 	}
 
-	public void struct() {
+	/*
+	 * First(Struct) = {struct}
+	 * 
+	 */
+
+	public void cmdStruct() {
 
 		if (tokenAtual.getLexeme().equals("struct")) {
 
@@ -501,20 +506,43 @@ public class SyntaxAnaliser {
 	}
 
 	/*
-	 * 
-	 * 
-	 * 
-	 * INCONCLUSIVOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-	 * 
-	 * 
-	 * 
-	 * 
+	 * First(StructDeclaration) = { { , extends }
 	 * 
 	 */
 
 	public void structDeclaration() {
 
-		if (tokenAtual != null) {
+		if (tokenAtual.getLexeme().equals("{")) {
+
+			varBlock();
+
+			if (!tokenAtual.getLexeme().equals("}")) {
+
+				synchronToken();
+
+			}
+
+		} else if (tokenAtual.getLexeme().equals("extends")) {
+
+			structExtends();
+
+			if (!tokenAtual.getLexeme().equals("{")) {
+
+				synchronToken();
+
+			}
+
+			varBlock();
+
+			if (!tokenAtual.getLexeme().equals("}")) {
+
+				synchronToken();
+
+			}
+
+		} else {
+
+			// ERRO AQ
 
 		}
 
@@ -522,21 +550,23 @@ public class SyntaxAnaliser {
 
 	public void structInvocation() {
 
-		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
-			if (!tokenAtual.getLexeme().equals(".")) {
+			synchronToken();
 
-				synchronToken();
+		}
 
-			}
+		if (!tokenAtual.getLexeme().equals(".")) {
 
-			structInvocationDecider();
+			synchronToken();
 
-			if (!tokenAtual.getLexeme().equals(";")) {
+		}
 
-				synchronToken();
+		structInvocationDecider();
 
-			}
+		if (!tokenAtual.getLexeme().equals(";")) {
+
+			synchronToken();
 
 		}
 
@@ -558,6 +588,10 @@ public class SyntaxAnaliser {
 
 		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+		}else {
+			
+			arrayType();
+			
 		}
 
 	}
@@ -713,17 +747,16 @@ public class SyntaxAnaliser {
 	}
 
 	public void varAssignOrNotAssign() {
-		
-		if(tokenAtual.getLexeme().equals("=")) {
-		
+
+		if (tokenAtual.getLexeme().equals("=")) {
+
 			ExpressionsAndDataTypes();
-			
-		}else {
-			
+
+		} else {
+
 			return;
-			
+
 		}
-		
 
 	}
 
@@ -749,20 +782,17 @@ public class SyntaxAnaliser {
 		}
 
 	}
-	
+
 	public void expressionsAndDataTypes() {
-		
-		if(tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode())) {
-			
-			
-			
-		}else {
-			
+
+		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode())) {
+
+		} else {
+
 			expressionAritmetic();
-			
+
 		}
-		
-		
+
 	}
 
 	public void dataTypeArray() {
