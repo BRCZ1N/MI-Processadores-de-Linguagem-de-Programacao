@@ -61,6 +61,155 @@ public class SyntaxAnaliser {
 
 	}
 
+	/*
+	 * 
+	 * <Var> ::= var'{'<Var_Block>'}' <Var_Block> ::= <> | <Type> <Var_Declaration>
+	 * <Var_Block> <Var_Declaration> ::= Identifier <Var_Declaration_Aux>';'
+	 * <Var_Declaration_Aux> ::= '=' <Expressions_And_DataTypes>
+	 * <Var_Declaration_AuxA> | '['<Data_Type_Array>']'<Array_Definition>
+	 * <Var_Declaration_AuxA> | <> <Var_Declaration_AuxA> ::= <> | ',' Identifier
+	 * <Var_Declaration_Aux>
+	 * 
+	 */
+
+	// OK
+	// OK
+	// OK
+	public void var() {
+
+		if (tokenAtual.getLexeme().equals("var")) {
+
+			if (!tokenAtual.getLexeme().equals("{")) {
+
+				synchronToken();
+
+			}
+
+			varBlock();
+
+			if (!tokenAtual.getLexeme().equals("}")) {
+
+				synchronToken();
+
+			}
+
+		}
+
+	}
+
+	// OK
+	// OK
+	// OK
+	public void varBlock() {
+
+		if (listTypeToken.contains(tokenAtual.getLexeme())) {
+
+			type();
+			varDeclaration();
+			varBlock();
+
+		} else {
+
+			return;
+
+		}
+
+	}
+
+	// OK
+	// OK
+	// OK
+	public void varDeclaration() {
+
+		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+
+			synchronToken();
+
+		}
+
+		varDeclarationAux();
+
+		if (!tokenAtual.getTypeToken().equals(";")) {
+
+			synchronToken();
+
+		}
+
+	}
+
+	// OK
+	// OK
+	// OK
+	public void varDeclarationAux() {
+
+		if (tokenAtual.getTypeToken().equals("=")) {
+
+			varDeclarationAuxA();
+
+		} else if (tokenAtual.getTypeToken().equals("[")) {
+
+			dataTypeArray();
+
+			if (!tokenAtual.getTypeToken().equals("]")) {
+
+				synchronToken();
+
+			}
+
+			arrayDefinition();
+			varDeclarationAuxA();
+
+		} else {
+
+			return;
+
+		}
+
+	}
+
+	// OK
+	// OK
+	// OK
+	public void varDeclarationAuxA() {
+
+		if (tokenAtual.getTypeToken().equals(",")) {
+
+			if (!tokenAtual.getLexeme().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+
+				synchronToken();
+
+			}
+
+			varDeclarationAux();
+
+		} else {
+
+			return;
+
+		}
+
+	}
+
+	public void arrayDefinition() {
+
+		if (tokenAtual.getLexeme().equals("[")) {
+
+			dataTypeArray();
+
+			if (!tokenAtual.getLexeme().equals("]")) {
+
+				synchronToken();
+
+			}
+
+		} else {
+
+			return;
+
+		}
+
+	}
+
 	public void execAnaliser() {
 
 		tokenAtual = nextToken();
@@ -72,9 +221,6 @@ public class SyntaxAnaliser {
 
 	}
 
-	// OK
-	// OK
-	// OK
 	public void returnStatement() {
 
 		if (!tokenAtual.getLexeme().equals("return")) {
@@ -93,9 +239,6 @@ public class SyntaxAnaliser {
 
 	}
 
-	// OK
-	// OK
-	// OK
 	public void auxParameter() {
 
 		if (tokenAtual.getLexeme().equals(",")) {
@@ -112,9 +255,6 @@ public class SyntaxAnaliser {
 
 	}
 
-	// OK
-	// OK
-	// OK
 	public void function() {
 
 		if (tokenAtual.getLexeme().equals("function")) {
@@ -160,9 +300,6 @@ public class SyntaxAnaliser {
 
 	}
 
-	// OK
-	// OK
-	// OK
 	public void procedure() {
 
 		if (tokenAtual.getLexeme().equals("procedure")) {
@@ -205,9 +342,6 @@ public class SyntaxAnaliser {
 
 	}
 
-	// OK
-	// OK
-	// OK
 	public void functionParameter() {
 
 		if (listTypeToken.contains(tokenAtual.getLexeme())) {
@@ -224,9 +358,6 @@ public class SyntaxAnaliser {
 
 	}
 
-	// OK
-	// OK
-	// OK
 	public void functionCall() {
 
 		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
@@ -255,9 +386,6 @@ public class SyntaxAnaliser {
 
 	}
 
-	// OK
-	// OK
-	// OK
 	public void functionParameterCall() {
 
 		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
@@ -275,9 +403,6 @@ public class SyntaxAnaliser {
 
 	}
 
-	// OK
-	// OK
-	// OK
 	public void auxFunction() {
 
 		if (tokenAtual.getLexeme().equals(",")) {
@@ -338,15 +463,93 @@ public class SyntaxAnaliser {
 
 	}
 
-	public void expLogic() {
-
-	}
-
-	public void code() {
-
-	}
-
+	// OK
+	// OK
+	// OK
 	public void listaArg() {
+
+		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
+				|| !tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
+				|| !tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode())) {
+
+			synchronToken();
+
+		} else if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+
+			listArgAux();
+
+		}
+
+	}
+
+	// OK
+	// OK
+	// OK
+	public void listArgAux() {
+
+		if (tokenAtual.getLexeme().equals(".")) {
+
+			structInvocationDecider();
+
+		} else if (tokenAtual.getLexeme().equals("[")) {
+
+			dataTypeArray();
+
+			if (!tokenAtual.getLexeme().equals("]")) {
+
+				synchronToken();
+
+			}
+
+			arrayDefinition();
+
+		} else {
+
+			return;
+
+		}
+
+	}
+
+	// OK
+	// OK
+	// OK
+	public void listaArgRead() {
+
+		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+
+			synchronToken();
+
+		}
+
+	}
+
+	// OK
+	// OK
+	// OK
+	public void listArgReadAux() {
+
+		if (tokenAtual.getLexeme().equals(".")) {
+
+			structInvocationDecider();
+
+		} else if (tokenAtual.getLexeme().equals("[")) {
+
+			dataTypeArray();
+
+			if (!tokenAtual.getLexeme().equals("]")) {
+
+				synchronToken();
+
+			}
+
+			arrayDefinition();
+
+		} else {
+
+			return;
+
+		}
 
 	}
 
@@ -471,11 +674,17 @@ public class SyntaxAnaliser {
 	}
 
 	/*
-	 * First(Struct) = {struct}
+	 * 
+	 * <Struct> ::= struct Identifier <Struct_Declaration> <Struct_Declaration> ::=
+	 * <Struct_Declaration_AuxA>'{'<Var_Block>'}' <Struct_Declaration_AuxA> ::= <> |
+	 * <Struct_Extends> <Struct_Invocation> ::=
+	 * Identifier'.'<Struct_Invocation_Decider>';' <Struct_Invocation_Decider> ::=
+	 * Identifier <Struct_Invocation_Decider_Aux> <Struct_Invocation_Decider_Aux>
+	 * ::= <> | '['<Data_Type_Array>']'<Array_Definition> <Struct_Extends> ::=
+	 * extends Identifier
 	 * 
 	 */
-
-	public void cmdStruct() {
+	public void struct() {
 
 		if (tokenAtual.getLexeme().equals("struct")) {
 
@@ -486,20 +695,6 @@ public class SyntaxAnaliser {
 			}
 
 			structDeclaration();
-
-			if (!tokenAtual.getLexeme().equals("{")) {
-
-				synchronToken();
-
-			}
-
-			varBlock();
-
-			if (!tokenAtual.getLexeme().equals("}")) {
-
-				synchronToken();
-
-			}
 
 		}
 
@@ -512,40 +707,36 @@ public class SyntaxAnaliser {
 
 	public void structDeclaration() {
 
-		if (tokenAtual.getLexeme().equals("{")) {
+		structDeclarationAuxA();
 
-			varBlock();
+		if (!tokenAtual.getLexeme().equals("{")) {
 
-			if (!tokenAtual.getLexeme().equals("}")) {
-
-				synchronToken();
-
-			}
-
-		} else if (tokenAtual.getLexeme().equals("extends")) {
-
-			structExtends();
-
-			if (!tokenAtual.getLexeme().equals("{")) {
-
-				synchronToken();
-
-			}
-
-			varBlock();
-
-			if (!tokenAtual.getLexeme().equals("}")) {
-
-				synchronToken();
-
-			}
-
-		} else {
-
-			// ERRO AQ
+			synchronToken();
 
 		}
 
+		varBlock();
+
+		if (!tokenAtual.getLexeme().equals("}")) {
+
+			synchronToken();
+
+		}
+
+	}
+	
+	public void structDeclarationAuxA() {
+		
+		if(tokenAtual.getLexeme().equals("extends")) {
+			
+			
+			
+		}else {
+			
+			return;
+			
+		}
+		
 	}
 
 	public void structInvocation() {
@@ -572,26 +763,14 @@ public class SyntaxAnaliser {
 
 	}
 
-	/*
-	 * 
-	 * 
-	 * 
-	 * INCONCLUSIVOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-
 	public void structInvocationDecider() {
 
 		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
-		}else {
-			
+		} else {
+
 			arrayType();
-			
+
 		}
 
 	}
@@ -622,127 +801,86 @@ public class SyntaxAnaliser {
 	 * 
 	 */
 
-	public void varB() {
+//	public void varAux() {
+//
+//		if (tokenAtual.getLexeme().equals(",")) {
+//
+//			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+//
+//				synchronToken();
+//
+//			} else {
+//
+//				tokenAtual = nextToken();
+//
+//			}
+//
+//			if (tokenAtual.getLexeme().equals("[")) {
+//
+//				arrayType();
+//				varAux();
+//
+//			} else {
+//
+//				varAssignOrNotAssign();
+//				varAux();
+//
+//			}
+//
+//		} else {
+//
+//			return;
+//
+//		}
+//
+//	}
 
-		if (tokenAtual.getLexeme().equals("var")) {
+//	
+//	public void varAssignOrNotAssign() {
+//
+//		if (tokenAtual.getLexeme().equals("=")) {
+//
+//			expressionsAndDataTypes();
+//
+//		} else {
+//
+//			return;
+//
+//		}
+//
+//	}
 
-			if (!tokenAtual.getLexeme().equals("{")) {
+	public boolean type() {
 
-				synchronToken();
+		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
-			}
+			synchronToken();
 
-			varBlock();
+		} else {
 
-			if (!tokenAtual.getLexeme().equals("}")) {
-
-				synchronToken();
-
-			}
+			tokenAtual = nextToken();
 
 		}
 
-	}
-
-	public void varBlock() {
-
-		if (listTypeToken.contains(tokenAtual.getLexeme())) {
-
-			varDeclaration();
-			varBlock();
-
-		} else {
-
-			return;
-
-		}
-
-	}
-
-	public void varDeclaration() {
-
-		type();
-		varDeclarationAux();
-
-	}
-
-	/*
-	 * 
-	 * 
-	 * 
-	 * EM ANALISEE----------------->>>>>>>><<<<<<<<<<<<<<---------------------EM
-	 * ANALISEE
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-
-	public void varDeclarationAux() {
-
-		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
-
-			varAssignOrNotAssign();
-			varAux();
-
-		} else {
+		if (tokenAtual.getLexeme().equals("[")) {
 
 			arrayType();
 			varAux();
 
-		}
-
-		if (!tokenAtual.getLexeme().equals(";")) {
-
-			synchronToken();
-
-		}
-
-	}
-
-	/*
-	 * 
-	 * 
-	 * 
-	 * EM ANALISEE----------------->>>>>>>><<<<<<<<<<<<<<---------------------EM
-	 * ANALISEE
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-
-	public void varAux() {
-
-		if (tokenAtual.getLexeme().equals(",")) {
-
-			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
-
-				synchronToken();
-
-			} else {
-
-				tokenAtual = nextToken();
-
-			}
-
-			if (tokenAtual.getLexeme().equals("[")) {
-
-				arrayType();
-				varAux();
-
-			} else {
-
-				varAssignOrNotAssign();
-				varAux();
-
-			}
-
 		} else {
 
-			return;
+			varAssignOrNotAssign();
+			varAux();
 
 		}
+
+	}else
+
+	{
+
+		return;
+
+	}
 
 	}
 
@@ -767,7 +905,11 @@ public class SyntaxAnaliser {
 
 			synchronToken();
 
+			return false;
+
 		}
+
+		return true;
 
 	}
 
@@ -786,6 +928,13 @@ public class SyntaxAnaliser {
 	public void expressionsAndDataTypes() {
 
 		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode())) {
+			
+			
+		} else if(){
+
+
+		}else {
+			
 
 		} else {
 
@@ -852,8 +1001,41 @@ public class SyntaxAnaliser {
 
 	public void acess() {
 
-		structInvocation();
-		arrayType();
+		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+
+			synchronToken();
+
+		}
+
+		acess();
+
+	}
+
+	public void acessAux() {
+
+		if (tokenAtual.getTypeToken().equals(".")) {
+
+			structInvocationDecider();
+
+		} else if (tokenAtual.getLexeme().equals("[")) {
+
+			if (!tokenAtual.getLexeme().equals("[")) {
+
+				synchronToken();
+
+			}
+
+			dataTypeArray();
+
+			if (!tokenAtual.getLexeme().equals("]")) {
+
+				synchronToken();
+
+			}
+
+			arrayDefinition();
+
+		}
 
 	}
 
@@ -952,6 +1134,14 @@ public class SyntaxAnaliser {
 			synchronToken();
 
 		}
+
+	}
+
+	public void expLogic() {
+
+	}
+
+	public void code() {
 
 	}
 
