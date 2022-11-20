@@ -1023,7 +1023,50 @@ public class SyntaxAnaliser {
 		}
 
 	}
+	public void expressionLogic() {
+		expressionRelational();
+		
+		
+		
+	}
+	public void expressionRelational() {
+		fatorRelational();
+		expressionRelationalAux();
+		
+		
+	}
+	public void expressionRelationalAux() {
+	
+		
+	}
 
+	public void expressionLogicAux(){
+		
+	}
+	
+	
+	public void fatorRelational() {
+		
+		if(!tokenAtual.getLexeme().equals("(")) {
+			synchronToken();
+		
+		}
+		expressionRelational();
+		if(!tokenAtual.getLexeme().equals(")")) {
+			synchronToken();
+		}
+		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
+				|| !tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())){
+			synchronToken();
+		}
+		return;
+	}
+		
+	
+	
+	
+	
+	
 	public void dataTypeArray() {
 
 		if (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
@@ -1079,6 +1122,12 @@ public class SyntaxAnaliser {
 
 	public void code() {
 
+	}
+	public void opLogic() {
+		
+	}
+	public void opRelational() {
+		
 	}
 
 }
