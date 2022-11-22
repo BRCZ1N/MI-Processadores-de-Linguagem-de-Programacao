@@ -177,3 +177,176 @@ Float = {Digit}+'.'{Digit}+
                  |  '>=' 
                  |  '=='  
                  |  '!=' 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+/////////////////////////////////////////////////////GRAMATICA APÓS MUDAR ALGUMAS COISAS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ "Start Symbol" = <Program> 
+
+! -------------------------------------------------
+! Character Sets
+! -------------------------------------------------
+
+{ID Head}      = {Letter} + [_]
+{ID Tail}      = {Alphanumeric} + [_]
+{String Chars} = {Printable} + {HT} - ["]
+
+! -------------------------------------------------
+! Terminais
+! -------------------------------------------------
+
+Identifier    = {ID Head}{ID Tail}*
+StringLiteral = '"' {String Chars}* '"'
+Integer = {Digit}+
+Float = {Digit}+'.'{Digit}+
+
+! -------------------------------------------------
+! Regras
+! -------------------------------------------------
+
+<Program> ::= <const> 'start' '(' ')' '{' <Code> '}'   
+<Code>  ::= <CodeAux> <Code> | <>
+<CodeAux> ::= <Var> | <Struct> | <Operations_And_Callers> | <Read> | <Print> | <While> | <function> | <procedure> | <if-Expression>  
+<Value> ::= Identifier | <Number> | StringLiteral 
+<Number> ::= Integer | Float 
+<Data_Type_Array> ::= <Number> | Identifier 
+<Expressions_And_DataTypes> ::= <Expression_Aritmetic> | StringLiteral
+                              
+<Array> ::= '['<Data_Type_Array>']'<Array_Definition>
+<Array_Definition> ::= <> |'['<Data_Type_Array>']'           
+
+! -------------------------------------------------------------------
+! Declaração do bloco de variáveis 
+! -------------------------------------------------------------------
+
+<Var> ::= var'{'<Var_Block>'}'
+<Var_Block> ::= <> | <Type> <Var_Declaration> <Var_Block> | 'struct' Identifier <Var_Declaration_Struct> <Var_Block>
+<Var_Declaration_Struct> ::= Identifier <Var_Declaration_Struct_Aux>';'
+<Var_Declaration_Struct_Aux> ::= ','Identifier <Var_Declaration_Struct_Aux> | <> 
+<Var_Declaration> ::= Identifier <Var_Declaration_Aux>';'                       
+<Var_Declaration_Aux> ::= '=' <Expressions_And_DataTypes> <Var_Declaration_AuxA> | <Array> <Var_Declaration_AuxA> | <>
+<Var_Declaration_AuxA> ::= <> | ',' Identifier <Var_Declaration_Aux>  
+      
+! -------------------------------------------------------------------
+! Declaração do bloco de struct
+! -------------------------------------------------------------------    
+                            
+<Struct> ::= struct Identifier <Struct_Aux> 
+<Struct_Aux> ::= '{'<Var_Block>'}' | extends Identifier '{'<Var_Block>'}'
+<Struct_Invocation_Decider> ::= <> | <Array>
+                             
+! -------------------------------------------------------------------
+! Declaração do bloco de constantes
+! -------------------------------------------------------------------      
+               
+<Const> ::= const'{'<Const_Block>'}'
+<Const_Block> ::= <> | <Const_Declaration> <Const_Block>
+<Const_Declaration> ::= <Type> Identifier '=' <Expressions_And_DataTypes> <Const_Aux>';'
+<Const_Aux> ::= <> | ','Identifier '=' <Expressions_And_DataTypes> <Const_Aux> 
+             
+! -------------------------------------------------------------------
+! Regras de Atribuição
+! ------------------------------------------------------------------- 
+         
+<Operations_And_Callers> ::= Identifier<Operations_And_Callers_AuxA>';'
+<Operations_And_Callers_AuxA> ::= <Operations_And_Callers_AuxB> <Operations_And_Callers_AuxC> | '(' <function_call_parameter> ')'                               
+<Operations_And_Callers_AuxC> ::= '=' <Expressions_And_DataTypes> | <>
+<Operations_And_Callers_AuxB> ::= '.'Identifier <Struct_Invocation_Decider> | <Array> | <>
+
+! -------------------------------------------------------------------
+! Regras de funções e procedimentos
+! -------------------------------------------------------------------  
+
+<return_statement> ::= return <Value> ';' 
+<function> ::= function <Type> Identifier '(' <function_parameter>')' '{'<Code> <return_statement> '}'     
+<procedure> ::= procedure Identifier '('<function_parameter>')' '{'<Code>'}'
+<function_parameter> ::= <Type> Identifier <function_parameter_Aux> <aux_parameter> | <>
+<function_parameter_Aux> ::= <Array> | <>    
+<aux_parameter> ::= <> | ',' <function_parameter>      
+<function_call> ::= Identifier '(' <function_call_parameter> ')'';'  
+                 
+
+<function_call_parameter> ::=  <function_call_parameterAuxA> <aux_call_parameter> | <>
+<function_call_parameterAuxA> ::= Identifier <function_call_parameter_AuxB>| <Number> | StringLiteral   
+<function_call_parameter_AuxB> ::= <Array> | <>
+<aux_call_parameter> ::= ',' <function_call_parameter> | <>   
+                   
+! -------------------------------------------------------------------
+! Tipos
+! -------------------------------------------------------------------  
+  
+<Type> ::= 'int'
+          | 'real'
+          | 'string'
+          | 'boolean'
+     
+! -------------------------------------------------------------------
+! Listas de argumentos possíveis 
+! -------------------------------------------------------------------  
+
+<ListaArg> ::= Identifier <ListaArgAux> | <Number> | StringLiteral | <>
+<ListaArgAux>::= '.'Identifier<Struct_Invocation_Decider>| <Array> | <>
+
+<ListaArg_Read> ::= Identifier <ListaArg_ReadAux> 
+<ListaArg_ReadAux>::= <Array> | '.'Identifier <Struct_Invocation_Decider>| <>
+                  
+! -------------------------------------------------
+! Estrutura de repetição
+! -------------------------------------------------
+
+<While> ::= 'while' '(' <Expressions_Logic_Relational> ')' '{' <Code> '}' 
+
+! -------------------------------------------------
+! Estrutura condicional
+! -------------------------------------------------
+
+<if-expression> ::= if '(' <Expressions_Logic_Relational> ')' then '{' <Code> '}' <if-else>
+                
+<if-else> ::= else '{' <Code> '}'  |  <if-expression> | <>
+
+! -------------------------------------------------
+! Comandos de leitura/escrita
+! -------------------------------------------------
+<Print>  ::= 'print' '(' <ListaArg> ')' ';'
+
+<Read>  ::= 'read' '(' <ListaArg_Read> ')' ';'
+
+! -------------------------------------------------
+! Expressões aritméticas, lógicas e relacionais
+! -------------------------------------------------
+                     
+<Expressions_Logic_Relational> ::= <Expressions_Logic_And> <Expressions_Logic_Or_Aux>
+<Expressions_Logic_Or_Aux> ::= '||' <Expressions_Logic_And> <Expressions_Logic_Or_Aux> | <>
+<Expressions_Logic_And> ::= <Expressions_Relational> <Expressions_Logic_And_Aux> 
+<Expressions_Logic_And_Aux> ::= '&&' <Expressions_Relational> <Expressions_Logic_And_Aux> | <>                                  
+<Expressions_Relational> ::= <Fator_Relational> <Expressions_Relational_Aux>
+<Expressions_Relational_Aux> ::=  <Op_Relational> <Fator_Relational> <Expressions_Relational_Aux> | <>
+                              
+<Fator_Relational> ::= '('<Expressions_Logic_Relational>')' | Identifier | <Number> | '!'<Fator_Relational_Denial>
+<Fator_Relational_Denial> ::= Identifier | '('<Expressions_Logic_Relational>')'            
+
+                
+<Expression_Aritmetic> ::= <Termo><Expression_Aritmetic_Aux>        
+<Expression_Aritmetic_Aux> ::= <soma><Termo><Expression_Aritmetic_Aux> | <>                    
+<Termo> ::= <Incre><Termo_Aux>
+<Termo_Aux> ::= <Mult><Incre><Termo_Aux> | <>
+<Incre> ::= <OperatorU><Incre><Incre_Aux> | <Fator><Incre_Aux>
+<Incre_Aux> ::= <OperatorU><Incre_Aux> | <>                 
+<Fator> ::= '(' <Expression_Aritmetic> ')' | Identifier | <Number>
+         
+
+<soma> ::= '+'|'-'
+<mult> ::= '*'|'/'
+<OperatorU> ::= '++'|'--'
+      
+<Op_Logic> ::= '&&' | '||'
+            
+<Op_Logic_Negacao> ::= '!'
+            
+<Op_Relational> ::= '>'  
+                 |  '<'  
+                 |  '<=' 
+                 |  '>=' 
+                 |  '=='  
+                 |  '!=' 
