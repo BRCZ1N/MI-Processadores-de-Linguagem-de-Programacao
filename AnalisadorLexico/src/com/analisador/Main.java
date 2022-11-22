@@ -1,4 +1,4 @@
-package com.analisadorlexico;
+package com.analisador;
 
 import java.io.File;
 import java.io.FileFilter;

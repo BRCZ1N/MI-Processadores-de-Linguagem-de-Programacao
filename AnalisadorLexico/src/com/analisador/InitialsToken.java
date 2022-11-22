@@ -1,4 +1,4 @@
-package com.analisadorlexico;
+package com.analisador;
 
 public enum InitialsToken {
 

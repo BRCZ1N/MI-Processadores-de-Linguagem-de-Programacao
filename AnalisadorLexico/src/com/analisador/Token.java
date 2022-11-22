@@ -1,4 +1,4 @@
-package com.analisadorlexico;
+package com.analisador;
 
 //classe dos tokens 
 public class Token {
