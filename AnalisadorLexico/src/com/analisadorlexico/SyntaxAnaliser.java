@@ -82,7 +82,7 @@ public class SyntaxAnaliser {
 
 	}
 
-	public void startSymbol() {
+	public void startParser() {
 
 		program();
 
@@ -1047,7 +1047,7 @@ public class SyntaxAnaliser {
 
 		}
 
-		expLogic();
+		expressionLogicRelational();
 
 		if (!tokenAtual.getLexeme().equals(")")) {
 
@@ -1082,7 +1082,7 @@ public class SyntaxAnaliser {
 
 		}
 
-		expLogic();
+		expressionLogicRelational();
 
 		if (!tokenAtual.getLexeme().equals(")")) {
 
@@ -1201,12 +1201,52 @@ public class SyntaxAnaliser {
 
 	}
 
-	public void expressionLogic() {
+	public void expressionLogicRelational() {
+
+		expressionLogicAnd();
+		expressionLogicOrAux();
+
+	}
+
+	public void expressionLogicOrAux() {
+
+		if (tokenAtual.getLexeme().equals("||")) {
+
+			expressionLogicAnd();
+			expressionLogicOrAux();
+
+		} else {
+
+			return;
+
+		}
+
+	}
+
+	public void expressionLogicAnd() {
+
 		expressionRelational();
+		expressionLogicAndAux();
+
+	}
+
+	public void expressionLogicAndAux() {
+
+		if (tokenAtual.getLexeme().equals("&&")) {
+
+			expressionRelational();
+			expressionLogicAndAux();
+
+		} else {
+
+			return;
+
+		}
 
 	}
 
 	public void expressionRelational() {
+
 		fatorRelational();
 		expressionRelationalAux();
 
@@ -1214,38 +1254,205 @@ public class SyntaxAnaliser {
 
 	public void expressionRelationalAux() {
 
-	}
+		if (opRelational()) {
 
-	public void expressionLogicAux() {
+			fatorRelational();
+			expressionRelationalAux();
+
+		} else {
+
+			return;
+
+		}
 
 	}
 
 	public void fatorRelational() {
 
-		if (!tokenAtual.getLexeme().equals("(")) {
+		if (tokenAtual.getLexeme().equals("(")
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
+				|| tokenAtual.getLexeme().equals("!")) {
+
+			if (tokenAtual.getLexeme().equals("(")) {
+
+				expressionLogicRelational();
+
+				if (!tokenAtual.getLexeme().equals(")")) {
+
+					synchronToken();
+
+				}
+
+			} else if (tokenAtual.getLexeme().equals("!")) {
+
+				fatorRelationalDenial();
+
+			}
+
+		} else {
+
+			// ERRO
+
+		}
+
+	}
+
+	public void fatorRelationalDenial() {
+
+		if (tokenAtual.getTypeToken().equals("(")
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+
+			if (tokenAtual.getTypeToken().equals("(")) {
+
+				expressionLogicRelational();
+
+				if (!tokenAtual.getLexeme().equals(")")) {
+
+					synchronToken();
+
+				}
+
+			}
+
+		} else {
+
 			synchronToken();
 
 		}
-		expressionRelational();
-		if (!tokenAtual.getLexeme().equals(")")) {
-			synchronToken();
+
+	}
+
+	// OK
+	// OK
+	// OK
+	public void expressionsAritmetic() {
+
+		term();
+		expressionsAritmeticAux();
+
+	}
+
+	// OK
+	// OK
+	// OK
+	public void expressionsAritmeticAux() {
+
+		if (tokenAtual.getLexeme().equals("-") || tokenAtual.getLexeme().equals("+")) {
+
+			term();
+			expressionsAritmeticAux();
+
+		} else {
+
+			return;
+
 		}
-		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
-				|| !tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())) {
-			synchronToken();
+
+	}
+
+	// OK
+	// OK
+	// OK
+	public void term() {
+
+		incre();
+		termoAux();
+
+	}
+
+	// OK
+	// OK
+	// OK
+	public void termoAux() {
+
+		if (tokenAtual.getLexeme().equals("*") || tokenAtual.getLexeme().equals("/")) {
+
+			incre();
+			termoAux();
+
+		} else {
+
+			return;
+
 		}
-		return;
-	}
-
-	public void expLogic() {
 
 	}
 
-	public void opLogic() {
+	// OK
+	// OK
+	// OK
+	public void incre() {
+
+		if (tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--")) {
+
+			incre();
+			increAux();
+
+		} else if (tokenAtual.getLexeme().equals("(")
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+
+			fator();
+
+		}
 
 	}
 
-	public void opRelational() {
+	// OK
+	// OK
+	// OK
+	public void increAux() {
+
+		if (tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--")) {
+
+			increAux();
+
+		} else {
+
+			return;
+
+		}
+
+	}
+
+	// OK
+	// OK
+	// OK
+	public void fator() {
+
+		if (tokenAtual.getLexeme().equals("(")
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())) {
+
+			if (tokenAtual.getLexeme().equals("(")) {
+
+				expressionRelational();
+				if (!tokenAtual.getLexeme().equals(")")) {
+					synchronToken();
+				}
+
+			}
+
+		} else {
+
+			// ERRO AQ
+
+		}
+
+	}
+
+	public boolean opRelational() {
+
+		if (tokenAtual.getLexeme().equals(">") || tokenAtual.getLexeme().equals(">=")
+				|| tokenAtual.getLexeme().equals("<") || tokenAtual.getLexeme().equals("<=")
+				|| tokenAtual.getLexeme().equals("==") || tokenAtual.getLexeme().equals("!=")) {
+
+			return true;
+
+		}
+
+		return false;
 
 	}
 

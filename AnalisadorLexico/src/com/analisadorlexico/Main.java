@@ -17,7 +17,7 @@ public class Main {
 			
 			lexicalAnaliser.execAnaliser(file);
 			syntaxAnaliser.refreshTokenList();
-			syntaxAnaliser.execAnaliser();
+			syntaxAnaliser.startParser();
 			
 			writeTokensInArchive(file.getName());
 			LexicalAnaliser.clearAllList();

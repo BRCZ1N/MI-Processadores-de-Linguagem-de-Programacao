@@ -1,11 +1,12 @@
 package com.analisadorlexico;
+
 //classe dos tokens 
 public class Token {
 
 	private String lexeme;
-	private String typeToken ;
+	private String typeToken;
 	private long line;
-	
+
 	public Token(String typeToken, String lexeme, long line) {
 
 		this.lexeme = lexeme;
@@ -13,20 +14,19 @@ public class Token {
 		this.line = line;
 
 	}
-	
+
 	public Token(String typeToken, long line) {
-		
+
 		this.typeToken = typeToken;
 		this.line = line;
-		
-		
+
 	}
 
 	public Token() {
-		
+
 		this.typeToken = "";
 		this.lexeme = "";
-		
+
 	}
 
 	public String getLexeme() {
