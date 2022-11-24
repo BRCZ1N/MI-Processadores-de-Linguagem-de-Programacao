@@ -78,28 +78,19 @@ public class Parser {
 
 	}
 
-	public Token synchronToken() {
+	public void panicSynchron() {
 
-		while (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_DELIMITER.getTypeTokenCode())
-				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_RESERVED_WORDS.getTypeTokenCode())) && !isEof()) {
+		if (tokenAtual != null) {
 
-			tokenAtual = nextToken();
+			while (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_DELIMITER.getTypeTokenCode())
+					|| tokenAtual.getTypeToken().equals(InitialsToken.TK_RESERVED_WORDS.getTypeTokenCode()))
+					&& !isEof()) {
 
-		}
+				tokenAtual = nextToken();
 
-		return tokenAtual;
+			}
 
-	}
-
-	public void dataTypeArray() {
-
-		if (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
-				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode()))) {
-
-			errorTokenParser(tokenAtual.getLine(),
-					InitialsToken.TK_NUMBER.getTypeTokenCode() + "," + InitialsToken.TK_IDENTIFIER.getTypeTokenCode(),
-					tokenAtual.getLexeme());
-			synchronToken();
+		} else {
 
 		}
 
@@ -121,7 +112,7 @@ public class Parser {
 		if (!tokenAtual.getTypeToken().equals("start")) {
 
 			errorTokenParser(tokenAtual.getLine(), "start", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -132,7 +123,7 @@ public class Parser {
 		if (!tokenAtual.getTypeToken().equals("(")) {
 
 			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -143,7 +134,7 @@ public class Parser {
 		if (!tokenAtual.getTypeToken().equals(")")) {
 
 			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -154,7 +145,7 @@ public class Parser {
 		if (!tokenAtual.getTypeToken().equals("{")) {
 
 			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -167,7 +158,7 @@ public class Parser {
 		if (!tokenAtual.getTypeToken().equals("}")) {
 
 			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -182,7 +173,8 @@ public class Parser {
 	// OK
 	public void code() {
 
-		if (listCmdToken.contains(tokenAtual.getLexeme())) {
+		if (listCmdToken.contains(tokenAtual.getLexeme())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 			codeAux();
 			code();
@@ -234,20 +226,77 @@ public class Parser {
 
 		} else if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
-			opAndCallersAuxA();
-
-			if (tokenAtual.getLexeme().equals(";")) {
-
-				errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
-				synchronToken();
-
-			}
+			opAndCallers();
 
 		} else {
 
 			errorTokenParser(tokenAtual.getLine(), "var,struct,read,print,while,function,procedure,if,IDENTIFIER",
 					tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
+
+		}
+
+	}
+
+	// OK
+	// OK
+	// OK
+	public void value() {
+
+		if (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode()))) {
+
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER,NUMBER,STRING", tokenAtual.getLexeme());
+			panicSynchron();
+
+		} else {
+
+			tokenAtual = nextToken();
+
+		}
+
+	}
+
+	public void dataTypeArray() {
+
+		if (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode()))) {
+
+			errorTokenParser(tokenAtual.getLine(),
+					InitialsToken.TK_NUMBER.getTypeTokenCode() + "," + InitialsToken.TK_IDENTIFIER.getTypeTokenCode(),
+					tokenAtual.getLexeme());
+			panicSynchron();
+
+		}
+
+	}
+
+	// FALTA
+	// FALTA
+	// FALTA
+	// FALTA
+	// FALTA
+	// FALTA
+	public void expressionsAndDataTypes() {
+
+		if (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
+				|| tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--")
+				|| tokenAtual.getLexeme().equals("("))) {
+
+			errorTokenParser(tokenAtual.getLine(), "++, --, (, IDENTIFIER, NUMBER , STRING", tokenAtual.getLexeme());
+			panicSynchron();
+
+		} else {
+
+			if (tokenAtual.getLexeme().equals("(")
+					|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+
+				expressionsAritmetic();
+
+			}
 
 		}
 
@@ -258,7 +307,7 @@ public class Parser {
 		if (!tokenAtual.getLexeme().equals("[")) {
 
 			errorTokenParser(tokenAtual.getLine(), "[", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -271,7 +320,7 @@ public class Parser {
 		if (!tokenAtual.getLexeme().equals("]")) {
 
 			errorTokenParser(tokenAtual.getLine(), "]", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -297,7 +346,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("]")) {
 
 				errorTokenParser(tokenAtual.getLine(), "]", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -316,85 +365,33 @@ public class Parser {
 	// OK
 	// OK
 	// OK
-	public void value() {
+	public void cmdVar() {
 
-		if (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
-				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
-				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode()))) {
+		if (tokenAtual.getLexeme().equals("var")) {
 
-			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER,NUMBER,STRING", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("{")) {
 
-		} else {
-
-			tokenAtual = nextToken();
-
-		}
-
-	}
-
-	// FALTA
-	// FALTA
-	// FALTA
-	// FALTA
-	// FALTA
-	// FALTA
-	public void expressionsAndDataTypes() {
-
-		if (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode())
-				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
-				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
-				|| tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--")
-				|| tokenAtual.getLexeme().equals("("))) {
-
-			errorTokenParser(tokenAtual.getLine(), "++','--', '(', Identifier,Integer, Float, StringLiteral",
-					tokenAtual.getLexeme());
-			synchronToken();
-
-		} else {
-
-			if (!tokenAtual.getLexeme().equals("(")) {
-
-				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-				synchronToken();
+				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
+				panicSynchron();
 
 			} else {
 
 				tokenAtual = nextToken();
-				expressionsAritmetic();
 
 			}
 
-		}
+			varBlock();
 
-	}
+			if (!tokenAtual.getLexeme().equals("}")) {
 
-	// OK
-	// OK
-	// OK
-	public void cmdVar() {
+				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
+				panicSynchron();
 
-		if (!tokenAtual.getLexeme().equals("{")) {
+			} else {
 
-			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-			synchronToken();
+				tokenAtual = nextToken();
 
-		} else {
-
-			tokenAtual = nextToken();
-
-		}
-
-		varBlock();
-
-		if (!tokenAtual.getLexeme().equals("}")) {
-
-			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-			synchronToken();
-
-		} else {
-
-			tokenAtual = nextToken();
+			}
 
 		}
 
@@ -416,7 +413,7 @@ public class Parser {
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -440,7 +437,7 @@ public class Parser {
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -449,6 +446,17 @@ public class Parser {
 		}
 
 		varDeclarationStructAux();
+
+		if (!tokenAtual.getLexeme().equals(";")) {
+
+			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
+			panicSynchron();
+
+		} else {
+
+			tokenAtual = nextToken();
+
+		}
 
 	}
 
@@ -459,7 +467,7 @@ public class Parser {
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -483,7 +491,7 @@ public class Parser {
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -496,7 +504,7 @@ public class Parser {
 		if (!tokenAtual.getTypeToken().equals(";")) {
 
 			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -518,20 +526,7 @@ public class Parser {
 
 		} else if (tokenAtual.getTypeToken().equals("[")) {
 
-			dataTypeArray();
-
-			if (!tokenAtual.getTypeToken().equals("]")) {
-
-				errorTokenParser(tokenAtual.getLine(), "]", tokenAtual.getLexeme());
-				synchronToken();
-
-			} else {
-
-				tokenAtual = nextToken();
-
-			}
-
-			arrayDefinition();
+			array();
 			varDeclarationAuxA();
 
 		} else {
@@ -552,7 +547,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -575,18 +570,22 @@ public class Parser {
 	// OK
 	public void cmdStruct() {
 
-		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+		if (tokenAtual.getLexeme().equals("struct")) {
 
-			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
+
+				tokenAtual = nextToken();
+
+			}
+
+			structAux();
 
 		}
-
-		structAux();
 
 	}
 
@@ -602,7 +601,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("}")) {
 
 				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -615,7 +614,7 @@ public class Parser {
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -626,7 +625,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("{")) {
 
 				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -639,7 +638,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("}")) {
 
 				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -650,54 +649,17 @@ public class Parser {
 		} else {
 
 			errorTokenParser(tokenAtual.getLine(), "{ , extends", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		}
 
 	}
 
-//	public void structInvocation() {
-//
-//		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
-//
-//			synchronToken();
-//
-//		}
-//
-//		if (!tokenAtual.getLexeme().equals(".")) {
-//
-//			synchronToken();
-//
-//		}
-//
-//		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
-//
-//			synchronToken();
-//
-//		}
-//
-//		structInvocationDecider();
-//
-//	}
-
 	public void structInvocationDecider() {
 
 		if (tokenAtual.getLexeme().equals("[")) {
 
-			dataTypeArray();
-
-			if (!tokenAtual.getLexeme().equals("]")) {
-
-				errorTokenParser(tokenAtual.getLine(), "]", tokenAtual.getLexeme());
-				synchronToken();
-
-			} else {
-
-				tokenAtual = nextToken();
-
-			}
-
-			arrayDefinition();
+			array();
 
 		} else {
 
@@ -712,27 +674,31 @@ public class Parser {
 	// OK
 	public void constB() {
 
-		if (!tokenAtual.getLexeme().equals("{")) {
+		if (tokenAtual.getLexeme().equals("const")) {
 
-			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("{")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		constBlock();
+			}
 
-		if (!tokenAtual.getLexeme().equals("}")) {
+			constBlock();
 
-			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("}")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
+
+				tokenAtual = nextToken();
+
+			}
 
 		}
 
@@ -766,7 +732,7 @@ public class Parser {
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -777,7 +743,7 @@ public class Parser {
 		if (!tokenAtual.getLexeme().equals("=")) {
 
 			errorTokenParser(tokenAtual.getLine(), "=", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -791,7 +757,7 @@ public class Parser {
 		if (!tokenAtual.getLexeme().equals(";")) {
 
 			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -811,7 +777,7 @@ public class Parser {
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -822,7 +788,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("=")) {
 
 				errorTokenParser(tokenAtual.getLine(), "=", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -849,7 +815,7 @@ public class Parser {
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -859,11 +825,23 @@ public class Parser {
 
 		opAndCallersAuxA();
 
+		if (!tokenAtual.getLexeme().equals(";")) {
+
+			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
+			panicSynchron();
+
+		} else {
+
+			tokenAtual = nextToken();
+
+		}
+
 	}
 
 	public void opAndCallersAuxA() {
 
-		if (tokenAtual.getLexeme().equals("=")) {
+		if (tokenAtual.getLexeme().equals("=") || tokenAtual.getLexeme().equals("[")
+				|| tokenAtual.getLexeme().equals(".")) {
 
 			opAndCallersAuxB();
 			opAndCallersAuxC();
@@ -875,7 +853,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(")")) {
 
 				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -885,8 +863,8 @@ public class Parser {
 
 		} else {
 
-			errorTokenParser(tokenAtual.getLine(), "=,(", tokenAtual.getLexeme());
-			synchronToken();
+			errorTokenParser(tokenAtual.getLine(), " = , ( , [ , . ", tokenAtual.getLexeme());
+			panicSynchron();
 
 		}
 
@@ -913,7 +891,7 @@ public class Parser {
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -943,7 +921,7 @@ public class Parser {
 		if (!tokenAtual.getLexeme().equals("return")) {
 
 			errorTokenParser(tokenAtual.getLine(), "return", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -956,7 +934,7 @@ public class Parser {
 		if (!tokenAtual.getLexeme().equals(";")) {
 
 			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -971,65 +949,69 @@ public class Parser {
 	// OK
 	public void cmdFunction() {
 
-		type();
+		if (tokenAtual.getLexeme().equals("function")) {
 
-		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+			type();
 
-			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		if (!tokenAtual.getLexeme().equals("(")) {
+			}
 
-			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("(")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		functionParameter();
+			}
 
-		if (!tokenAtual.getLexeme().equals(")")) {
+			functionParameter();
 
-			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals(")")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		if (!tokenAtual.getLexeme().equals("{")) {
+			}
 
-			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("{")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		code();
-		returnStatement();
+			}
 
-		if (!tokenAtual.getLexeme().equals("}")) {
+			code();
+			returnStatement();
 
-			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("}")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
+
+				tokenAtual = nextToken();
+
+			}
 
 		}
 
@@ -1040,62 +1022,66 @@ public class Parser {
 	// OK
 	public void cmdProcedure() {
 
-		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+		if (tokenAtual.getLexeme().equals("procedure")) {
 
-			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		if (!tokenAtual.getLexeme().equals("(")) {
+			}
 
-			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("(")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		functionParameter();
+			}
 
-		if (!tokenAtual.getLexeme().equals(")")) {
+			functionParameter();
 
-			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals(")")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		if (!tokenAtual.getLexeme().equals("{")) {
+			}
 
-			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("{")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		code();
+			}
 
-		if (!tokenAtual.getLexeme().equals("}")) {
+			code();
 
-			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("}")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
+
+				tokenAtual = nextToken();
+
+			}
 
 		}
 
@@ -1113,7 +1099,7 @@ public class Parser {
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -1139,20 +1125,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("[")) {
 
-			dataTypeArray();
-
-			if (tokenAtual.getLexeme().equals("]")) {
-
-				errorTokenParser(tokenAtual.getLine(), "]", tokenAtual.getLexeme());
-				synchronToken();
-
-			} else {
-
-				tokenAtual = nextToken();
-
-			}
-
-			arrayDefinition();
+			array();
 
 		} else {
 
@@ -1182,59 +1155,6 @@ public class Parser {
 	// OK
 	// OK
 	// OK
-	public void functionCall() {
-
-		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
-
-			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-			synchronToken();
-
-		} else {
-
-			tokenAtual = nextToken();
-
-		}
-
-		if (!tokenAtual.getLexeme().equals("(")) {
-
-			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-			synchronToken();
-
-		} else {
-
-			tokenAtual = nextToken();
-
-		}
-
-		functionCallParameter();
-
-		if (!tokenAtual.getLexeme().equals(")")) {
-
-			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-			synchronToken();
-
-		} else {
-
-			tokenAtual = nextToken();
-
-		}
-
-		if (!tokenAtual.getLexeme().equals(";")) {
-
-			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
-			synchronToken();
-
-		} else {
-
-			tokenAtual = nextToken();
-
-		}
-
-	}
-
-	// OK
-	// OK
-	// OK
 	public void functionCallParameter() {
 
 		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
@@ -1253,21 +1173,20 @@ public class Parser {
 
 	public void functionCallParameterAuxA() {
 
-		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
+		if (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
 				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
-				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode())) {
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode()))) {
+
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER,NUMBER,STRING", tokenAtual.getLexeme());
+			panicSynchron();
+
+		} else {
 
 			if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				functionCallParameterAuxB();
 
 			}
-
-		} else {
-
-			// PRECISA ARRUMAR AQ
-			errorTokenParser(tokenAtual.getLine(), "", tokenAtual.getLexeme());
-			synchronToken();
 
 		}
 
@@ -1310,7 +1229,7 @@ public class Parser {
 				|| tokenAtual.getLexeme().equals("real") || tokenAtual.getLexeme().equals("boolean"))) {
 
 			errorTokenParser(tokenAtual.getLine(), "int,string,real,boolean", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -1353,7 +1272,7 @@ public class Parser {
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -1383,7 +1302,7 @@ public class Parser {
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
@@ -1405,7 +1324,7 @@ public class Parser {
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -1432,51 +1351,55 @@ public class Parser {
 	// OK
 	public void cmdWhile() {
 
-		if (!tokenAtual.getLexeme().equals("(")) {
+		if (tokenAtual.getLexeme().equals("while")) {
 
-			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("(")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		expressionLogicRelational();
+			}
 
-		if (!tokenAtual.getLexeme().equals(")")) {
+			expressionLogicRelational();
 
-			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals(")")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		if (!tokenAtual.getLexeme().equals("{")) {
+			}
 
-			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("{")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		code();
+			}
 
-		if (!tokenAtual.getLexeme().equals("}")) {
+			code();
 
-			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("}")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
+
+				tokenAtual = nextToken();
+
+			}
 
 		}
 
@@ -1487,66 +1410,70 @@ public class Parser {
 	// OK
 	public void cmdIfExpression() {
 
-		if (!tokenAtual.getLexeme().equals("(")) {
+		if (tokenAtual.getLexeme().equals("if")) {
 
-			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("(")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
+
+				tokenAtual = nextToken();
+
+			}
+
+			expressionLogicRelational();
+
+			if (!tokenAtual.getLexeme().equals(")")) {
+
+				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
+				panicSynchron();
+
+			} else {
+
+				tokenAtual = nextToken();
+
+			}
+
+			if (!tokenAtual.getLexeme().equals("then")) {
+
+				errorTokenParser(tokenAtual.getLine(), "then", tokenAtual.getLexeme());
+				panicSynchron();
+
+			} else {
+
+				tokenAtual = nextToken();
+
+			}
+
+			if (!tokenAtual.getLexeme().equals("{")) {
+
+				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
+				panicSynchron();
+
+			} else {
+
+				tokenAtual = nextToken();
+
+			}
+
+			code();
+
+			if (!tokenAtual.getLexeme().equals("}")) {
+
+				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
+				panicSynchron();
+
+			} else {
+
+				tokenAtual = nextToken();
+
+			}
+
+			ifElse();
 
 		}
-
-		expressionLogicRelational();
-
-		if (!tokenAtual.getLexeme().equals(")")) {
-
-			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-			synchronToken();
-
-		} else {
-
-			tokenAtual = nextToken();
-
-		}
-
-		if (!tokenAtual.getLexeme().equals("then")) {
-
-			errorTokenParser(tokenAtual.getLine(), "then", tokenAtual.getLexeme());
-			synchronToken();
-
-		} else {
-
-			tokenAtual = nextToken();
-
-		}
-
-		if (!tokenAtual.getLexeme().equals("{")) {
-
-			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-			synchronToken();
-
-		} else {
-
-			tokenAtual = nextToken();
-
-		}
-
-		code();
-
-		if (!tokenAtual.getLexeme().equals("}")) {
-
-			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-			synchronToken();
-
-		} else {
-
-			tokenAtual = nextToken();
-
-		}
-
-		ifElse();
 
 	}
 
@@ -1560,7 +1487,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("{")) {
 
 				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -1573,7 +1500,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("}")) {
 
 				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-				synchronToken();
+				panicSynchron();
 
 			} else {
 
@@ -1598,38 +1525,42 @@ public class Parser {
 	// OK
 	public void cmdPrint() {
 
-		if (!tokenAtual.getLexeme().equals("(")) {
+		if (tokenAtual.getLexeme().equals("print")) {
 
-			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("(")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		listaArg();
+			}
 
-		if (!tokenAtual.getLexeme().equals(")")) {
+			listaArg();
 
-			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals(")")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		if (!tokenAtual.getLexeme().equals(";")) {
+			}
 
-			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals(";")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
+
+				tokenAtual = nextToken();
+
+			}
 
 		}
 
@@ -1640,38 +1571,42 @@ public class Parser {
 	// OK
 	public void cmdRead() {
 
-		if (!tokenAtual.getLexeme().equals("(")) {
+		if (tokenAtual.getLexeme().equals("read")) {
 
-			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals("(")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		listaArgRead();
+			}
 
-		if (!tokenAtual.getLexeme().equals(")")) {
+			listaArgRead();
 
-			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals(")")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
 
-		}
+				tokenAtual = nextToken();
 
-		if (!tokenAtual.getLexeme().equals(";")) {
+			}
 
-			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
-			synchronToken();
+			if (!tokenAtual.getLexeme().equals(";")) {
 
-		} else {
+				errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
+				panicSynchron();
 
-			tokenAtual = nextToken();
+			} else {
+
+				tokenAtual = nextToken();
+
+			}
 
 		}
 
@@ -1754,6 +1689,7 @@ public class Parser {
 
 		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode())) {
 
+			opRelational();
 			fatorRelational();
 			expressionRelationalAux();
 
@@ -1767,31 +1703,20 @@ public class Parser {
 
 	public void fatorRelational() {
 
-		if (tokenAtual.getLexeme().equals("(")
+		if (!(tokenAtual.getLexeme().equals("(")
 				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
-				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())) {
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode()))) {
+
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER,NUMBER,(", tokenAtual.getLexeme());
+			panicSynchron();
+
+		} else {
 
 			if (tokenAtual.getLexeme().equals("(")) {
 
 				expressionLogicRelational();
 
-				if (!tokenAtual.getLexeme().equals(")")) {
-
-					errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-					synchronToken();
-
-				} else {
-
-					tokenAtual = nextToken();
-
-				}
-
 			}
-
-		} else {
-
-			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER,NUMBER,(", tokenAtual.getLexeme());
-			synchronToken();
 
 		}
 
@@ -1802,8 +1727,20 @@ public class Parser {
 	// OK
 	public void expressionsAritmetic() {
 
-		term();
-		expressionsAritmeticAux();
+		if (!(tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--")
+				|| tokenAtual.getLexeme().equals("(")
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode()))) {
+
+			errorTokenParser(tokenAtual.getLine(), "++,--,(,IDENTIFIER,NUMBER", tokenAtual.getLexeme());
+			panicSynchron();
+
+		} else {
+
+			term();
+			expressionsAritmeticAux();
+
+		}
 
 	}
 
@@ -1814,6 +1751,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("-") || tokenAtual.getLexeme().equals("+")) {
 
+			sum();
 			term();
 			expressionsAritmeticAux();
 
@@ -1830,8 +1768,20 @@ public class Parser {
 	// OK
 	public void term() {
 
-		incre();
-		termoAux();
+		if (!(tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--")
+				|| tokenAtual.getLexeme().equals("(")
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode()))) {
+
+			errorTokenParser(tokenAtual.getLine(), "++,--,(,IDENTIFIER,NUMBER", tokenAtual.getLexeme());
+			panicSynchron();
+
+		} else {
+
+			incre();
+			termoAux();
+
+		}
 
 	}
 
@@ -1842,6 +1792,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("*") || tokenAtual.getLexeme().equals("/")) {
 
+			mult();
 			incre();
 			termoAux();
 
@@ -1856,20 +1807,26 @@ public class Parser {
 	// OK
 	// OK
 	// OK
-	
-	//PROBLEMAS AQ
+
 	public void incre() {
 
 		if (tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--")) {
 
+			operatorU();
 			incre();
 			increAux();
 
 		} else if (tokenAtual.getLexeme().equals("(")
 				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
-				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())) {
 
 			fator();
+			increAux();
+
+		} else {
+
+			errorTokenParser(tokenAtual.getLine(), "++,--,(,IDENTIFIER,NUMBER", tokenAtual.getLexeme());
+			panicSynchron();
 
 		}
 
@@ -1903,12 +1860,12 @@ public class Parser {
 
 			if (tokenAtual.getLexeme().equals("(")) {
 
-				expressionRelational();
+				expressionsAritmetic();
 
 				if (!tokenAtual.getLexeme().equals(")")) {
 
 					errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-					synchronToken();
+					panicSynchron();
 
 				} else {
 
@@ -1921,7 +1878,52 @@ public class Parser {
 		} else {
 
 			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER,NUMBER,(", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
+
+		}
+
+	}
+
+	public void sum() {
+
+		if (!(tokenAtual.getLexeme().equals("+") || tokenAtual.getLexeme().equals("-"))) {
+
+			errorTokenParser(tokenAtual.getLine(), "+,-", tokenAtual.getLexeme());
+			panicSynchron();
+
+		} else {
+
+			tokenAtual = nextToken();
+
+		}
+
+	}
+
+	public void mult() {
+
+		if (!(tokenAtual.getLexeme().equals("*") || tokenAtual.getLexeme().equals("/"))) {
+
+			errorTokenParser(tokenAtual.getLine(), "*,-", tokenAtual.getLexeme());
+			panicSynchron();
+
+		} else {
+
+			tokenAtual = nextToken();
+
+		}
+
+	}
+
+	public void operatorU() {
+
+		if (!(tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--"))) {
+
+			errorTokenParser(tokenAtual.getLine(), "++,--", tokenAtual.getLexeme());
+			panicSynchron();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -1934,7 +1936,7 @@ public class Parser {
 				|| tokenAtual.getLexeme().equals("==") || tokenAtual.getLexeme().equals("!="))) {
 
 			errorTokenParser(tokenAtual.getLine(), ">,>=,<=,==,!=", tokenAtual.getLexeme());
-			synchronToken();
+			panicSynchron();
 
 		} else {
 
