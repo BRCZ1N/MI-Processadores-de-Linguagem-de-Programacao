@@ -2,15 +2,16 @@ package com.analisador;
 
 import java.util.ArrayList;
 
-public class SyntaxAnaliser {
+public class Parser {
 
 	private ArrayList<Token> listTokens = new ArrayList<Token>();
 	private int countToken = 0;
 	private Token tokenAtual;
 	private ArrayList<String> listTypeToken = new ArrayList<String>();
 	private ArrayList<String> listCmdToken = new ArrayList<String>();
+	private ArrayList<SyntacticError> listSyntacticError = new ArrayList<SyntacticError>();
 
-	public SyntaxAnaliser() {
+	public Parser() {
 
 		listTypeToken.add("string");
 		listTypeToken.add("real");
@@ -31,6 +32,13 @@ public class SyntaxAnaliser {
 	public void refreshTokenList() {
 
 		this.listTokens = LexicalAnaliser.getListTokens();
+
+	}
+
+	public void errorTokenParser(long lineError, String tokenError, String messageError) {
+
+		SyntacticError error = new SyntacticError(lineError, tokenError, messageError);
+		listSyntacticError.add(error);
 
 	}
 
@@ -58,6 +66,18 @@ public class SyntaxAnaliser {
 
 	}
 
+	public Token proxToken() {
+
+		if (!isEof()) {
+
+			return listTokens.get(countToken + 1);
+
+		}
+
+		return null;
+
+	}
+
 	public Token synchronToken() {
 
 		while (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_DELIMITER.getTypeTokenCode())
@@ -76,6 +96,9 @@ public class SyntaxAnaliser {
 		if (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
 				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode()))) {
 
+			errorTokenParser(tokenAtual.getLine(),
+					InitialsToken.TK_NUMBER.getTypeTokenCode() + "," + InitialsToken.TK_IDENTIFIER.getTypeTokenCode(),
+					tokenAtual.getLexeme());
 			synchronToken();
 
 		}
@@ -97,25 +120,45 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getTypeToken().equals("start")) {
 
+			errorTokenParser(tokenAtual.getLine(), "start", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getTypeToken().equals("(")) {
 
+			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getTypeToken().equals(")")) {
 
+			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getTypeToken().equals("{")) {
 
+			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -123,7 +166,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getTypeToken().equals("}")) {
 
+			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -190,9 +238,16 @@ public class SyntaxAnaliser {
 
 			if (tokenAtual.getLexeme().equals(";")) {
 
+				errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
 				synchronToken();
 
 			}
+
+		} else {
+
+			errorTokenParser(tokenAtual.getLine(), "var,struct,read,print,while,function,procedure,if,IDENTIFIER",
+					tokenAtual.getLexeme());
+			synchronToken();
 
 		}
 
@@ -202,7 +257,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("[")) {
 
+			errorTokenParser(tokenAtual.getLine(), "[", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -210,7 +270,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("]")) {
 
+			errorTokenParser(tokenAtual.getLine(), "]", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -225,11 +290,18 @@ public class SyntaxAnaliser {
 
 		if (tokenAtual.getLexeme().equals("[")) {
 
+			tokenAtual = nextToken();
+
 			dataTypeArray();
 
 			if (!tokenAtual.getLexeme().equals("]")) {
 
+				errorTokenParser(tokenAtual.getLine(), "]", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -250,7 +322,12 @@ public class SyntaxAnaliser {
 				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
 				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode()))) {
 
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER,NUMBER,STRING", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -264,18 +341,29 @@ public class SyntaxAnaliser {
 	// FALTA
 	public void expressionsAndDataTypes() {
 
-		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode())
-				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+		if (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
+				|| tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--")
+				|| tokenAtual.getLexeme().equals("("))) {
 
-			if (tokenAtual.getLexeme().equals("(")) {
-
-				functionCallParameter();
-
-			}
+			errorTokenParser(tokenAtual.getLine(), "++','--', '(', Identifier,Integer, Float, StringLiteral",
+					tokenAtual.getLexeme());
+			synchronToken();
 
 		} else {
 
-			// ERRO ALGO ASSIM AQ
+			if (!tokenAtual.getLexeme().equals("(")) {
+
+				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
+				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
+				expressionsAritmetic();
+
+			}
 
 		}
 
@@ -288,7 +376,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("{")) {
 
+			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -296,7 +389,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("}")) {
 
+			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -317,7 +415,12 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -336,7 +439,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -350,7 +458,12 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -369,7 +482,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -377,7 +495,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getTypeToken().equals(";")) {
 
+			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -399,7 +522,12 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getTypeToken().equals("]")) {
 
+				errorTokenParser(tokenAtual.getLine(), "]", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -423,7 +551,12 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getLexeme().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -444,7 +577,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -463,7 +601,12 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getLexeme().equals("}")) {
 
+				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -471,13 +614,23 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
 			if (!tokenAtual.getLexeme().equals("{")) {
 
+				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -485,13 +638,19 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getLexeme().equals("}")) {
 
+				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
 		} else {
 
-			// ERRO
+			errorTokenParser(tokenAtual.getLine(), "{ , extends", tokenAtual.getLexeme());
+			synchronToken();
 
 		}
 
@@ -529,7 +688,12 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getLexeme().equals("]")) {
 
+				errorTokenParser(tokenAtual.getLine(), "]", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -550,7 +714,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("{")) {
 
+			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -558,7 +727,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("}")) {
 
+			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -591,13 +765,23 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getLexeme().equals("=")) {
 
+			errorTokenParser(tokenAtual.getLine(), "=", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -606,7 +790,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals(";")) {
 
+			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -621,13 +810,23 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
 			if (!tokenAtual.getLexeme().equals("=")) {
 
+				errorTokenParser(tokenAtual.getLine(), "=", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -649,7 +848,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -670,13 +874,19 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getLexeme().equals(")")) {
 
+				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
 		} else {
 
-			// ERRO
+			errorTokenParser(tokenAtual.getLine(), "=,(", tokenAtual.getLexeme());
+			synchronToken();
 
 		}
 
@@ -702,7 +912,12 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -727,7 +942,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("return")) {
 
+			errorTokenParser(tokenAtual.getLine(), "return", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -735,7 +955,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals(";")) {
 
+			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -750,13 +975,23 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getLexeme().equals("(")) {
 
+			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -764,13 +999,23 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals(")")) {
 
+			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getLexeme().equals("{")) {
 
+			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -779,7 +1024,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("}")) {
 
+			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -792,13 +1042,23 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getLexeme().equals("(")) {
 
+			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -806,13 +1066,23 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals(")")) {
 
+			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getLexeme().equals("{")) {
 
+			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -820,7 +1090,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("}")) {
 
+			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -837,7 +1112,12 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -863,7 +1143,12 @@ public class SyntaxAnaliser {
 
 			if (tokenAtual.getLexeme().equals("]")) {
 
+				errorTokenParser(tokenAtual.getLine(), "]", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -901,13 +1186,23 @@ public class SyntaxAnaliser {
 
 		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getLexeme().equals("(")) {
 
+			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -915,13 +1210,23 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals(")")) {
 
+			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getLexeme().equals(";")) {
 
+			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -960,7 +1265,9 @@ public class SyntaxAnaliser {
 
 		} else {
 
-			// ERRO
+			// PRECISA ARRUMAR AQ
+			errorTokenParser(tokenAtual.getLine(), "", tokenAtual.getLexeme());
+			synchronToken();
 
 		}
 
@@ -1002,7 +1309,12 @@ public class SyntaxAnaliser {
 		if (!(tokenAtual.getTypeToken().equals("int") || tokenAtual.getLexeme().equals("string")
 				|| tokenAtual.getLexeme().equals("real") || tokenAtual.getLexeme().equals("boolean"))) {
 
+			errorTokenParser(tokenAtual.getLine(), "int,string,real,boolean", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -1040,7 +1352,12 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -1065,7 +1382,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -1082,7 +1404,12 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
+				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -1107,7 +1434,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("(")) {
 
+			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -1115,13 +1447,23 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals(")")) {
 
+			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getLexeme().equals("{")) {
 
+			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -1129,7 +1471,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("}")) {
 
+			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -1142,7 +1489,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("(")) {
 
+			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -1150,19 +1502,34 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals(")")) {
 
+			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getLexeme().equals("then")) {
 
+			errorTokenParser(tokenAtual.getLine(), "then", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getLexeme().equals("{")) {
 
+			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -1170,7 +1537,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("}")) {
 
+			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -1187,7 +1559,12 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getLexeme().equals("{")) {
 
+				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -1195,7 +1572,12 @@ public class SyntaxAnaliser {
 
 			if (!tokenAtual.getLexeme().equals("}")) {
 
+				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
 				synchronToken();
+
+			} else {
+
+				tokenAtual = nextToken();
 
 			}
 
@@ -1218,7 +1600,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("(")) {
 
+			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -1226,13 +1613,23 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals(")")) {
 
+			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getLexeme().equals(";")) {
 
+			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -1245,7 +1642,12 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals("(")) {
 
+			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -1253,13 +1655,23 @@ public class SyntaxAnaliser {
 
 		if (!tokenAtual.getLexeme().equals(")")) {
 
+			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
 		if (!tokenAtual.getLexeme().equals(";")) {
 
+			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
 			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
 
@@ -1289,7 +1701,7 @@ public class SyntaxAnaliser {
 
 	public void expressionLogicAnd() {
 
-		expressionRelational();
+		expressionLogicDenial();
 		expressionLogicAndAux();
 
 	}
@@ -1298,8 +1710,30 @@ public class SyntaxAnaliser {
 
 		if (tokenAtual.getLexeme().equals("&&")) {
 
-			expressionRelational();
+			expressionLogicDenial();
 			expressionLogicAndAux();
+
+		} else {
+
+			return;
+
+		}
+
+	}
+
+	public void expressionLogicDenial() {
+
+		expressionLogicRelational();
+		expressionLogicDenialAux();
+
+	}
+
+	public void expressionLogicDenialAux() {
+
+		if (tokenAtual.getLexeme().equals("!")) {
+
+			expressionLogicRelational();
+			expressionLogicDenialAux();
 
 		} else {
 
@@ -1318,7 +1752,7 @@ public class SyntaxAnaliser {
 
 	public void expressionRelationalAux() {
 
-		if (opRelational()) {
+		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_RELATIONAL_OPERATOR.getTypeTokenCode())) {
 
 			fatorRelational();
 			expressionRelationalAux();
@@ -1335,8 +1769,7 @@ public class SyntaxAnaliser {
 
 		if (tokenAtual.getLexeme().equals("(")
 				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
-				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
-				|| tokenAtual.getLexeme().equals("!")) {
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())) {
 
 			if (tokenAtual.getLexeme().equals("(")) {
 
@@ -1344,36 +1777,12 @@ public class SyntaxAnaliser {
 
 				if (!tokenAtual.getLexeme().equals(")")) {
 
+					errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
 					synchronToken();
 
-				}
+				} else {
 
-			} else if (tokenAtual.getLexeme().equals("!")) {
-
-				fatorRelationalDenial();
-
-			}
-
-		} else {
-
-			// ERRO
-
-		}
-
-	}
-
-	public void fatorRelationalDenial() {
-
-		if (tokenAtual.getTypeToken().equals("(")
-				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
-
-			if (tokenAtual.getTypeToken().equals("(")) {
-
-				expressionLogicRelational();
-
-				if (!tokenAtual.getLexeme().equals(")")) {
-
-					synchronToken();
+					tokenAtual = nextToken();
 
 				}
 
@@ -1381,6 +1790,7 @@ public class SyntaxAnaliser {
 
 		} else {
 
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER,NUMBER,(", tokenAtual.getLexeme());
 			synchronToken();
 
 		}
@@ -1446,6 +1856,8 @@ public class SyntaxAnaliser {
 	// OK
 	// OK
 	// OK
+	
+	//PROBLEMAS AQ
 	public void incre() {
 
 		if (tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--")) {
@@ -1494,30 +1906,41 @@ public class SyntaxAnaliser {
 				expressionRelational();
 
 				if (!tokenAtual.getLexeme().equals(")")) {
+
+					errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
 					synchronToken();
+
+				} else {
+
+					tokenAtual = nextToken();
+
 				}
 
 			}
 
 		} else {
 
-			// ERRO AQ
+			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER,NUMBER,(", tokenAtual.getLexeme());
+			synchronToken();
 
 		}
 
 	}
 
-	public boolean opRelational() {
+	public void opRelational() {
 
-		if (tokenAtual.getLexeme().equals(">") || tokenAtual.getLexeme().equals(">=")
+		if (!(tokenAtual.getLexeme().equals(">") || tokenAtual.getLexeme().equals(">=")
 				|| tokenAtual.getLexeme().equals("<") || tokenAtual.getLexeme().equals("<=")
-				|| tokenAtual.getLexeme().equals("==") || tokenAtual.getLexeme().equals("!=")) {
+				|| tokenAtual.getLexeme().equals("==") || tokenAtual.getLexeme().equals("!="))) {
 
-			return true;
+			errorTokenParser(tokenAtual.getLine(), ">,>=,<=,==,!=", tokenAtual.getLexeme());
+			synchronToken();
+
+		} else {
+
+			tokenAtual = nextToken();
 
 		}
-
-		return false;
 
 	}
 
