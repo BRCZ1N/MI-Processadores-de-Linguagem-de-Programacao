@@ -213,7 +213,7 @@ public class Parser {
 
 			errorTokenParser(tokenAtual.getLine(), "var,struct,read,print,while,function,procedure,if,IDENTIFIER",
 					tokenAtual.getLexeme());
-			panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while, print");
+			panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 		}
 
@@ -357,7 +357,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("{")) {
 
 				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -370,7 +370,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("}")) {
 
 				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -566,7 +566,7 @@ public class Parser {
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -592,7 +592,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("}")) {
 
 				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -607,7 +607,7 @@ public class Parser {
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -618,7 +618,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("{")) {
 
 				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -631,7 +631,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("}")) {
 
 				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -642,7 +642,7 @@ public class Parser {
 		} else {
 
 			errorTokenParser(tokenAtual.getLine(), "{ , extends", tokenAtual.getLexeme());
-			panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+			panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 		}
 
@@ -818,7 +818,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(";")) {
 
 				errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -951,7 +951,7 @@ public class Parser {
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -962,7 +962,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("(")) {
 
 				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -975,7 +975,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(")")) {
 
 				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -986,7 +986,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("{")) {
 
 				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1000,7 +1000,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("}")) {
 
 				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1024,7 +1024,7 @@ public class Parser {
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1035,7 +1035,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("(")) {
 
 				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1048,7 +1048,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(")")) {
 
 				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1059,7 +1059,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("{")) {
 
 				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1072,7 +1072,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("}")) {
 
 				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-				panicSynchron("},var,struct,read,if,function,procedure,Identifier,procedure,while,print");
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1233,7 +1233,7 @@ public class Parser {
 				|| tokenAtual.getLexeme().equals("real") || tokenAtual.getLexeme().equals("boolean"))) {
 
 			errorTokenParser(tokenAtual.getLine(), "int,string,real,boolean", tokenAtual.getLexeme());
-			panicSynchron();
+			panicSynchron("IDENTIFIER");
 
 		} else {
 
@@ -1369,7 +1369,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("(")) {
 
 				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1382,8 +1382,8 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(")")) {
 
 				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-				panicSynchron();
-
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
+				
 			} else {
 
 				tokenAtual = nextToken();
@@ -1393,7 +1393,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(";")) {
 
 				errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1403,7 +1403,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("(")) {
 
 				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1416,7 +1416,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(")")) {
 
 				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1427,7 +1427,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("{")) {
 
 				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1440,7 +1440,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("}")) {
 
 				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1464,7 +1464,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("(")) {
 
 				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1477,7 +1477,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(")")) {
 
 				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1488,7 +1488,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("then")) {
 
 				errorTokenParser(tokenAtual.getLine(), "then", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1499,7 +1499,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("{")) {
 
 				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1512,7 +1512,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("}")) {
 
 				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1538,7 +1538,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("{")) {
 
 				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1551,8 +1551,8 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("}")) {
 
 				errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
-				panicSynchron();
-
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
+				
 			} else {
 
 				tokenAtual = nextToken();
@@ -1583,7 +1583,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("(")) {
 
 				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1596,7 +1596,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(")")) {
 
 				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1607,7 +1607,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(";")) {
 
 				errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1631,7 +1631,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals("(")) {
 
 				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1644,7 +1644,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(")")) {
 
 				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1655,7 +1655,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(";")) {
 
 				errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
-				panicSynchron();
+				panicSynchron("},var,struct,read,if,function,IDENTIFIER,procedure,while,print");
 
 			} else {
 
@@ -1763,7 +1763,7 @@ public class Parser {
 				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode()))) {
 
 			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER,NUMBER,(", tokenAtual.getLexeme());
-			panicSynchron();
+			panicSynchron("),||,&&,!,>,<,>=,<=,==,!=");
 
 		} else {
 
@@ -1775,7 +1775,7 @@ public class Parser {
 				if (!tokenAtual.getLexeme().equals(")")) {
 
 					errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-					panicSynchron();
+					panicSynchron("),||,&&,!,>,<,>=,<=,==,!=");
 
 				}
 
@@ -1869,7 +1869,7 @@ public class Parser {
 		} else {
 
 			errorTokenParser(tokenAtual.getLine(), "++,--,(,IDENTIFIER,NUMBER", tokenAtual.getLexeme());
-			panicSynchron();
+			panicSynchron("*,/,+,-,,,;,),++,--");
 
 		}
 
@@ -1903,7 +1903,7 @@ public class Parser {
 				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode()))) {
 
 			errorTokenParser(tokenAtual.getLine(), "IDENTIFIER,NUMBER,(", tokenAtual.getLexeme());
-			panicSynchron();
+			panicSynchron("*,/, +,- ,,,;,),++,--");
 
 		} else {
 
@@ -1914,7 +1914,7 @@ public class Parser {
 				if (!tokenAtual.getLexeme().equals(")")) {
 
 					errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-					panicSynchron();
+					panicSynchron("*,/,+,-,,,;,),++,--");
 
 				} else {
 
@@ -1937,8 +1937,8 @@ public class Parser {
 		if (!(tokenAtual.getLexeme().equals("+") || tokenAtual.getLexeme().equals("-"))) {
 
 			errorTokenParser(tokenAtual.getLine(), "+,-", tokenAtual.getLexeme());
-			panicSynchron();
-
+			panicSynchron("++,--,(,NUMBER,IDENTIFIER");
+			
 		} else {
 
 			tokenAtual = nextToken();
@@ -1952,7 +1952,7 @@ public class Parser {
 		if (!(tokenAtual.getLexeme().equals("*") || tokenAtual.getLexeme().equals("/"))) {
 
 			errorTokenParser(tokenAtual.getLine(), "*,-", tokenAtual.getLexeme());
-			panicSynchron();
+			panicSynchron("++,--,(,NUMBER,IDENTIFIER");
 
 		} else {
 
@@ -1967,7 +1967,7 @@ public class Parser {
 		if (!(tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--"))) {
 
 			errorTokenParser(tokenAtual.getLine(), "++,--", tokenAtual.getLexeme());
-			panicSynchron();
+			panicSynchron("++,--,(,NUMBER,IDENTIFIER");
 
 		} else {
 
@@ -1984,7 +1984,7 @@ public class Parser {
 				|| tokenAtual.getLexeme().equals("==") || tokenAtual.getLexeme().equals("!="))) {
 
 			errorTokenParser(tokenAtual.getLine(), ">,>=,<=,==,!=", tokenAtual.getLexeme());
-			panicSynchron();
+			panicSynchron("(,NUMBER,IDENTIFIER");;
 
 		} else {
 
