@@ -21,6 +21,11 @@ public class Token {
 		this.line = line;
 
 	}
+	public Token(String lexeme) {
+		
+		this.lexeme = lexeme;
+		
+	}
 
 	public Token() {
 

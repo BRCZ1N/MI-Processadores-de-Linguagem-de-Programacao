@@ -7,31 +7,25 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class Main {
-	
+
 	public static void main(String[] args) throws IOException {
-		
+
 		LexicalAnaliser lexicalAnaliser = new LexicalAnaliser();
 		Parser syntaxAnaliser = new Parser();
 
-		for(File file:searchArchives()) {
-			
+		for (File file : searchArchives()) {
+
 			lexicalAnaliser.execAnaliser(file);
 			syntaxAnaliser.refreshTokenList();
 			syntaxAnaliser.startParser();
-			
+
 			writeTokensInArchive(file.getName());
 			LexicalAnaliser.clearAllList();
-			
+
 		}
-		
-		
-		
+
 	}
-	
-	
-	
-	
-	
+
 	private static File[] searchArchives() {
 
 		FileFilter filter = new FileFilter() {
@@ -48,7 +42,7 @@ public class Main {
 	}
 
 	public static void writeTokensInArchive(String nameArc) throws IOException {
-		
+
 		File file = new File("src/files/" + "[" + nameArc + "]-saida.txt");
 		FileWriter arc = null;
 
@@ -86,16 +80,16 @@ public class Main {
 			}
 
 		}
-		
-		if(!LexicalAnaliser.containsLexicalError()) {
-			
+
+		if (!LexicalAnaliser.containsLexicalError()) {
+
 			recordArc.println("Esse arquivo não contém erro");
-			
+
 		}
-		
+
 		recordArc.close();
 		arc.close();
-	
+
 	}
-	
+
 }
