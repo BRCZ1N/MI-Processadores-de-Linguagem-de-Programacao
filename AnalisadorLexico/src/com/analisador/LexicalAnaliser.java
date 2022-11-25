@@ -739,9 +739,12 @@ public class LexicalAnaliser {
 
 	private boolean isNewLine(char c) {
 
-		if (c == '\n') {
+		if (c == '\n' || c == '\r') {
 
-			countLine++;
+			if(c == '\n') {
+				
+				countLine++;
+			}
 
 			return true;
 

@@ -10,7 +10,7 @@ public class Parser {
 	private Token tokenAtual;
 	private ArrayList<String> listTypeToken = new ArrayList<String>();
 	private ArrayList<String> listCmdToken = new ArrayList<String>();
-	private ArrayList<SyntacticError> listSyntacticError = new ArrayList<SyntacticError>();
+	private static ArrayList<SyntacticError> listSyntacticError = new ArrayList<SyntacticError>();
 
 	public Parser() {
 
@@ -30,10 +30,18 @@ public class Parser {
 
 	}
 
+	public static ArrayList<SyntacticError> getListSyntacticError() {
+		return Parser.listSyntacticError;
+	}
+
+	public static void setListSyntacticError(ArrayList<SyntacticError> listSyntacticError) {
+		Parser.listSyntacticError = listSyntacticError;
+	}
+
 	public void refreshTokenList() {
 
 		this.listTokens = LexicalAnaliser.getListTokens();
-		listTokens.add(new Token("$"));
+		listTokens.add(listTokens.size()-1, new Token("$"));
 
 	}
 
@@ -73,7 +81,7 @@ public class Parser {
 		ArrayList<String> followSetArrayList = new ArrayList<String>(Arrays.asList(followSet.split(",")));
 
 		while (!followSetArrayList.contains(tokenAtual.getLexeme())
-				|| followSetArrayList.contains(tokenAtual.getTypeToken())) {
+				|| !followSetArrayList.contains(tokenAtual.getTypeToken())) {
 
 			tokenAtual = nextToken();
 
@@ -94,7 +102,7 @@ public class Parser {
 
 		constB();
 
-		if (!tokenAtual.getTypeToken().equals("start")) {
+		if (!tokenAtual.getLexeme().equals("start")) {
 
 			errorTokenParser(tokenAtual.getLine(), "start", tokenAtual.getLexeme());
 			panicSynchron("$");
@@ -105,7 +113,7 @@ public class Parser {
 
 		}
 
-		if (!tokenAtual.getTypeToken().equals("(")) {
+		if (!tokenAtual.getLexeme().equals("(")) {
 
 			errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
 			panicSynchron("$");
@@ -116,7 +124,7 @@ public class Parser {
 
 		}
 
-		if (!tokenAtual.getTypeToken().equals(")")) {
+		if (!tokenAtual.getLexeme().equals(")")) {
 
 			errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
 			panicSynchron("$");
@@ -127,7 +135,7 @@ public class Parser {
 
 		}
 
-		if (!tokenAtual.getTypeToken().equals("{")) {
+		if (!tokenAtual.getLexeme().equals("{")) {
 
 			errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
 			panicSynchron("$");
@@ -140,7 +148,7 @@ public class Parser {
 
 		code();
 
-		if (!tokenAtual.getTypeToken().equals("}")) {
+		if (!tokenAtual.getLexeme().equals("}")) {
 
 			errorTokenParser(tokenAtual.getLine(), "}", tokenAtual.getLexeme());
 			panicSynchron("$");
@@ -674,7 +682,7 @@ public class Parser {
 		if (tokenAtual.getLexeme().equals("const")) {
 
 			tokenAtual = nextToken();
-
+			
 			if (!tokenAtual.getLexeme().equals("{")) {
 
 				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());

@@ -1,0 +1,57 @@
+1 PRE const 
+1 DEL { 
+4 DEL } 
+6 PRE start 
+6 DEL ( 
+6 DEL ) 
+6 DEL { 
+8 PRE int 
+8 IDE idade 
+8 DEL ; 
+9 PRE string 
+9 IDE nome 
+9 DEL ; 
+11 PRE print 
+11 DEL ( 
+11 CAC "Digite o nome" 
+11 DEL ) 
+11 DEL ; 
+12 PRE read 
+12 DEL ( 
+12 IDE nome 
+12 DEL ) 
+12 DEL ; 
+13 PRE print 
+13 DEL ( 
+13 CAC "Digite a idade" 
+13 DEL ) 
+13 DEL ; 
+14 PRE read 
+14 DEL ( 
+14 IDE idade 
+14 DEL ) 
+14 DEL ; 
+16 PRE if 
+16 DEL ( 
+16 IDE idade 
+16 REL >= 
+16 NRO 150 
+16 DEL ) 
+16 DEL { 
+18 PRE print 
+18 DEL ( 
+18 CAC "pode aposentar kkkk" 
+18 DEL ) 
+18 DEL ; 
+20 DEL } 
+20 PRE else 
+20 DEL { 
+22 PRE print 
+22 DEL ( 
+22 CAC "vai trabalhar" 
+22 DEL ) 
+22 DEL ; 
+24 DEL } 
+26 DEL } 
+
+Esse arquivo não contém erro
