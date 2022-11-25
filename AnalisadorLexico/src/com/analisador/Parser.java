@@ -81,13 +81,12 @@ public class Parser {
 
 		ArrayList<String> followSetArrayList = new ArrayList<String>(Arrays.asList(followSet.split(" ")));
 
-		while (!(followSetArrayList.contains( (String) tokenAtual.getLexeme())
-				|| followSetArrayList.contains( (String) tokenAtual.getTypeToken())) && !isEof()) {
+		while (!(followSetArrayList.contains(tokenAtual.getLexeme())
+				|| followSetArrayList.contains(tokenAtual.getTypeToken())) && !isEof()) {
 
 			tokenAtual = proxToken();
 
 		}
-		
 
 	}
 
@@ -293,7 +292,8 @@ public class Parser {
 
 			if (tokenAtual.getLexeme().equals("(")
 					|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
-					|| tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--")) {
+					|| tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--")
+					|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())) {
 
 				expressionsAritmetic();
 
@@ -531,7 +531,6 @@ public class Parser {
 
 		} else if (tokenAtual.getLexeme().equals("[")) {
 
-			tokenAtual = proxToken();
 			array();
 			varDeclarationAuxA();
 
@@ -548,9 +547,11 @@ public class Parser {
 	// OK
 	public void varDeclarationAuxA() {
 
-		if (tokenAtual.getTypeToken().equals(",")) {
+		if (tokenAtual.getLexeme().equals(",")) {
 
-			if (!tokenAtual.getLexeme().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+			tokenAtual = proxToken();
+
+			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDE", tokenAtual.getLexeme());
 				panicSynchron(";");
