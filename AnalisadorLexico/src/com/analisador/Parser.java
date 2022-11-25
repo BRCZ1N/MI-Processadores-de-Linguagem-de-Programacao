@@ -41,7 +41,7 @@ public class Parser {
 	public void refreshTokenList() {
 
 		this.listTokens = LexicalAnaliser.getListTokens();
-		listTokens.add(listTokens.size()-1, new Token("$"));
+		listTokens.add(listTokens.size() - 1, new Token("$"));
 
 	}
 
@@ -64,7 +64,7 @@ public class Parser {
 
 	}
 
-	public Token nextToken() {
+	public Token proxToken() {
 
 		if (!isEof()) {
 
@@ -80,10 +80,10 @@ public class Parser {
 
 		ArrayList<String> followSetArrayList = new ArrayList<String>(Arrays.asList(followSet.split(",")));
 
-		while (!followSetArrayList.contains(tokenAtual.getLexeme())
-				|| !followSetArrayList.contains(tokenAtual.getTypeToken())) {
+		while ((!followSetArrayList.contains(tokenAtual.getLexeme())
+				|| !followSetArrayList.contains(tokenAtual.getTypeToken())) && !isEof()) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -91,6 +91,7 @@ public class Parser {
 
 	public void startParser() {
 
+		tokenAtual = proxToken();
 		program();
 
 	}
@@ -100,6 +101,7 @@ public class Parser {
 	// OK
 	public void program() {
 
+	
 		constB();
 
 		if (!tokenAtual.getLexeme().equals("start")) {
@@ -109,7 +111,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -120,7 +122,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -131,7 +133,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -142,7 +144,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -155,7 +157,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -245,7 +247,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -261,7 +263,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -294,7 +296,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -306,7 +308,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("[")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			dataTypeArray();
 
@@ -317,7 +319,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -334,7 +336,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("[")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			dataTypeArray();
 
@@ -345,7 +347,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -364,7 +366,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("var")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			if (!tokenAtual.getLexeme().equals("{")) {
 
@@ -373,7 +375,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -386,7 +388,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -414,7 +416,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -438,7 +440,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -451,7 +453,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -461,7 +463,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals(",")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
@@ -470,7 +472,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -494,20 +496,20 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
 		varDeclarationAux();
 
-		if (!tokenAtual.getTypeToken().equals(";")) {
+		if (!tokenAtual.getLexeme().equals(";")) {
 
 			errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
 			panicSynchron("int, real, boolean, string, struct, }");
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -520,13 +522,13 @@ public class Parser {
 
 		if (tokenAtual.getTypeToken().equals("=")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 			expressionsAndDataTypes();
 			varDeclarationAuxA();
 
 		} else if (tokenAtual.getTypeToken().equals("[")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 			array();
 			varDeclarationAuxA();
 
@@ -552,7 +554,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -573,7 +575,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("struct")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
@@ -582,7 +584,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -608,13 +610,13 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
 		} else if (tokenAtual.getTypeToken().equals("extends")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
@@ -623,7 +625,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -634,7 +636,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -647,7 +649,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -681,8 +683,8 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("const")) {
 
-			tokenAtual = nextToken();
-			
+			tokenAtual = proxToken();
+
 			if (!tokenAtual.getLexeme().equals("{")) {
 
 				errorTokenParser(tokenAtual.getLine(), "{", tokenAtual.getLexeme());
@@ -690,7 +692,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -703,7 +705,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -743,7 +745,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -754,7 +756,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -768,7 +770,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -781,7 +783,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals(",")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
@@ -790,7 +792,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -801,7 +803,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -823,7 +825,7 @@ public class Parser {
 
 		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			opAndCallersAuxA();
 
@@ -834,7 +836,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -861,7 +863,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -892,7 +894,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals(".")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
@@ -901,7 +903,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -931,7 +933,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -944,7 +946,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -957,7 +959,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("function")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 			type();
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
@@ -967,7 +969,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -978,7 +980,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -991,7 +993,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1002,7 +1004,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1016,7 +1018,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1031,7 +1033,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("procedure")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
@@ -1040,7 +1042,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1051,7 +1053,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1064,7 +1066,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1075,7 +1077,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1088,7 +1090,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1112,7 +1114,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1194,12 +1196,12 @@ public class Parser {
 
 			if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 				functionCallParameterAuxB();
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1225,7 +1227,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals(",")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 			functionCallParameter();
 
 		} else {
@@ -1241,7 +1243,7 @@ public class Parser {
 	// OK
 	public void type() {
 
-		if (!(tokenAtual.getTypeToken().equals("int") || tokenAtual.getLexeme().equals("string")
+		if (!(tokenAtual.getLexeme().equals("int") || tokenAtual.getLexeme().equals("string")
 				|| tokenAtual.getLexeme().equals("real") || tokenAtual.getLexeme().equals("boolean"))) {
 
 			errorTokenParser(tokenAtual.getLine(), "int,string,real,boolean", tokenAtual.getLexeme());
@@ -1249,7 +1251,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -1266,12 +1268,12 @@ public class Parser {
 
 			if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 				listArgAux();
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1297,7 +1299,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1327,7 +1329,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -1342,7 +1344,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals(".")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
@@ -1351,7 +1353,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1376,7 +1378,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("while")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			if (!tokenAtual.getLexeme().equals("(")) {
 
@@ -1385,7 +1387,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1398,7 +1400,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1409,7 +1411,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 			if (!tokenAtual.getLexeme().equals("(")) {
@@ -1419,7 +1421,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1432,7 +1434,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1443,7 +1445,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1456,7 +1458,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1471,7 +1473,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("if")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			if (!tokenAtual.getLexeme().equals("(")) {
 
@@ -1480,7 +1482,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1493,7 +1495,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1504,7 +1506,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1515,7 +1517,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1528,7 +1530,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1545,7 +1547,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("else")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			if (!tokenAtual.getLexeme().equals("{")) {
 
@@ -1554,7 +1556,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1567,7 +1569,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1590,7 +1592,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("print")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			if (!tokenAtual.getLexeme().equals("(")) {
 
@@ -1599,7 +1601,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1612,7 +1614,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1623,7 +1625,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1638,7 +1640,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("read")) {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 			if (!tokenAtual.getLexeme().equals("(")) {
 
@@ -1647,7 +1649,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1660,7 +1662,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1671,7 +1673,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1690,6 +1692,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("||")) {
 
+			tokenAtual = proxToken();
 			expressionLogicAnd();
 			expressionLogicOrAux();
 
@@ -1712,6 +1715,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("&&")) {
 
+			tokenAtual = proxToken();
 			expressionLogicDenial();
 			expressionLogicAndAux();
 
@@ -1725,7 +1729,7 @@ public class Parser {
 
 	public void expressionLogicDenial() {
 
-		expressionLogicRelational();
+		expressionRelational();
 		expressionLogicDenialAux();
 
 	}
@@ -1734,7 +1738,8 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("!")) {
 
-			expressionLogicRelational();
+			tokenAtual = proxToken();
+			expressionRelational();
 			expressionLogicDenialAux();
 
 		} else {
@@ -1781,7 +1786,7 @@ public class Parser {
 
 			if (tokenAtual.getLexeme().equals("(")) {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 				expressionLogicRelational();
 
 				if (!tokenAtual.getLexeme().equals(")")) {
@@ -1793,7 +1798,7 @@ public class Parser {
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1930,13 +1935,13 @@ public class Parser {
 
 				} else {
 
-					tokenAtual = nextToken();
+					tokenAtual = proxToken();
 
 				}
 
 			} else {
 
-				tokenAtual = nextToken();
+				tokenAtual = proxToken();
 
 			}
 
@@ -1953,7 +1958,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -1968,7 +1973,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -1983,7 +1988,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
@@ -2000,7 +2005,7 @@ public class Parser {
 
 		} else {
 
-			tokenAtual = nextToken();
+			tokenAtual = proxToken();
 
 		}
 
