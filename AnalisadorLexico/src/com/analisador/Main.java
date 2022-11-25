@@ -31,7 +31,7 @@ public class Main {
 
 		FileFilter filter = new FileFilter() {
 			public boolean accept(File file) {
-				return !file.getName().endsWith("-saida.txt");
+				return !file.getName().endsWith("saida.txt");
 			}
 		};
 
@@ -111,7 +111,7 @@ public class Main {
 
 		PrintWriter recordArc = new PrintWriter(arc);
 
-		if (!Parser.getListSyntacticError().isEmpty()) {
+		if (Parser.getListSyntacticError().isEmpty()) {
 
 			recordArc.println("Esse arquivo não contém erros sint�ticos");
 

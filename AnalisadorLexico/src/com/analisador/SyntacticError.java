@@ -40,7 +40,7 @@ public class SyntacticError {
 
 	@Override
 	public String toString() {
-		return "Error syntactical - Line:" + this.lineError + "Expected token(s):" + this.expectedToken + "Token found:"
+		return "Error syntactical - Line: " + this.lineError + " Expected token(s): " + this.expectedToken + " Token found: "
 				+ foundToken;
 	}
 

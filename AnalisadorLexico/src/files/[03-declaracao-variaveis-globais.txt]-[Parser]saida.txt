@@ -1,0 +1,3 @@
+Error syntactical - Line: 6 Expected token(s): ; Token found: ,
+Error syntactical - Line: 9 Expected token(s): ; Token found: MAX
+Error syntactical - Line: 10 Expected token(s): ; Token found: MAX
