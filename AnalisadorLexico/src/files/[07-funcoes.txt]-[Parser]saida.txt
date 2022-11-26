@@ -1,0 +1,7 @@
+Error syntactical - Line: 7 Expected token(s): ) Token found: ,
+Error syntactical - Line: 7 Expected token(s): { Token found: param2
+Error syntactical - Line: 7 Expected token(s):  = , ( , [ , .  Token found: )
+Error syntactical - Line: 10 Expected token(s): return Token found: }
+Error syntactical - Line: 10 Expected token(s): IDENTIFIER,NUMBER,STRING Token found: }
+Error syntactical - Line: 12 Expected token(s): } Token found: return
+Error syntactical - Line: 12 Expected token(s):  = , ( , [ , .  Token found: ;

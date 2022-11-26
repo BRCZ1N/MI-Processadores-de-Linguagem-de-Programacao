@@ -884,6 +884,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("=")) {
 
+			tokenAtual = proxToken();
 			expressionsAndDataTypes();
 
 		} else {
@@ -1157,6 +1158,7 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals(",")) {
 
+			tokenAtual = proxToken();
 			functionParameter();
 
 		} else {
