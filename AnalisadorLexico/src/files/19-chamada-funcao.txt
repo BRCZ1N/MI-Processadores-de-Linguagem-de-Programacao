@@ -1,0 +1,12 @@
+const { }
+
+var { }
+
+start ( ) {
+	
+	valor = calcula (13.5, valor);
+	
+	imprimir ("soma calculada");
+	
+	imprimir (texto);
+}

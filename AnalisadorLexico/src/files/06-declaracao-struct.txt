@@ -1,0 +1,17 @@
+const {
+	int MAX = 12, MAX2 = 40;
+}
+
+var { }
+
+struct {
+	string cpf[MAX], nome[MAX2];
+	int idade;
+}
+
+struct Aluno Pessoa {
+	string matricula[MAX];
+	string curso[MAX2];
+}
+
+start ( ) { }

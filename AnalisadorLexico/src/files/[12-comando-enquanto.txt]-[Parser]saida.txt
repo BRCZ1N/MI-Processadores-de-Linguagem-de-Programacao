@@ -1,0 +1,2 @@
+Error syntactical - Line: 7 - Expected token(s): ( - Token found: a
+Error syntactical - Line: 9 - Expected token(s): IDE,NRO,PRE(TRUE,FALSE) - Token found: )

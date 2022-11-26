@@ -1,0 +1,32 @@
+1 PRE const 
+1 DEL { 
+1 DEL } 
+3 PRE var 
+3 DEL { 
+3 DEL } 
+5 PRE start 
+5 DEL ( 
+5 DEL ) 
+5 DEL { 
+7 PRE if 
+7 DEL ( 
+7 IDE a 
+7 REL > 
+7 IDE b 
+7 DEL ) 
+7 DEL { 
+7 DEL } 
+8 PRE else 
+8 DEL { 
+9 PRE if 
+9 DEL ( 
+9 IDE b 
+9 REL > 
+9 IDE c 
+9 PRE then 
+9 DEL { 
+9 DEL } 
+10 DEL } 
+11 DEL } 
+
+Esse arquivo não contém erro

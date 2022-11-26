@@ -1,0 +1,9 @@
+const { }
+
+var { }
+
+start ( ) { 
+	
+	while (a>b) { }
+
+}

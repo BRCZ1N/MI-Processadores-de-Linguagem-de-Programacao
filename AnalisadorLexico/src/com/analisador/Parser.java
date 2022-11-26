@@ -462,6 +462,12 @@ public class Parser {
 			varDeclarationStruct();
 			varBlock();
 
+		} else if (!listTypeToken.contains(tokenAtual.getLexeme()) && !tokenAtual.getLexeme().equals("struct") && !tokenAtual.getLexeme().equals("}")) {
+
+			errorTokenParser(tokenAtual.getLine(), "PRE(int,real,string,boolean,struct)", tokenAtual.getLexeme());
+			panicSynchron("} PRE");
+			varBlock();
+
 		} else {
 
 			return;
@@ -754,7 +760,7 @@ public class Parser {
 		}
 
 	}
-
+	
 	// OK
 	// OK
 	// OK
@@ -763,6 +769,12 @@ public class Parser {
 		if (listTypeToken.contains(tokenAtual.getLexeme())) {
 
 			constDeclaration();
+			constBlock();
+
+		} else if (!listTypeToken.contains(tokenAtual.getLexeme()) && !tokenAtual.getLexeme().equals("}")) {
+
+			errorTokenParser(tokenAtual.getLine(), "PRE(int,real,string,boolean)", tokenAtual.getLexeme());
+			panicSynchron("} PRE");
 			constBlock();
 
 		} else {

@@ -1,3 +1,3 @@
 Error syntactical - Line: 2 - Expected token(s): ++, --, (, IDE, NRO , CAC - Token found: ,
-Error syntactical - Line: 3 - Expected token(s): } - Token found: juros
-Error syntactical - Line: 9 - Expected token(s): var - Token found: start
+Error syntactical - Line: 3 - Expected token(s): PRE(int,real,string,boolean) - Token found: juros
+Error syntactical - Line: 5 - Expected token(s): ; - Token found: }
