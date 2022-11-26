@@ -42,6 +42,7 @@ public class Parser {
 
 		this.listTokens = LexicalAnaliser.getListTokens();
 		countToken = 0;
+		listSyntacticError = new ArrayList<SyntacticError>();
 		tokenAtual = listTokens.get(countToken);
 
 	}
