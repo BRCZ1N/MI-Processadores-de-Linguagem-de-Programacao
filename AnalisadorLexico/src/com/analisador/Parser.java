@@ -1298,6 +1298,8 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals(".")) {
 
+			tokenAtual = proxToken();
+			
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDENTIFIER", tokenAtual.getLexeme());
@@ -1386,40 +1388,6 @@ public class Parser {
 
 			tokenAtual = proxToken();
 
-			if (!tokenAtual.getLexeme().equals("(")) {
-
-				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
-				panicSynchron("} var struct read if function IDE procedure while print");
-
-			} else {
-
-				tokenAtual = proxToken();
-
-			}
-
-			expressionLogicRelational();
-
-			if (!tokenAtual.getLexeme().equals(")")) {
-
-				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-				panicSynchron("} var struct read if function IDE procedure while print");
-
-			} else {
-
-				tokenAtual = proxToken();
-
-			}
-
-			if (!tokenAtual.getLexeme().equals(";")) {
-
-				errorTokenParser(tokenAtual.getLine(), ";", tokenAtual.getLexeme());
-				panicSynchron("} var struct read iff function IDE procedure while print");
-
-			} else {
-
-				tokenAtual = proxToken();
-
-			}
 			if (!tokenAtual.getLexeme().equals("(")) {
 
 				errorTokenParser(tokenAtual.getLine(), "(", tokenAtual.getLexeme());
@@ -1818,20 +1786,20 @@ public class Parser {
 	public void expressionsAritmetic() {
 
 		term();
-		expressionsAritmeticAux();
+		expressionAritmeticAux();
 
 	}
 
 	// OK
 	// OK
 	// OK
-	public void expressionsAritmeticAux() {
+	public void expressionAritmeticAux() {
 
 		if (tokenAtual.getLexeme().equals("-") || tokenAtual.getLexeme().equals("+")) {
 
 			sum();
 			term();
-			expressionsAritmeticAux();
+			expressionAritmeticAux();
 
 		} else {
 
@@ -1892,8 +1860,7 @@ public class Parser {
 		} else {
 
 			errorTokenParser(tokenAtual.getLine(), "++,--,(,IDE,NRO", tokenAtual.getLexeme());
-			panicSynchron("*,/,+,-,,,;,),++,--");
-
+			panicSynchron("* / + - , ; ) ++ --");
 		}
 
 	}
@@ -1926,18 +1893,20 @@ public class Parser {
 				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode()))) {
 
 			errorTokenParser(tokenAtual.getLine(), "IDE,NRO,(", tokenAtual.getLexeme());
-			panicSynchron("*,/, +,- ,,,;,),++,--");
+			panicSynchron("* / + - , ; ) ++ --");
 
 		} else {
 
 			if (tokenAtual.getLexeme().equals("(")) {
 
+				tokenAtual = proxToken();
+				
 				expressionsAritmetic();
 
 				if (!tokenAtual.getLexeme().equals(")")) {
 
 					errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-					panicSynchron("*,/,+,-,,,;,),++,--");
+					panicSynchron("* / + - , ; ) ++ --");
 
 				} else {
 
@@ -1960,7 +1929,7 @@ public class Parser {
 		if (!(tokenAtual.getLexeme().equals("+") || tokenAtual.getLexeme().equals("-"))) {
 
 			errorTokenParser(tokenAtual.getLine(), "+,-", tokenAtual.getLexeme());
-			panicSynchron("++,--,(,NRO,IDE");
+			panicSynchron("++ -- ( NRO IDE");
 
 		} else {
 
@@ -1975,7 +1944,7 @@ public class Parser {
 		if (!(tokenAtual.getLexeme().equals("*") || tokenAtual.getLexeme().equals("/"))) {
 
 			errorTokenParser(tokenAtual.getLine(), "*,-", tokenAtual.getLexeme());
-			panicSynchron("++,--,(,NRO,IDE");
+			panicSynchron("++ -- ( NRO IDE");
 
 		} else {
 
@@ -1990,7 +1959,7 @@ public class Parser {
 		if (!(tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--"))) {
 
 			errorTokenParser(tokenAtual.getLine(), "++,--", tokenAtual.getLexeme());
-			panicSynchron("++,--,(,NRO,IDE");
+			panicSynchron("++ -- ( NRO IDE");
 
 		} else {
 
@@ -2007,7 +1976,7 @@ public class Parser {
 				|| tokenAtual.getLexeme().equals("==") || tokenAtual.getLexeme().equals("!="))) {
 
 			errorTokenParser(tokenAtual.getLine(), ">,>=,<=,==,!=", tokenAtual.getLexeme());
-			panicSynchron("(,NRO,IDE");
+			panicSynchron("( NRO IDE");
 
 		} else {
 
