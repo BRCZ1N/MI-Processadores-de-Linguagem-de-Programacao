@@ -1949,12 +1949,6 @@ public class Parser {
 
 				}
 
-			} else if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
-
-				tokenAtual = proxToken();
-
-				fatorAux();
-
 			} else {
 
 				tokenAtual = proxToken();
