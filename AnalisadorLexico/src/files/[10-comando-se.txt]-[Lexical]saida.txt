@@ -8,29 +8,25 @@
 5 DEL ( 
 5 DEL ) 
 5 DEL { 
-7 PRE while 
+7 PRE if 
 7 DEL ( 
-7 IDE i 
-7 REL <= 
-7 IDE Max 
-7 IDE flag 
-7 REL != 
-7 PRE false 
+7 IDE a 
+7 REL > 
+7 IDE b 
 7 DEL ) 
 7 DEL { 
 7 DEL } 
+8 PRE else 
+8 DEL { 
 9 PRE if 
 9 DEL ( 
-9 IDE a 
 9 IDE b 
-9 LOG || 
-9 IDE c 
 9 REL > 
-9 IDE d 
-9 DEL ) 
+9 IDE c 
 9 PRE then 
 9 DEL { 
 9 DEL } 
+10 DEL } 
 11 DEL } 
 
 Esse arquivo não contém erro

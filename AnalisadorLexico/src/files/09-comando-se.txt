@@ -1,0 +1,11 @@
+const { }
+
+var { }
+
+start ( ) { 
+	
+	if (a>b) then { }
+	else {  
+		if (b > c) then { }	
+	}
+}

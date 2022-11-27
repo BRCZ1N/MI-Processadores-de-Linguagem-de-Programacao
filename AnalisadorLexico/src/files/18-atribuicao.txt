@@ -1,0 +1,20 @@
+const { }
+
+var { }
+
+start ( ) {
+	soma = ;
+	
+	local.valor = global. ;
+	    
+	local.soma[j = vetor[i];
+	    
+	soma[i][j] = matriz[10][max];
+
+	soma[i][j] = Max;	
+
+	endereco. = "rua que sobe e desce";
+	
+	aluno.disciplina i] = "matematica";
+	
+}

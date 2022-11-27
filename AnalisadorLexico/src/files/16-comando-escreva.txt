@@ -1,0 +1,16 @@
+const { }
+
+var { }
+
+start ( ) { 
+     
+    print(variavel ;
+    
+    print(vetor[ ]);
+    
+    print(matriz[j [k]);
+    
+    print(aluno.);
+    
+    print(aluno.[j]);
+}

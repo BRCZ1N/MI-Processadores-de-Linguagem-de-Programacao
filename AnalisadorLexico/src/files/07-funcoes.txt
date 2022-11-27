@@ -1,0 +1,28 @@
+const {
+	int MAX = 12, MAX2 = 40;
+}
+
+var { }
+
+start ( ) {
+
+	function int somar (int param1, int param2) {
+	var { 
+		real soma = 0;
+	}
+		soma = param1 + param2;
+		return soma;
+	}
+
+	procedure exibir (int valor) {
+		print(valor);
+	}
+
+	function real calcula_media (real aluno) {
+	var { real media = 0; }
+		media = (notas1 + notas2 + notas3)/3;
+		print(media);
+	return media;
+	}
+	
+}

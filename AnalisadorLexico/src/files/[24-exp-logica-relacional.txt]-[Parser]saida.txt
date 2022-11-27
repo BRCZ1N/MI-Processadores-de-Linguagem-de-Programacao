@@ -1,3 +1,2 @@
-Error syntactical - Line: 9 - Expected token(s): ) - Token found: flag
-Error syntactical - Line: 9 - Expected token(s): { - Token found: )
-Error syntactical - Line: 11 - Expected token(s): ) - Token found: b
+Error syntactical - Line: 7 - Expected token(s): ) - Token found: flag
+Error syntactical - Line: 9 - Expected token(s): ) - Token found: b

@@ -1,0 +1,36 @@
+1 PRE const 
+1 DEL { 
+2 PRE int 
+2 IDE count1 
+2 REL = 
+2 NRO 0 
+2 DEL , 
+2 IDE count2 
+2 REL = 
+2 IDE a 
+2 ART + 
+2 IDE b 
+2 ART * 
+2 IDE c 
+2 DEL ; 
+3 PRE real 
+3 IDE juros 
+3 REL = 
+3 NRO 13.5 
+3 DEL ; 
+4 PRE string 
+4 IDE msg 
+4 REL = 
+4 CAC "oi" 
+4 DEL ; 
+5 DEL } 
+7 PRE var 
+7 DEL { 
+7 DEL } 
+9 PRE start 
+9 DEL ( 
+9 DEL ) 
+9 DEL { 
+9 DEL } 
+
+Esse arquivo não contém erro

@@ -1,0 +1,11 @@
+const { }
+
+var { }
+
+start ( ) {
+    
+	while ( i <= Max && flag != false ) { }	
+	
+	if ( a > b || c > d ) then { }
+	
+}

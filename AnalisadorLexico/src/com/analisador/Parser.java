@@ -1438,7 +1438,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(")")) {
 
 				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-				panicSynchron(") } var struct read if functio procedure while print");
+				panicSynchron("} { var struct read if functio procedure while print");
 
 			} else {
 
