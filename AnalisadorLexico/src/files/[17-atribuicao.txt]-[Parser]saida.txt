@@ -1,6 +1,1 @@
-Error syntactical - Line: 8 - Expected token(s): ; - Token found: .
-Error syntactical - Line: 8 - Expected token(s):  = , ( , [ , .  - Token found: ;
-Error syntactical - Line: 10 - Expected token(s): ; - Token found: [
-Error syntactical - Line: 10 - Expected token(s):  = , ( , [ , .  - Token found: ]
-Error syntactical - Line: 12 - Expected token(s): ; - Token found: [
-Error syntactical - Line: 12 - Expected token(s):  = , ( , [ , .  - Token found: ]
+Esse arquivo não contém erros sint�ticos
