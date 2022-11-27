@@ -1,7 +1,0 @@
-Error syntactical - Line: 7 - Expected token(s): IDE - Token found: {
-Error syntactical - Line: 8 - Expected token(s): { , extends - Token found: cpf
-Error syntactical - Line: 8 - Expected token(s): start - Token found: cpf
-Error syntactical - Line: 8 - Expected token(s): ( - Token found: [
-Error syntactical - Line: 8 - Expected token(s): ) - Token found: [
-Error syntactical - Line: 8 - Expected token(s): { - Token found: [
-Error syntactical - Line: 8 - Expected token(s): } - Token found: [

@@ -1,0 +1,36 @@
+1 PRE const 
+1 DEL { 
+1 DEL } 
+3 PRE var 
+3 DEL { 
+5 DEL } 
+7 PRE start 
+7 DEL ( 
+7 DEL ) 
+7 DEL { 
+9 PRE while 
+9 DEL ( 
+9 IDE i 
+9 REL <= 
+9 IDE Max 
+9 IDE flag 
+9 REL != 
+9 PRE false 
+9 DEL ) 
+9 DEL { 
+9 DEL } 
+11 PRE if 
+11 DEL ( 
+11 IDE a 
+11 IDE b 
+11 LOG || 
+11 IDE c 
+11 REL > 
+11 IDE d 
+11 DEL ) 
+11 PRE then 
+11 DEL { 
+11 DEL } 
+13 DEL } 
+
+Esse arquivo não contém erro
