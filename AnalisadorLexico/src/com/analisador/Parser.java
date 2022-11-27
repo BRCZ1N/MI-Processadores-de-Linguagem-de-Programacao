@@ -1499,7 +1499,7 @@ public class Parser {
 			if (!tokenAtual.getLexeme().equals(")")) {
 
 				errorTokenParser(tokenAtual.getLine(), ")", tokenAtual.getLexeme());
-				panicSynchron("{ ) then } var struct read if function procedure while print");
+				panicSynchron("{ then } var struct read if function procedure while print");
 
 			} else {
 
