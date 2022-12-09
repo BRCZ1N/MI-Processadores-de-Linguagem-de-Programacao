@@ -1,1 +1,1 @@
-Error syntactical - Line: 12 - Expected token(s): IDE - Token found: extends
+Esse arquivo não contém erros sint�ticos

@@ -672,6 +672,8 @@ public class Parser {
 
 		if (tokenAtual.getLexeme().equals("extends")) {
 
+			tokenAtual = proxToken();
+			
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDE", tokenAtual.getLexeme());
