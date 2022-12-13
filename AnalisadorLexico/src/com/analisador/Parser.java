@@ -11,6 +11,10 @@ public class Parser {
 	private ArrayList<String> listTypeToken = new ArrayList<String>();
 	private ArrayList<String> listCmdToken = new ArrayList<String>();
 	private static ArrayList<SyntacticError> listSyntacticError = new ArrayList<SyntacticError>();
+	private String currentType;
+	private SymbolTable symbolTable = new SymbolTable();
+	private SymbolTableObject previousSymbol;
+	private static ArrayList<SemanticError> listSemanticError = new ArrayList<SemanticError>();
 
 	public Parser() {
 
@@ -301,18 +305,19 @@ public class Parser {
 
 		} else {
 
+			if (!symbolTable.isInteger(tokenAtual.getLexeme())) {
+
+				listSemanticError.add(new SemanticError(previousSymbol.getLine(),
+						"Erro semântico - Vetores aceitam apenas tipos inteiros na dimensão"));
+
+			}
+
 			tokenAtual = proxToken();
 
 		}
 
 	}
 
-	// FALTA
-	// FALTA
-	// FALTA
-	// FALTA
-	// FALTA
-	// FALTA
 	public void expressionsAndDataTypes() {
 
 		if (!(tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode())
@@ -326,18 +331,7 @@ public class Parser {
 
 		} else {
 
-			if (tokenAtual.getLexeme().equals("(")
-					|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
-					|| tokenAtual.getLexeme().equals("++") || tokenAtual.getLexeme().equals("--")
-					|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())) {
-
-				expressionsAritmetic();
-
-			} else {
-
-				tokenAtual = proxToken();
-
-			}
+			expressionsAritmetic();
 
 		}
 
@@ -542,11 +536,23 @@ public class Parser {
 
 		} else {
 
+			if (!symbolTable.exists(tokenAtual.getLexeme())) {
+
+				symbolTable.add(tokenAtual.getLexeme(), new SymbolTableObject(tokenAtual, currentType));
+
+			} else {
+
+				listSemanticError.add(
+						new SemanticError(tokenAtual.getLine(), "Erro Semântico - Identificador já foi declarado"));
+
+			}
+
 			tokenAtual = proxToken();
 
 		}
 
 		varDeclarationAux();
+		varDeclarationAuxA();
 
 		if (!tokenAtual.getLexeme().equals(";")) {
 
@@ -570,12 +576,10 @@ public class Parser {
 
 			tokenAtual = proxToken();
 			expressionsAndDataTypes();
-			varDeclarationAuxA();
 
 		} else if (tokenAtual.getLexeme().equals("[")) {
 
 			array();
-			varDeclarationAuxA();
 
 		} else {
 
@@ -600,6 +604,17 @@ public class Parser {
 				panicSynchron(";");
 
 			} else {
+
+				if (!symbolTable.exists(tokenAtual.getLexeme())) {
+
+					symbolTable.add(tokenAtual.getLexeme(), new SymbolTableObject(tokenAtual, currentType));
+
+				} else {
+
+					listSemanticError
+							.add(new SemanticError(tokenAtual.getLine(), "Erro semântico - Variavel já declarada"));
+
+				}
 
 				tokenAtual = proxToken();
 
@@ -673,7 +688,7 @@ public class Parser {
 		if (tokenAtual.getLexeme().equals("extends")) {
 
 			tokenAtual = proxToken();
-			
+
 			if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				errorTokenParser(tokenAtual.getLine(), "IDE", tokenAtual.getLexeme());
@@ -751,6 +766,7 @@ public class Parser {
 
 		if (listTypeToken.contains(tokenAtual.getLexeme())) {
 
+			type();
 			constDeclaration();
 			constBlock();
 
@@ -773,14 +789,23 @@ public class Parser {
 	// OK
 	public void constDeclaration() {
 
-		type();
-
 		if (!tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 			errorTokenParser(tokenAtual.getLine(), "IDE", tokenAtual.getLexeme());
 			panicSynchron("} int real boolean string");
 
 		} else {
+
+			if (!symbolTable.exists(tokenAtual.getLexeme())) {
+
+				symbolTable.add(tokenAtual.getLexeme(), new SymbolTableObject(tokenAtual, currentType));
+
+			} else {
+
+				listSemanticError
+						.add(new SemanticError(tokenAtual.getLine(), "Erro semântico - Identificador já declarado"));
+
+			}
 
 			tokenAtual = proxToken();
 
@@ -861,6 +886,17 @@ public class Parser {
 	public void opAndCallers() {
 
 		if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+
+			if (!symbolTable.exists(tokenAtual.getLexeme())) {
+
+				listSemanticError.add(new SemanticError(previousSymbol.getLine(),
+						"Erro semântico - Identificador não foi declarado"));
+
+			} else {
+
+				previousSymbol = symbolTable.getSymbol(tokenAtual.getLexeme());
+
+			}
 
 			tokenAtual = proxToken();
 
@@ -1293,6 +1329,7 @@ public class Parser {
 
 		} else {
 
+			currentType = tokenAtual.getLexeme();
 			tokenAtual = proxToken();
 
 		}
@@ -1927,7 +1964,8 @@ public class Parser {
 
 		if (!(tokenAtual.getLexeme().equals("(")
 				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())
-				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode()))) {
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())
+				|| tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode()))) {
 
 			errorTokenParser(tokenAtual.getLine(), "IDE,NRO,(", tokenAtual.getLexeme());
 			panicSynchron("* / + - , ; ) ++ --");
@@ -1951,13 +1989,45 @@ public class Parser {
 
 				}
 
-			}else if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+			} else if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
 				tokenAtual = proxToken();
-
 				fatorAux();
 
 			} else {
+
+				if (tokenAtual.getTypeToken().equals(InitialsToken.TK_STRING.getTypeTokenCode())) {
+
+					if (!symbolTable.comparableTypes(previousSymbol, "string")) {
+
+						listSemanticError.add(
+								new SemanticError(previousSymbol.getLine(), "Erro semântico - Tipos incompativeis"));
+
+					}
+
+				} else {
+
+					if (symbolTable.isInteger(tokenAtual.getLexeme())) {
+
+						if (!symbolTable.comparableTypes(previousSymbol, "int")) {
+
+							listSemanticError.add(new SemanticError(previousSymbol.getLine(),
+									"Erro semântico - Tipos incompativeis"));
+
+						}
+
+					} else {
+
+						if (!symbolTable.comparableTypes(previousSymbol, "real")) {
+
+							listSemanticError.add(new SemanticError(previousSymbol.getLine(),
+									"Erro semântico - Tipos incompativeis"));
+
+						}
+
+					}
+
+				}
 
 				tokenAtual = proxToken();
 
@@ -2008,6 +2078,22 @@ public class Parser {
 			}
 
 		} else {
+
+			if (symbolTable.exists(tokenAtual.getLexeme())) {
+
+				if (symbolTable.comparableTypes(previousSymbol, symbolTable.getSymbol(tokenAtual.getLexeme()))) {
+
+					listSemanticError
+							.add(new SemanticError(tokenAtual.getLine(), "Erro semântico - Tipos incompativeis"));
+
+				}
+
+			} else {
+
+				listSemanticError
+						.add(new SemanticError(tokenAtual.getLine(), "Erro semântico - Identificador não encontrado"));
+
+			}
 
 			return;
 

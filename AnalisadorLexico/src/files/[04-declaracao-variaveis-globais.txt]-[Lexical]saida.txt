@@ -19,6 +19,8 @@
 6 IDE b 
 6 ART * 
 6 IDE c 
+6 DEL , 
+6 IDE count 
 6 DEL ; 
 7 IDE juros 
 7 REL = 
