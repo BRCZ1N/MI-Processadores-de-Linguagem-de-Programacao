@@ -1,9 +1,0 @@
-const { 
-	int count1 = , count2 = a+b*c;
-	juros = 13.5;
-	string msg = "oi"
-}
-
-var { }
-
-start ( ) { }

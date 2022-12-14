@@ -19,8 +19,9 @@ public class Main {
 			syntaxAnaliser.refreshTokenList();
 			syntaxAnaliser.startParser();
 
-			writeTokensInArchive(file.getName());
-			writeSyntacticalErrorInArchive(file.getName());
+			//writeTokensInArchive(file.getName());
+			//writeSyntacticalErrorInArchive(file.getName());
+			writeSemanticErrorInArchive(file.getName());
 			LexicalAnaliser.clearAllList();
 
 		}
@@ -113,7 +114,7 @@ public class Main {
 
 		if (Parser.getListSyntacticError().isEmpty()) {
 
-			recordArc.println("Esse arquivo não contém erros sint�ticos");
+			recordArc.println("Esse arquivo não contém erros sint�ticos");
 
 		} else {
 
@@ -129,5 +130,43 @@ public class Main {
 		arc.close();
 
 	}
+	
+	public static void writeSemanticErrorInArchive(String nameArc) throws IOException {
+
+		File file = new File("src/files/" + "[" + nameArc + "]-[Semantic]saida.txt");
+		FileWriter arc = null;
+
+		try {
+
+			file.createNewFile();
+			arc = new FileWriter(file);
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+		}
+
+		PrintWriter recordArc = new PrintWriter(arc);
+
+		if (Parser.getListSemanticError().isEmpty()) {
+
+			recordArc.println("Esse arquivo não contém erros semânticos");
+
+		} else {
+
+			for (SemanticError tk : Parser.getListSemanticError()) {
+
+				recordArc.println(tk.toString());
+
+			}
+
+		}
+
+		recordArc.close();
+		arc.close();
+
+	}
+
 
 }

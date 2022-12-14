@@ -1,4 +1,0 @@
-Error syntactical - Line: 9 - Expected token(s): IDE - Token found: (
-Error syntactical - Line: 9 - Expected token(s): IDE - Token found: ,
-Error syntactical - Line: 17 - Expected token(s): IDE - Token found: (
-Error syntactical - Line: 25 - Expected token(s): return - Token found: }

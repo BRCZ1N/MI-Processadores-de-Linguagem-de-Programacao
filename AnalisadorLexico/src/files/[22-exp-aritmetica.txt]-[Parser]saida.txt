@@ -1,3 +1,0 @@
-Error syntactical - Line: 9 - Expected token(s): ; - Token found: (
-Error syntactical - Line: 11 - Expected token(s): ) - Token found: ;
-Error syntactical - Line: 13 - Expected token(s): ++,--,(,IDE,NRO - Token found: )

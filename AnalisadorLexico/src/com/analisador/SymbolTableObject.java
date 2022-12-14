@@ -18,6 +18,10 @@ public class SymbolTableObject {
 
 	}
 
+	public SymbolTableObject() {
+	
+	}
+
 	public String getLexeme() {
 		return lexeme;
 	}

@@ -1,0 +1,10 @@
+Error semantic - Line: 6 - Error found: Erro semântico - Identificador não foi declarado
+Error semantic - Line: 8 - Error found: Erro semântico - Identificador não foi declarado
+Error semantic - Line: 10 - Error found: Erro semântico - Identificador não foi declarado
+Error semantic - Line: 12 - Error found: Erro semântico - Identificador não foi declarado
+Error semantic - Line: 14 - Error found: Erro semântico - Identificador não foi declarado
+Error semantic - Line: 14 - Error found: Erro semântico - Identificador não encontrado
+Error semantic - Line: 16 - Error found: Erro semântico - Identificador não foi declarado
+Error semantic - Line: 16 - Error found: Erro semântico - Tipos incompativeis
+Error semantic - Line: 18 - Error found: Erro semântico - Identificador não foi declarado
+Error semantic - Line: 18 - Error found: Erro semântico - Tipos incompativeis

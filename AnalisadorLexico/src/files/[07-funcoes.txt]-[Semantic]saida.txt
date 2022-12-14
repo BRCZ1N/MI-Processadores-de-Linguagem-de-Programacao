@@ -1,0 +1,8 @@
+Error semantic - Line: 11 - Error found: Erro semântico - Tipos incompativeis
+Error semantic - Line: 13 - Error found: Erro semântico - Identificador não encontrado
+Error semantic - Line: 13 - Error found: Erro semântico - Identificador não encontrado
+Error semantic - Line: 22 - Error found: Erro semântico - Tipos incompativeis
+Error semantic - Line: 23 - Error found: Erro semântico - Identificador não encontrado
+Error semantic - Line: 23 - Error found: Erro semântico - Identificador não encontrado
+Error semantic - Line: 23 - Error found: Erro semântico - Identificador não encontrado
+Error semantic - Line: 23 - Error found: Erro semântico - Tipos incompativeis
