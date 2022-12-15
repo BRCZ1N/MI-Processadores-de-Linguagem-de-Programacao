@@ -707,6 +707,8 @@ public class Parser {
 
 			} else {
 
+				previousSymbol.setId(currentType);
+				previousSymbol.setLine(tokenAtual.getLine());
 				tokenAtual = proxToken();
 
 			}
