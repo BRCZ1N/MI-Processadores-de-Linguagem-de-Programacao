@@ -22,11 +22,11 @@ public class SymbolTable {
 
 	}
 
-	public boolean exists(String symbolName) {
-
-		return symbolTable.containsKey(symbolName);
-
-	}
+//	public boolean exists(String symbolName) {
+//
+//		return symbolTable.containsKey(symbolName);
+//
+//	}
 
 	public SymbolTableObject getSymbol(String symbolKey) {
 
@@ -36,7 +36,7 @@ public class SymbolTable {
 
 	public boolean comparableTypes(SymbolTableObject previousIdentifier, SymbolTableObject currentIdentifier) {
 
-		if (previousIdentifier.getTypeDateToken().equals(currentIdentifier.getTypeDateToken())) {
+		if (previousIdentifier.getTypeDate().equals(currentIdentifier.getTypeDate())) {
 
 			return true;
 
@@ -45,10 +45,10 @@ public class SymbolTable {
 		return false;
 
 	}
-	
+
 	public boolean comparableTypes(SymbolTableObject previousIdentifier, String typeToken) {
 
-		if (previousIdentifier.getTypeDateToken().equals(typeToken)) {
+		if (previousIdentifier.getTypeDate().equals(typeToken)) {
 
 			return true;
 
@@ -57,22 +57,19 @@ public class SymbolTable {
 		return false;
 
 	}
-	
-	
-	
 
 	public boolean isInteger(String number) {
 
 		try {
-			
+
 			Integer.parseInt(number);
-			
+
 		} catch (NumberFormatException ex) {
-			
+
 			return false;
-			
+
 		}
-		
+
 		return true;
 
 	}
