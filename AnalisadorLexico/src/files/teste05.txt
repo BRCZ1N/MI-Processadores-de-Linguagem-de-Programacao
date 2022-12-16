@@ -1,0 +1,19 @@
+const { 
+	int max = 10;
+}
+
+var {
+	real soma;
+}
+
+start ( ) {
+	var {
+		int i, a, b, c;
+		real d;
+		string flag;	
+	}
+    
+	while ( i <= max && flag != false ) { }	 // ERRO
+	
+	if ( a > b || c > d ) then { }	// ERRO	
+}

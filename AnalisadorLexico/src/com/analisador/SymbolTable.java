@@ -1,12 +1,13 @@
 package com.analisador;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class SymbolTable {
 
-	private HashMap<String, SymbolTableObject> symbolTable = new HashMap<String, SymbolTableObject>();
+	private Map<String, SymbolTableObject> symbolTable = new HashMap<String, SymbolTableObject>();
 
-	public HashMap<String, SymbolTableObject> getSymbolTable() {
+	public Map<String, SymbolTableObject> getSymbolTable() {
 		return symbolTable;
 	}
 
@@ -49,6 +50,18 @@ public class SymbolTable {
 	public boolean comparableTypes(SymbolTableObject previousIdentifier, String typeToken) {
 
 		if (previousIdentifier.getTypeDate().equals(typeToken)) {
+
+			return true;
+
+		}
+
+		return false;
+
+	}
+	
+	public boolean comparableTypes(String typeA, String typeB) {
+
+		if (typeA.equals(typeB)) {
 
 			return true;
 

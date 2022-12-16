@@ -19,8 +19,8 @@ public class Main {
 			syntaxAnaliser.refreshTokenList();
 			syntaxAnaliser.startParser();
 
-//			writeTokensInArchive(file.getName());
-//			writeSyntacticalErrorInArchive(file.getName());
+			writeTokensInArchive(file.getName());
+			writeSyntacticalErrorInArchive(file.getName());
 			writeSemanticErrorInArchive(file.getName());
 			LexicalAnaliser.clearAllList();
 

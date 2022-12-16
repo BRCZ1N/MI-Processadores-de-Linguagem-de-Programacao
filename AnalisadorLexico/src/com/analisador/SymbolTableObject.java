@@ -8,11 +8,17 @@ public class SymbolTableObject {
 	private Long line;
 	private String typeDate;
 	private String typeToken;
-	private LinkedList<FunctionsSymbolTableObject> paramFunc;
+	private LinkedList<AttributesSymbolTableObject> paramFunc;
 	private String typeReturn;
-	//private String categoryObject;
+	private String categoryObject;
 
 	public SymbolTableObject() {
+
+	}
+	
+	public SymbolTableObject(String categoryObject) {
+		
+		this.categoryObject = categoryObject;
 
 	}
 
@@ -25,7 +31,7 @@ public class SymbolTableObject {
 
 	}
 
-	public SymbolTableObject(Token token, LinkedList<FunctionsSymbolTableObject> paramFunc, String typeReturn) {
+	public SymbolTableObject(Token token, LinkedList<AttributesSymbolTableObject> paramFunc, String typeReturn) {
 
 		this.id = token.getLexeme();
 		this.line = token.getLine();
@@ -34,7 +40,7 @@ public class SymbolTableObject {
 
 	}
 	
-	public SymbolTableObject(Token token, LinkedList<FunctionsSymbolTableObject> paramFunc) {
+	public SymbolTableObject(Token token, LinkedList<AttributesSymbolTableObject> paramFunc) {
 
 		this.id = token.getLexeme();
 		this.line = token.getLine();
@@ -75,11 +81,11 @@ public class SymbolTableObject {
 		this.typeToken = typeToken;
 	}
 
-	public LinkedList<FunctionsSymbolTableObject> getParamFunc() {
+	public LinkedList<AttributesSymbolTableObject> getParamFunc() {
 		return paramFunc;
 	}
 
-	public void setParamFunc(LinkedList<FunctionsSymbolTableObject> paramFunc) {
+	public void setParamFunc(LinkedList<AttributesSymbolTableObject> paramFunc) {
 		this.paramFunc = paramFunc;
 	}
 
@@ -89,6 +95,14 @@ public class SymbolTableObject {
 
 	public void setTypeReturn(String typeReturn) {
 		this.typeReturn = typeReturn;
+	}
+
+	public String getCategoryObject() {
+		return categoryObject;
+	}
+
+	public void setCategoryObject(String categoryObject) {
+		this.categoryObject = categoryObject;
 	}
 
 }

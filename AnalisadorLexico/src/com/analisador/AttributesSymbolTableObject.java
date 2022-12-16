@@ -12,6 +12,10 @@ public class AttributesSymbolTableObject {
 
 	}
 
+	public AttributesSymbolTableObject() {
+		
+	}
+
 	public String getNameAttribute() {
 		return nameAttribute;
 	}
