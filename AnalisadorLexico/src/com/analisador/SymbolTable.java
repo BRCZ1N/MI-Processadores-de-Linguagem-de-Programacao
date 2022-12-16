@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class SymbolTable {
 
-	private Map<String, SymbolTableObject> symbolTable = new HashMap<String, SymbolTableObject>();
+	private static Map<String, SymbolTableObject> symbolTable = new HashMap<String, SymbolTableObject>();
 
 	public Map<String, SymbolTableObject> getSymbolTable() {
 		return symbolTable;
@@ -13,7 +13,7 @@ public class SymbolTable {
 
 	public void setSymbolTable(HashMap<String, SymbolTableObject> symbolTable) {
 
-		this.symbolTable = symbolTable;
+		SymbolTable.symbolTable = symbolTable;
 
 	}
 
@@ -71,7 +71,7 @@ public class SymbolTable {
 
 	}
 
-	public boolean isInteger(String number) {
+	public static boolean isInteger(String number) {
 
 		try {
 

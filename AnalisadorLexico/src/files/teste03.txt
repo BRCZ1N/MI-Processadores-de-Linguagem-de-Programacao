@@ -1,0 +1,26 @@
+const { 
+	int max = 10;
+	real limite = 5.5;
+}
+
+var {
+	real soma;
+}
+
+start ( ) {
+
+	var {
+		real vetor1[max];
+		
+		real matriz1[max][10.0];	// ERRO
+		
+		int vetor2[limite]; 	// ERRO
+		
+		int matriz2[limite][max];	// ERRO
+		
+	}
+		
+	vetor1[22.2] = soma; 	// ERRO
+	
+	matriz2[1][1.0] = 10;  	// ERRO
+}

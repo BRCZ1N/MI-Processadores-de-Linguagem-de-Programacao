@@ -18,6 +18,9 @@ public class Parser {
 	private SymbolTableObject previousSymbol = new SymbolTableObject();
 	private SymbolTableObject currentSymbol = new SymbolTableObject();
 	private String currentCategory;
+	private Token previousToken;
+	private Token currentToken;
+	private SemanticAnaliser semanticAnaliser = new SemanticAnaliser();
 	private AttributesSymbolTableObject attributes = new AttributesSymbolTableObject();
 	private LinkedList<AttributesSymbolTableObject> attributesList = new LinkedList<AttributesSymbolTableObject>();
 	private static ArrayList<SemanticError> listSemanticError = new ArrayList<SemanticError>();
@@ -330,7 +333,7 @@ public class Parser {
 
 			} else if (tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())) {
 
-				if (symbolTable.isInteger(tokenAtual.getLexeme())) {
+				if (SymbolTable.isInteger(tokenAtual.getLexeme())) {
 
 					if (!symbolTable.comparableTypes(previousSymbol, "int")) {
 
@@ -392,7 +395,7 @@ public class Parser {
 
 			} else {
 
-				if (!symbolTable.isInteger(tokenAtual.getLexeme())) {
+				if (!SymbolTable.isInteger(tokenAtual.getLexeme())) {
 
 					listSemanticError.add(new SemanticError(tokenAtual.getLine(), " Tipos incompativeis"));
 
@@ -633,9 +636,11 @@ public class Parser {
 				attributes.setNameAttribute(tokenAtual.getLexeme());
 				attributesList.add(attributes);
 				previousSymbol.setParamFunc(attributesList);
+				previousSymbol.setLine(tokenAtual.getLine());
 
 			} else {
 
+				previousSymbol.setLine(tokenAtual.getLine());
 				previousSymbol.setTypeDate(currentType);
 				previousSymbol.setId(tokenAtual.getLexeme());
 
@@ -671,13 +676,16 @@ public class Parser {
 
 			tokenAtual = proxToken();
 			expressionsAndDataTypes();
+			varDeclarationAuxA();
 
 		} else if (tokenAtual.getLexeme().equals("[")) {
 
 			array();
+			varDeclarationAuxA();
 
 		} else {
 
+			varDeclarationAuxA();
 			return;
 
 		}
@@ -704,18 +712,20 @@ public class Parser {
 
 				if (previousSymbol.getCategoryObject().equals(Categories.CAT_STRUCT.getCatCode())) {
 
+					previousSymbol.setLine(tokenAtual.getLine());
 					attributes.setNameAttribute(tokenAtual.getLexeme());
 					attributesList.add(attributes);
 					previousSymbol.setParamFunc(attributesList);
 
 				} else {
 
+					previousSymbol.setLine(tokenAtual.getLine());
 					previousSymbol.setId(tokenAtual.getLexeme());
+					previousSymbol.setTypeDate(currentType);
 
 				}
 
 				symbolTable.add(previousSymbol.getId(), previousSymbol);
-
 				tokenAtual = proxToken();
 
 			}
@@ -908,6 +918,7 @@ public class Parser {
 
 		} else {
 
+			previousSymbol.setLine(tokenAtual.getLine());
 			previousSymbol.setId(tokenAtual.getLexeme());
 			previousSymbol.setTypeDate(currentType);
 			symbolTable.add(previousSymbol.getId(), previousSymbol);
@@ -959,6 +970,7 @@ public class Parser {
 			} else {
 
 				resetPreviousSymbol();
+				previousSymbol.setLine(tokenAtual.getLine());
 				previousSymbol.setId(tokenAtual.getLexeme());
 				previousSymbol.setTypeDate(currentType);
 				symbolTable.add(previousSymbol.getId(), previousSymbol);
@@ -1415,7 +1427,7 @@ public class Parser {
 
 				} else {
 
-					if (symbolTable.isInteger(tokenAtual.getLexeme())) {
+					if (SymbolTable.isInteger(tokenAtual.getLexeme())) {
 
 						if (!symbolTable.comparableTypes(previousSymbol, "int")) {
 
@@ -2002,56 +2014,33 @@ public class Parser {
 
 			} else {
 
-				if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
+				if (previousToken == null) {
 
-					if (!symbolTable.comparableTypes(previousSymbol, symbolTable.getSymbol(tokenAtual.getLexeme()))) {
-
-						listSemanticError.add(new SemanticError(tokenAtual.getLine(), " Tipos Incompativeis"));
-
-					}
-
-				} else if (tokenAtual.getTypeToken().equals(InitialsToken.TK_NUMBER.getTypeTokenCode())) {
-
-					if (symbolTable.isInteger(tokenAtual.getLexeme())) {
-
-						if (!symbolTable.comparableTypes(previousSymbol, "int")) {
-
-							listSemanticError.add(new SemanticError(tokenAtual.getLine(), " Tipos Incompativeis"));
-
-						}
-
-					} else {
-
-						if (!symbolTable.comparableTypes(previousSymbol, "real")) {
-
-							listSemanticError.add(new SemanticError(tokenAtual.getLine(), " Tipos Incompativeis"));
-
-						}
-
-					}
-
-				} else if (tokenAtual.getLexeme().equals("true") || tokenAtual.getLexeme().equals("false")) {
-
-					if (!symbolTable.comparableTypes(previousSymbol, "boolean")) {
-
-						listSemanticError.add(new SemanticError(tokenAtual.getLine(), " Tipos Incompativeis"));
-
-					}
+					previousToken = tokenAtual;
 
 				} else {
 
-					if (!symbolTable.comparableTypes(previousSymbol, "string")) {
-
-						listSemanticError.add(new SemanticError(tokenAtual.getLine(), " Tipos Incompativeis"));
-
-					}
+					currentToken = tokenAtual;
 
 				}
+				
+				if (previousToken != null && currentToken != null) {
+
+					if (!semanticAnaliser.checkType(previousToken, currentToken)) {
+
+						listSemanticError.add(new SemanticError(previousToken.getLine(), "Tipos Incompativeis"));
+
+					}
+					
+					previousToken = null;
+					currentToken = null;
+
+				}
+				
 
 				tokenAtual = proxToken();
 
 			}
-
 		}
 
 	}
@@ -2210,7 +2199,7 @@ public class Parser {
 
 				} else {
 
-					if (symbolTable.isInteger(tokenAtual.getLexeme())) {
+					if (SymbolTable.isInteger(tokenAtual.getLexeme())) {
 
 						if (!symbolTable.comparableTypes(previousSymbol, "int")) {
 
