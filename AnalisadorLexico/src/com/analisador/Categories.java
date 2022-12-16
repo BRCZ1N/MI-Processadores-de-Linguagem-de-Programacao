@@ -6,7 +6,6 @@ public enum Categories {
 	CAT_PROCEDURE("PROCEDURE"),
 	CAT_STRUCT("STRUCT"), 
 	CAT_VAR("VAR"), 
-	CAT_ARRAY("ARRAY"), 
 	CAT_CONST("CONST");
 
 	private String catCode;

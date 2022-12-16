@@ -1,12 +1,29 @@
 const { }
 
-var { }
+var {
+
+	real valor;
+
+ }
 
 start ( ) {
 	
-	valor = calcula (13.5, valor);
+	function real calcula(real v, real valor){
 	
-	imprimir ("soma calculada");
+		var{ 
+		
+			real valorFinal;
+		
+		}
+		
+		valorFinal = v + valor;
+		
+		return valorFinal;
 	
-	imprimir (texto);
+	}
+	
+	
+	valor = calcula (10 , valor);
+	
+	
 }

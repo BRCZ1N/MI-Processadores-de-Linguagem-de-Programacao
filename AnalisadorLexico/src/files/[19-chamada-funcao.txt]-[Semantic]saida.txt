@@ -1,3 +1,1 @@
-Error semantic - Line: 7 - Error found: Erro semântico - Identificador não foi declarado
-Error semantic - Line: 9 - Error found: Erro semântico - Identificador não foi declarado
-Error semantic - Line: 11 - Error found: Erro semântico - Identificador não foi declarado
+Esse arquivo não contém erros semânticos
