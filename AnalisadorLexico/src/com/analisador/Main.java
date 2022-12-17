@@ -18,11 +18,14 @@ public class Main {
 			lexicalAnaliser.execAnaliser(file);
 			syntaxAnaliser.refreshTokenList();
 			syntaxAnaliser.startParser();
-
+			
 			writeTokensInArchive(file.getName());
 			writeSyntacticalErrorInArchive(file.getName());
 			writeSemanticErrorInArchive(file.getName());
+			
 			LexicalAnaliser.clearAllList();
+			Parser.clearAllList();
+			
 
 		}
 
@@ -151,7 +154,7 @@ public class Main {
 
 		if (Parser.getListSemanticError().isEmpty()) {
 
-			recordArc.println("Esse arquivo não contém erros semânticos");
+			recordArc.println("Esse arquivo não contém erros sint�ticos");
 
 		} else {
 
@@ -165,7 +168,8 @@ public class Main {
 
 		recordArc.close();
 		arc.close();
-
+		
+		
 	}
 
 

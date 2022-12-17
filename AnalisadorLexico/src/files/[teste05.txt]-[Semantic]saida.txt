@@ -1,0 +1,2 @@
+Error semantic - Line: 16 - Error found: Tipos Incompativeis
+Error semantic - Line: 18 - Error found: Tipos Incompativeis

@@ -1,0 +1,21 @@
+const { 
+	int max = 10;
+}
+
+var {
+	real soma;
+}
+
+start ( ) {
+
+	soma = max;	 // ERRO
+	
+	function int somar (int param1, int param2) {
+		var { 
+			real resultado;
+		}
+		resultado = (param1 + param2) / 10*3;	// ERRO
+		
+		return resultado; 	// ERRO
+	}
+}

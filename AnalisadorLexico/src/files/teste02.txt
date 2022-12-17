@@ -1,0 +1,26 @@
+const { 
+	int max = 10;
+}
+
+var {
+	real soma;
+}
+
+start ( ) {	
+
+	function int somar (int param1, int param2) {
+	var { 
+		int resultado;
+	}
+		resultado = param1 + param2;
+		return resultado;
+	}
+	
+	procedure exibir (string msg) {
+		print(msg);
+	}
+	
+	soma = somar(max, 33.3);	// 2 ERROS	
+	
+	exibir(max);	// ERRO
+}

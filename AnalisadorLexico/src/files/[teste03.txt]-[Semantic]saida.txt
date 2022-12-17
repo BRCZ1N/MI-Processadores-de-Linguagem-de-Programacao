@@ -1,0 +1,5 @@
+Error semantic - Line: 15 - Error found:  Tipos incompativeis
+Error semantic - Line: 17 - Error found:  Tipos incompativeis
+Error semantic - Line: 19 - Error found:  Tipos incompativeis
+Error semantic - Line: 23 - Error found:  Tipos incompativeis
+Error semantic - Line: 25 - Error found:  Tipos incompativeis

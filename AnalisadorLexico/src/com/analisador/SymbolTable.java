@@ -7,14 +7,12 @@ public class SymbolTable {
 
 	private static Map<String, SymbolTableObject> symbolTable = new HashMap<String, SymbolTableObject>();
 
-	public Map<String, SymbolTableObject> getSymbolTable() {
+	public static Map<String, SymbolTableObject> getSymbolTable() {
 		return symbolTable;
 	}
 
-	public void setSymbolTable(HashMap<String, SymbolTableObject> symbolTable) {
-
+	public static void setSymbolTable(Map<String, SymbolTableObject> symbolTable) {
 		SymbolTable.symbolTable = symbolTable;
-
 	}
 
 	public void add(String symbolKey, SymbolTableObject symbol) {
