@@ -33,6 +33,33 @@ public class SymbolTable {
 
 	}
 
+	public String getSymbolTypeInAttributes(String keyParameter) {
+
+		for (Map.Entry<String, SymbolTableObject> symbolTableObject : symbolTable.entrySet()) {
+
+			if (!(symbolTableObject.getValue().getCategoryObject().equals(Categories.CAT_CONST.getCatCode())
+					|| symbolTableObject.getValue().getCategoryObject().equals(Categories.CAT_VAR.getCatCode()))) {
+
+				for (AttributesSymbolTableObject attributes : symbolTableObject.getValue().getParamFunc()) {
+
+					if (attributes.getNameAttribute().equals(keyParameter)) {
+
+						return attributes.getTypeAttribute();
+
+					}
+
+				}
+				
+			}
+
+			
+
+		}
+
+		return null;
+
+	}
+
 	public boolean comparableTypes(SymbolTableObject previousIdentifier, SymbolTableObject currentIdentifier) {
 
 		if (previousIdentifier.getTypeDate().equals(currentIdentifier.getTypeDate())) {
@@ -56,7 +83,7 @@ public class SymbolTable {
 		return false;
 
 	}
-	
+
 	public boolean comparableTypes(String typeA, String typeB) {
 
 		if (typeA.equals(typeB)) {

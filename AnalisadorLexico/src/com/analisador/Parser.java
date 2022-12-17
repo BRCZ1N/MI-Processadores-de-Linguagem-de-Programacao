@@ -30,7 +30,7 @@ public class Parser {
 
 		listSemanticError = new ArrayList<SemanticError>();
 		listSyntacticError = new ArrayList<SyntacticError>();
-		SymbolTable.setSymbolTable(new HashMap<String, SymbolTableObject>()); 
+		SymbolTable.setSymbolTable(new HashMap<String, SymbolTableObject>());
 
 	}
 
@@ -79,7 +79,7 @@ public class Parser {
 	public void refreshTokenList() {
 
 		listTokens = new ArrayList<Token>();
-		
+
 		for (Token token : LexicalAnaliser.getListTokens()) {
 
 			if (!token.getTypeToken().equals(InitialsToken.TK_COMMENT.getTypeTokenCode())) {
@@ -335,9 +335,10 @@ public class Parser {
 
 			if (tokenAtual.getTypeToken().equals(InitialsToken.TK_IDENTIFIER.getTypeTokenCode())) {
 
-				if (!symbolTable.comparableTypes(currentFunction.getTypeReturn(), symbolTable.getSymbol(tokenAtual.getLexeme()).getTypeDate())) {
+				if (!symbolTable.comparableTypes(currentFunction.getTypeReturn(),
+						symbolTable.getSymbol(tokenAtual.getLexeme()).getTypeDate())) {
 
-					listSemanticError.add(new SemanticError(tokenAtual.getLine(), " Tipos incompativeis"));
+					listSemanticError.add(new SemanticError(tokenAtual.getLine(), "Tipos incompativeis"));
 
 				}
 
@@ -347,7 +348,7 @@ public class Parser {
 
 					if (!symbolTable.comparableTypes(currentFunction.getTypeReturn(), "int")) {
 
-						listSemanticError.add(new SemanticError(tokenAtual.getLine(), " Tipos incompativeis"));
+						listSemanticError.add(new SemanticError(tokenAtual.getLine(), "Tipos incompativeis"));
 
 					}
 
@@ -355,7 +356,7 @@ public class Parser {
 
 					if (!symbolTable.comparableTypes(currentFunction.getTypeReturn(), "real")) {
 
-						listSemanticError.add(new SemanticError(tokenAtual.getLine(), " Tipos incompativeis"));
+						listSemanticError.add(new SemanticError(tokenAtual.getLine(), "Tipos incompativeis"));
 
 					}
 
@@ -365,7 +366,7 @@ public class Parser {
 
 				if (!symbolTable.comparableTypes(currentFunction.getTypeReturn(), "boolean")) {
 
-					listSemanticError.add(new SemanticError(tokenAtual.getLine(), " Tipos incompativeis"));
+					listSemanticError.add(new SemanticError(tokenAtual.getLine(), "Tipos incompativeis"));
 
 				}
 
@@ -1262,7 +1263,7 @@ public class Parser {
 				tokenAtual = proxToken();
 
 			}
-			
+
 			currentFunction = previousSymbol;
 
 			code();
@@ -2214,6 +2215,16 @@ public class Parser {
 						}
 
 					}
+
+				} else {
+
+					if (!symbolTable.comparableTypes(symbolTable.getSymbolTypeInAttributes(tokenAtual.getLexeme()),previousSymbol.getTypeDate())) {
+						
+						listSemanticError.add(new SemanticError(tokenAtual.getLine(), "Tipos incompativeis"));
+						
+					}
+					
+						
 
 				}
 
