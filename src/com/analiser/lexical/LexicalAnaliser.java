@@ -1,4 +1,4 @@
-package com.analisador;
+package com.analiser.lexical;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,6 +6,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+
+import com.analiser.utilities.ErrorToken;
+import com.analiser.utilities.InitialsToken;
 
 public class LexicalAnaliser {
 

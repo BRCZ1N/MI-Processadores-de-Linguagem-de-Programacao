@@ -1,7 +1,9 @@
-package com.analisador;
+package com.analiser.semantic;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.analiser.utilities.Categories;
 
 public class SymbolTable {
 
@@ -20,12 +22,6 @@ public class SymbolTable {
 		symbolTable.put(symbolKey, symbol);
 
 	}
-
-//	public boolean exists(String symbolName) {
-//
-//		return symbolTable.containsKey(symbolName);
-//
-//	}
 
 	public SymbolTableObject getSymbol(String symbolKey) {
 

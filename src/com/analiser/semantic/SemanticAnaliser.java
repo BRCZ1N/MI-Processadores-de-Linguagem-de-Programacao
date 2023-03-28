@@ -1,4 +1,7 @@
-package com.analisador;
+package com.analiser.semantic;
+
+import com.analiser.lexical.Token;
+import com.analiser.utilities.InitialsToken;
 
 public class SemanticAnaliser {
 

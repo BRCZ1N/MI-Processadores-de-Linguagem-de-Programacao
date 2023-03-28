@@ -1,9 +1,19 @@
-package com.analisador;
+package com.analiser.syntatic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+
+import com.analiser.lexical.LexicalAnaliser;
+import com.analiser.lexical.Token;
+import com.analiser.semantic.AttributesSymbolTableObject;
+import com.analiser.semantic.SemanticAnaliser;
+import com.analiser.semantic.SemanticError;
+import com.analiser.semantic.SymbolTable;
+import com.analiser.semantic.SymbolTableObject;
+import com.analiser.utilities.Categories;
+import com.analiser.utilities.InitialsToken;
 
 public class Parser {
 

@@ -1,6 +1,8 @@
-package com.analisador;
+package com.analiser.semantic;
 
 import java.util.LinkedList;
+
+import com.analiser.lexical.Token;
 
 public class SymbolTableObject {
 

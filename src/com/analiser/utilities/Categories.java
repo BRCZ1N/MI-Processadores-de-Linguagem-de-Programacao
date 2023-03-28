@@ -1,4 +1,4 @@
-package com.analisador;
+package com.analiser.utilities;
 
 public enum Categories {
 

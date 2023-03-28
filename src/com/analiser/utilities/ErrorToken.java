@@ -1,4 +1,6 @@
-package com.analisador;
+package com.analiser.utilities;
+
+import com.analiser.lexical.Token;
 
 public class ErrorToken extends Token {
 

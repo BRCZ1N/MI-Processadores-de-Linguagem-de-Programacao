@@ -1,10 +1,18 @@
-package com.analisador;
+package com.main;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import com.analiser.lexical.LexicalAnaliser;
+import com.analiser.lexical.Token;
+import com.analiser.semantic.SemanticError;
+import com.analiser.syntatic.Parser;
+import com.analiser.syntatic.SyntacticError;
+import com.analiser.utilities.ErrorToken;
+import com.analiser.utilities.InitialsToken;
 
 public class Main {
 
